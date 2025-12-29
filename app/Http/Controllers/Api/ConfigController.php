@@ -17,7 +17,7 @@ class ConfigController extends Controller
     public function __invoke(): JsonResponse
     {
         return response()->json([
-            'site_name' => Setting::getValue('site_name', 'Opaska'),
+            'site_name' => Setting::getValue('site_name', 'Marge'),
             'require_author' => Setting::getValue('require_author', 'false') === 'true',
             'require_email' => Setting::getValue('require_email', 'false') === 'true',
             'moderation_mode' => Setting::getValue('moderation_mode', 'none'),

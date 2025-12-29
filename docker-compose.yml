@@ -1,20 +1,20 @@
 services:
-  opaska:
+  marge:
     build:
       context: .
       dockerfile: deploy/Dockerfile
     ports:
       - "8000:8000"
     environment:
-      APP_NAME: Opaska
+      APP_NAME: Marge
       APP_ENV: production
       APP_DEBUG: "false"
       APP_URL: "${APP_URL:-http://localhost:8000}"
       DB_CONNECTION: "${DB_CONNECTION:-sqlite}"
       DB_HOST: "${DB_HOST:-postgres}"
       DB_PORT: "${DB_PORT:-5432}"
-      DB_DATABASE: "${DB_DATABASE:-opaska}"
-      DB_USERNAME: "${DB_USERNAME:-opaska}"
+      DB_DATABASE: "${DB_DATABASE:-marge}"
+      DB_USERNAME: "${DB_USERNAME:-marge}"
       DB_PASSWORD: "${DB_PASSWORD:-secret}"
       MAIL_MAILER: "${MAIL_MAILER:-log}"
       MAIL_HOST: "${MAIL_HOST:-}"
@@ -23,8 +23,8 @@ services:
       MAIL_PASSWORD: "${MAIL_PASSWORD:-}"
       MAIL_FROM_ADDRESS: "${MAIL_FROM_ADDRESS:-}"
     volumes:
-      - opaska_data:/app/database
-      - opaska_storage:/app/storage
+      - marge_data:/app/database
+      - marge_storage:/app/storage
     depends_on:
       postgres:
         condition: service_healthy
@@ -35,13 +35,13 @@ services:
   postgres:
     image: postgres:16-alpine
     environment:
-      POSTGRES_DB: opaska
-      POSTGRES_USER: opaska
+      POSTGRES_DB: marge
+      POSTGRES_USER: marge
       POSTGRES_PASSWORD: secret
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U opaska"]
+      test: ["CMD-SHELL", "pg_isready -U marge"]
       interval: 5s
       timeout: 5s
       retries: 5
@@ -50,6 +50,6 @@ services:
       - postgres
 
 volumes:
-  opaska_data:
-  opaska_storage:
+  marge_data:
+  marge_storage:
   postgres_data:

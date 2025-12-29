@@ -1,4 +1,4 @@
-# Opaska
+# Marge
 
 A self-hosted comment system for static sites and blogs. Modern replacement for isso.
 
@@ -25,9 +25,9 @@ A self-hosted comment system for static sites and blogs. Modern replacement for 
 ```bash
 docker run -d \
   -p 8000:8000 \
-  -v opaska_data:/app/database \
+  -v marge_data:/app/database \
   -e APP_URL=https://comments.example.com \
-  ghcr.io/your-username/opaska:latest
+  ghcr.io/your-username/marge:latest
 ```
 
 Then visit `http://localhost:8000/admin/setup` to configure.
@@ -39,10 +39,10 @@ Add to your website:
 ```html
 <script
   src="https://comments.example.com/embed/embed.js"
-  data-opaska="https://comments.example.com"
+  data-marge="https://comments.example.com"
   async
 ></script>
-<div id="opaska-thread"></div>
+<div id="marge-thread"></div>
 ```
 
 ## Documentation
@@ -63,8 +63,8 @@ Add to your website:
 
 ```bash
 # Clone repository
-git clone https://github.com/your-username/opaska
-cd opaska
+git clone https://github.com/your-username/marge
+cd marge
 
 # Install dependencies
 composer install

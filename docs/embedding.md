@@ -1,4 +1,4 @@
-# Embedding Opaska
+# Embedding Marge
 
 Add a comment section to any website with a single script tag.
 
@@ -9,13 +9,13 @@ Add this to your HTML where you want comments to appear:
 ```html
 <script
   src="https://comments.example.com/embed/embed.js"
-  data-opaska="https://comments.example.com"
+  data-marge="https://comments.example.com"
   async
 ></script>
-<div id="opaska-thread"></div>
+<div id="marge-thread"></div>
 ```
 
-That's it! Opaska will automatically initialize and load comments for the current page.
+That's it! Marge will automatically initialize and load comments for the current page.
 
 ## Configuration Options
 
@@ -23,8 +23,8 @@ That's it! Opaska will automatically initialize and load comments for the curren
 
 | Attribute | Description | Default |
 |-----------|-------------|---------|
-| `data-opaska` | **Required.** URL of your Opaska instance | - |
-| `data-opaska-theme` | Color theme: `light`, `dark`, `auto` | `auto` |
+| `data-marge` | **Required.** URL of your Marge instance | - |
+| `data-marge-theme` | Color theme: `light`, `dark`, `auto` | `auto` |
 
 ### Examples
 
@@ -33,11 +33,11 @@ That's it! Opaska will automatically initialize and load comments for the curren
 ```html
 <script
   src="https://comments.example.com/embed/embed.js"
-  data-opaska="https://comments.example.com"
-  data-opaska-theme="dark"
+  data-marge="https://comments.example.com"
+  data-marge-theme="dark"
   async
 ></script>
-<div id="opaska-thread"></div>
+<div id="marge-thread"></div>
 ```
 
 #### Light Theme Only
@@ -45,11 +45,11 @@ That's it! Opaska will automatically initialize and load comments for the curren
 ```html
 <script
   src="https://comments.example.com/embed/embed.js"
-  data-opaska="https://comments.example.com"
-  data-opaska-theme="light"
+  data-marge="https://comments.example.com"
+  data-marge-theme="light"
   async
 ></script>
-<div id="opaska-thread"></div>
+<div id="marge-thread"></div>
 ```
 
 ## Manual Initialization
@@ -62,7 +62,7 @@ For more control, initialize manually:
 
 <script>
   window.addEventListener('load', function() {
-    Opaska.init({
+    Marge.init({
       baseUrl: 'https://comments.example.com',
       container: '#my-comments',
       uri: '/custom-uri',          // Override page identifier
@@ -76,12 +76,12 @@ For more control, initialize manually:
 
 ## Page Identification
 
-By default, Opaska uses `window.location.pathname` to identify the page. All comments on `/blog/my-post` will be grouped together regardless of query strings or anchors.
+By default, Marge uses `window.location.pathname` to identify the page. All comments on `/blog/my-post` will be grouped together regardless of query strings or anchors.
 
 Override this with the `uri` option if needed:
 
 ```javascript
-Opaska.init({
+Marge.init({
   baseUrl: 'https://comments.example.com',
   uri: '/custom/path'  // Your custom identifier
 });
@@ -92,11 +92,11 @@ Opaska.init({
 Display comment counts anywhere on your site:
 
 ```html
-<a href="/blog/post-1">Post 1 (<span data-opaska-count="/blog/post-1">0</span> comments)</a>
-<a href="/blog/post-2">Post 2 (<span data-opaska-count="/blog/post-2">0</span> comments)</a>
+<a href="/blog/post-1">Post 1 (<span data-marge-count="/blog/post-1">0</span> comments)</a>
+<a href="/blog/post-2">Post 2 (<span data-marge-count="/blog/post-2">0</span> comments)</a>
 
 <script>
-  // Fetch counts for all elements with data-opaska-count
+  // Fetch counts for all elements with data-marge-count
   fetch('https://comments.example.com/api/counts', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -107,7 +107,7 @@ Display comment counts anywhere on your site:
   .then(r => r.json())
   .then(counts => {
     Object.entries(counts).forEach(([uri, count]) => {
-      document.querySelector(`[data-opaska-count="${uri}"]`).textContent = count;
+      document.querySelector(`[data-marge-count="${uri}"]`).textContent = count;
     });
   });
 </script>
@@ -115,36 +115,36 @@ Display comment counts anywhere on your site:
 
 ## Styling
 
-Opaska uses CSS custom properties for theming. Override them in your stylesheet:
+Marge uses CSS custom properties for theming. Override them in your stylesheet:
 
 ```css
-.opaska-container {
-  --opaska-bg: #ffffff;
-  --opaska-text: #1a1a1a;
-  --opaska-muted: #6b7280;
-  --opaska-border: #e5e7eb;
-  --opaska-primary: #3b82f6;
-  --opaska-primary-hover: #2563eb;
-  --opaska-success: #10b981;
-  --opaska-error: #ef4444;
-  --opaska-error-bg: #fef2f2;
+.marge-container {
+  --marge-bg: #ffffff;
+  --marge-text: #1a1a1a;
+  --marge-muted: #6b7280;
+  --marge-border: #e5e7eb;
+  --marge-primary: #3b82f6;
+  --marge-primary-hover: #2563eb;
+  --marge-success: #10b981;
+  --marge-error: #ef4444;
+  --marge-error-bg: #fef2f2;
 }
 
 /* Dark theme */
-.opaska-theme-dark {
-  --opaska-bg: #1f2937;
-  --opaska-text: #f3f4f6;
-  --opaska-muted: #9ca3af;
-  --opaska-border: #374151;
-  --opaska-primary: #60a5fa;
-  --opaska-primary-hover: #3b82f6;
-  --opaska-error-bg: #7f1d1d;
+.marge-theme-dark {
+  --marge-bg: #1f2937;
+  --marge-text: #f3f4f6;
+  --marge-muted: #9ca3af;
+  --marge-border: #374151;
+  --marge-primary: #60a5fa;
+  --marge-primary-hover: #3b82f6;
+  --marge-error-bg: #7f1d1d;
 }
 ```
 
 ## RSS/Atom Feeds
 
-Opaska provides Atom feeds for syndication:
+Marge provides Atom feeds for syndication:
 
 - **Recent comments:** `https://comments.example.com/feed/recent.atom`
 - **Per-thread:** `https://comments.example.com/feed/blog/my-post.atom`
@@ -164,7 +164,7 @@ Add a link to your HTML `<head>`:
 
 ### CORS
 
-Opaska allows cross-origin requests from any domain by default. You can restrict this in Admin > Settings by configuring allowed origins.
+Marge allows cross-origin requests from any domain by default. You can restrict this in Admin > Settings by configuring allowed origins.
 
 ### Content Security Policy
 
@@ -181,15 +181,15 @@ connect-src 'self' comments.example.com;
 ### Comments not loading
 
 1. Check browser console for errors
-2. Verify `data-opaska` URL is correct
+2. Verify `data-marge` URL is correct
 3. Check CORS settings in admin panel
 
 ### Styling conflicts
 
-Opaska styles are scoped to `.opaska-container` to minimize conflicts. If you have issues, increase specificity:
+Marge styles are scoped to `.marge-container` to minimize conflicts. If you have issues, increase specificity:
 
 ```css
-#my-comments .opaska-container {
+#my-comments .marge-container {
   /* your overrides */
 }
 ```

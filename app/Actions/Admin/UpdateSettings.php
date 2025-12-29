@@ -64,7 +64,7 @@ class UpdateSettings
     {
         return [
             // General
-            'site_name' => Setting::getValue('site_name', 'Opaska'),
+            'site_name' => Setting::getValue('site_name', 'Marge'),
             'site_url' => Setting::getValue('site_url'),
 
             // Moderation

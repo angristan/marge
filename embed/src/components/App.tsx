@@ -71,21 +71,21 @@ export default function App({
 
     if (loading) {
         return (
-            <div className={`opaska-container opaska-theme-${effectiveTheme}`}>
-                <div className="opaska-loading">Loading comments...</div>
+            <div className={`marge-container marge-theme-${effectiveTheme}`}>
+                <div className="marge-loading">Loading comments...</div>
             </div>
         );
     }
 
     if (error) {
         return (
-            <div className={`opaska-container opaska-theme-${effectiveTheme}`}>
-                <div className="opaska-error">
+            <div className={`marge-container marge-theme-${effectiveTheme}`}>
+                <div className="marge-error">
                     {error}
                     <button
                         type="button"
                         onClick={loadData}
-                        className="opaska-btn opaska-btn-secondary"
+                        className="marge-btn marge-btn-secondary"
                     >
                         Retry
                     </button>
@@ -97,9 +97,9 @@ export default function App({
     if (!config || !data) return null;
 
     return (
-        <div className={`opaska-container opaska-theme-${effectiveTheme}`}>
-            <div className="opaska-header">
-                <h3 className="opaska-title">
+        <div className={`marge-container marge-theme-${effectiveTheme}`}>
+            <div className="marge-header">
+                <h3 className="marge-title">
                     {data.total} {data.total === 1 ? 'Comment' : 'Comments'}
                 </h3>
             </div>
@@ -113,9 +113,9 @@ export default function App({
                 onSubmit={loadData}
             />
 
-            <div className="opaska-comments">
+            <div className="marge-comments">
                 {data.comments.length === 0 ? (
-                    <div className="opaska-empty">
+                    <div className="marge-empty">
                         No comments yet. Be the first to comment!
                     </div>
                 ) : (
@@ -133,13 +133,13 @@ export default function App({
                 )}
             </div>
 
-            <div className="opaska-footer">
+            <div className="marge-footer">
                 <a
-                    href="https://github.com/your-repo/opaska"
+                    href="https://github.com/your-repo/marge"
                     target="_blank"
                     rel="noopener noreferrer"
                 >
-                    Powered by Opaska
+                    Powered by Marge
                 </a>
             </div>
         </div>

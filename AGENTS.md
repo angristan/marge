@@ -1,8 +1,8 @@
-# Opaska - Development Guidelines
+# Marge - Development Guidelines
 
 ## Project Overview
 
-Opaska is a self-hosted comment system built with Laravel, designed to replace isso.
+Marge is a self-hosted comment system built with Laravel, designed to replace isso.
 
 ## Tech Stack
 

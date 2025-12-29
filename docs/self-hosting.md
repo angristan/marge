@@ -1,6 +1,6 @@
-# Self-Hosting Opaska
+# Self-Hosting Marge
 
-This guide covers deploying Opaska on your own server.
+This guide covers deploying Marge on your own server.
 
 ## Requirements
 
@@ -14,9 +14,9 @@ This guide covers deploying Opaska on your own server.
 ```bash
 docker run -d \
   -p 8000:8000 \
-  -v opaska_data:/app/database \
+  -v marge_data:/app/database \
   -e APP_URL=https://comments.example.com \
-  ghcr.io/your-username/opaska:latest
+  ghcr.io/your-username/marge:latest
 ```
 
 ### With PostgreSQL
@@ -24,16 +24,16 @@ docker run -d \
 ```yaml
 # docker-compose.yml
 services:
-  opaska:
-    image: ghcr.io/your-username/opaska:latest
+  marge:
+    image: ghcr.io/your-username/marge:latest
     ports:
       - "8000:8000"
     environment:
       APP_URL: https://comments.example.com
       DB_CONNECTION: pgsql
       DB_HOST: postgres
-      DB_DATABASE: opaska
-      DB_USERNAME: opaska
+      DB_DATABASE: marge
+      DB_USERNAME: marge
       DB_PASSWORD: secret
     depends_on:
       - postgres
@@ -43,8 +43,8 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
     environment:
-      POSTGRES_DB: opaska
-      POSTGRES_USER: opaska
+      POSTGRES_DB: marge
+      POSTGRES_USER: marge
       POSTGRES_PASSWORD: secret
 
 volumes:
@@ -60,12 +60,12 @@ docker compose up -d
 
 | Variable | Description | Default |
 |----------|-------------|---------|
-| `APP_URL` | Public URL of your Opaska instance | `http://localhost` |
+| `APP_URL` | Public URL of your Marge instance | `http://localhost` |
 | `APP_KEY` | Application encryption key (auto-generated if missing) | - |
 | `DB_CONNECTION` | Database driver: `sqlite` or `pgsql` | `sqlite` |
 | `DB_HOST` | PostgreSQL host | `localhost` |
 | `DB_PORT` | PostgreSQL port | `5432` |
-| `DB_DATABASE` | Database name | `opaska` |
+| `DB_DATABASE` | Database name | `marge` |
 | `DB_USERNAME` | Database username | - |
 | `DB_PASSWORD` | Database password | - |
 | `MAIL_MAILER` | Mail driver: `smtp`, `log` | `log` |
@@ -119,13 +119,13 @@ server {
 The database is stored at `database/database.sqlite`. Back up this file regularly:
 
 ```bash
-docker cp opaska:/app/database/database.sqlite ./backup-$(date +%F).sqlite
+docker cp marge:/app/database/database.sqlite ./backup-$(date +%F).sqlite
 ```
 
 ### PostgreSQL
 
 ```bash
-docker compose exec postgres pg_dump -U opaska opaska > backup-$(date +%F).sql
+docker compose exec postgres pg_dump -U marge marge > backup-$(date +%F).sql
 ```
 
 ## Updating
@@ -141,8 +141,8 @@ If not using Docker:
 
 ```bash
 # Clone repository
-git clone https://github.com/your-username/opaska
-cd opaska
+git clone https://github.com/your-username/marge
+cd marge
 
 # Install PHP dependencies
 composer install --no-dev --optimize-autoloader

@@ -51,7 +51,7 @@ export default function Setup() {
     return (
         <Container size={600} my={50}>
             <Center mb="xl">
-                <Title order={1}>Welcome to Opaska</Title>
+                <Title order={1}>Welcome to Marge</Title>
             </Center>
 
             <Paper withBorder shadow="md" p={30} radius="md">
@@ -74,7 +74,7 @@ export default function Setup() {
                                 />
                                 <TextInput
                                     label="Site URL"
-                                    description="The URL where Opaska is hosted"
+                                    description="The URL where Marge is hosted"
                                     placeholder="https://comments.myblog.com"
                                     value={data.site_url}
                                     onChange={(e) =>

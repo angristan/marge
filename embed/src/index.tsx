@@ -15,10 +15,10 @@ function init(options: OapaskaOptions) {
     const container =
         typeof options.container === 'string'
             ? document.querySelector(options.container)
-            : options.container || document.getElementById('opaska-thread');
+            : options.container || document.getElementById('marge-thread');
 
     if (!container) {
-        console.error('[Opaska] Container element not found');
+        console.error('[Marge] Container element not found');
         return;
     }
 
@@ -43,10 +43,10 @@ function autoInit() {
     const script = document.currentScript as HTMLScriptElement;
     if (!script) return;
 
-    const baseUrl = script.dataset.opaska;
+    const baseUrl = script.dataset.marge;
     if (!baseUrl) return;
 
-    const theme = script.dataset.opaskaTheme as
+    const theme = script.dataset.margeTheme as
         | 'light'
         | 'dark'
         | 'auto'

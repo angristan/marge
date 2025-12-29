@@ -13,7 +13,7 @@ import { useEffect, useRef, useState } from 'react';
 
 declare global {
     interface Window {
-        Opaska?: unknown;
+        Marge?: unknown;
     }
 }
 
@@ -30,34 +30,34 @@ export default function Preview({ appUrl }: PreviewProps) {
 
         // Clear previous widget
         const container = containerRef.current;
-        container.innerHTML = '<div id="opaska-thread"></div>';
+        container.innerHTML = '<div id="marge-thread"></div>';
 
         // Remove any existing script
         const existingScript = document.querySelector(
-            'script[data-opaska-preview]',
+            'script[data-marge-preview]',
         );
         if (existingScript) {
             existingScript.remove();
         }
 
-        // Clean up Opaska global state if it exists
-        if (typeof window !== 'undefined' && window.Opaska) {
-            window.Opaska = undefined;
+        // Clean up Marge global state if it exists
+        if (typeof window !== 'undefined' && window.Marge) {
+            window.Marge = undefined;
         }
 
         // Create and append new script
         const script = document.createElement('script');
         script.src = `${appUrl}/embed/embed.js`;
-        script.setAttribute('data-opaska', appUrl);
-        script.setAttribute('data-opaska-theme', theme);
-        script.setAttribute('data-opaska-preview', 'true');
+        script.setAttribute('data-marge', appUrl);
+        script.setAttribute('data-marge-theme', theme);
+        script.setAttribute('data-marge-preview', 'true');
         script.async = true;
         container.appendChild(script);
 
         return () => {
             // Cleanup on unmount
             const scriptToRemove = document.querySelector(
-                'script[data-opaska-preview]',
+                'script[data-marge-preview]',
             );
             if (scriptToRemove) {
                 scriptToRemove.remove();
@@ -139,8 +139,8 @@ export default function Preview({ appUrl }: PreviewProps) {
                                     }}
                                 >
                                     This is a sample blog post to demonstrate
-                                    how the Opaska comment widget integrates
-                                    with your content. The widget below allows
+                                    how the Marge comment widget integrates with
+                                    your content. The widget below allows
                                     visitors to leave comments, reply to others,
                                     and engage with your content.
                                 </Text>
@@ -171,7 +171,7 @@ export default function Preview({ appUrl }: PreviewProps) {
                                 }}
                             >
                                 <div ref={containerRef}>
-                                    <div id="opaska-thread" />
+                                    <div id="marge-thread" />
                                 </div>
                             </Box>
                         </Box>

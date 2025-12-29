@@ -61,7 +61,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                             hiddenFrom="sm"
                             size="sm"
                         />
-                        <Title order={3}>Opaska</Title>
+                        <Title order={3}>Marge</Title>
                     </Group>
                     <Group>
                         <ActionIcon

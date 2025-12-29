@@ -54,16 +54,16 @@ export default function Comment({
     };
 
     return (
-        <div className="opaska-comment" data-depth={depth}>
-            <div className="opaska-comment-header">
+        <div className="marge-comment" data-depth={depth}>
+            <div className="marge-comment-header">
                 <img
                     src={comment.avatar}
                     alt=""
-                    className="opaska-avatar"
+                    className="marge-avatar"
                     loading="lazy"
                 />
-                <div className="opaska-comment-meta">
-                    <span className="opaska-author">
+                <div className="marge-comment-meta">
+                    <span className="marge-author">
                         {comment.website ? (
                             <a
                                 href={comment.website}
@@ -76,46 +76,46 @@ export default function Comment({
                             comment.author || 'Anonymous'
                         )}
                         {comment.is_admin && (
-                            <span className="opaska-badge opaska-badge-admin">
+                            <span className="marge-badge marge-badge-admin">
                                 Admin
                             </span>
                         )}
                         {comment.email_verified && (
                             <span
-                                className="opaska-badge opaska-badge-verified"
+                                className="marge-badge marge-badge-verified"
                                 title="Verified email"
                             >
                                 ✓
                             </span>
                         )}
                     </span>
-                    <span className="opaska-date">
+                    <span className="marge-date">
                         {formatDate(comment.created_at)}
                     </span>
                 </div>
             </div>
 
             <div
-                className="opaska-comment-body"
+                className="marge-comment-body"
                 // biome-ignore lint/security/noDangerouslySetInnerHtml: HTML is sanitized server-side
                 dangerouslySetInnerHTML={{ __html: comment.body_html }}
             />
 
-            <div className="opaska-comment-actions">
+            <div className="marge-comment-actions">
                 <button
                     type="button"
-                    className={`opaska-action ${hasVoted ? 'opaska-action-voted' : ''}`}
+                    className={`marge-action ${hasVoted ? 'marge-action-voted' : ''}`}
                     onClick={handleUpvote}
                     disabled={hasVoted}
                 >
-                    <span className="opaska-upvote-icon">▲</span>
+                    <span className="marge-upvote-icon">▲</span>
                     <span>{upvotes}</span>
                 </button>
 
                 {depth < config.max_depth && (
                     <button
                         type="button"
-                        className="opaska-action"
+                        className="marge-action"
                         onClick={() => setShowReplyForm(!showReplyForm)}
                     >
                         {showReplyForm ? 'Cancel' : 'Reply'}
@@ -124,7 +124,7 @@ export default function Comment({
             </div>
 
             {showReplyForm && (
-                <div className="opaska-reply-form">
+                <div className="marge-reply-form">
                     <CommentForm
                         api={api}
                         config={config}
@@ -137,7 +137,7 @@ export default function Comment({
             )}
 
             {comment.replies.length > 0 && (
-                <div className="opaska-replies">
+                <div className="marge-replies">
                     {comment.replies.map((reply) => (
                         <Comment
                             key={reply.id}

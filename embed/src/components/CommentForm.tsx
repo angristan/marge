@@ -66,13 +66,13 @@ export default function CommentForm({
     };
 
     return (
-        <form className="opaska-form" onSubmit={handleSubmit}>
-            {error && <div className="opaska-error">{error}</div>}
+        <form className="marge-form" onSubmit={handleSubmit}>
+            {error && <div className="marge-error">{error}</div>}
 
-            <div className="opaska-form-row">
+            <div className="marge-form-row">
                 <input
                     type="text"
-                    className="opaska-input"
+                    className="marge-input"
                     placeholder={
                         config.require_author ? 'Name *' : 'Name (optional)'
                     }
@@ -84,7 +84,7 @@ export default function CommentForm({
                 />
                 <input
                     type="email"
-                    className="opaska-input"
+                    className="marge-input"
                     placeholder={
                         config.require_email ? 'Email *' : 'Email (optional)'
                     }
@@ -98,7 +98,7 @@ export default function CommentForm({
 
             <input
                 type="text"
-                className="opaska-input"
+                className="marge-input"
                 placeholder="Website (optional)"
                 value={website}
                 onInput={(e) =>
@@ -107,7 +107,7 @@ export default function CommentForm({
             />
 
             <textarea
-                className="opaska-textarea"
+                className="marge-textarea"
                 placeholder="Write your comment... (Markdown supported)"
                 value={body}
                 onInput={(e) =>
@@ -126,8 +126,8 @@ export default function CommentForm({
                 autoComplete="off"
             />
 
-            <div className="opaska-form-footer">
-                <label className="opaska-checkbox">
+            <div className="marge-form-footer">
+                <label className="marge-checkbox">
                     <input
                         type="checkbox"
                         checked={notifyReplies}
@@ -140,11 +140,11 @@ export default function CommentForm({
                     <span>Notify me of replies</span>
                 </label>
 
-                <div className="opaska-form-actions">
+                <div className="marge-form-actions">
                     {onCancel && (
                         <button
                             type="button"
-                            className="opaska-btn opaska-btn-secondary"
+                            className="marge-btn marge-btn-secondary"
                             onClick={onCancel}
                         >
                             Cancel
@@ -152,7 +152,7 @@ export default function CommentForm({
                     )}
                     <button
                         type="submit"
-                        className="opaska-btn opaska-btn-primary"
+                        className="marge-btn marge-btn-primary"
                         disabled={submitting || !body.trim()}
                     >
                         {submitting
