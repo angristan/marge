@@ -25,14 +25,25 @@ class DeleteComment
 
     /**
      * Admin delete (no token required).
+     * Always soft deletes for auditability.
      */
     public function asAdmin(Comment $comment): bool
     {
-        return $this->performDelete($comment);
+        $comment->update([
+            'status' => Comment::STATUS_DELETED,
+            'body_markdown' => '',
+            'body_html' => '',
+            'author' => null,
+            'email' => null,
+            'website' => null,
+        ]);
+        $comment->delete(); // Soft delete
+
+        return true;
     }
 
     /**
-     * Perform the actual deletion.
+     * Perform the actual deletion (for user self-delete).
      */
     private function performDelete(Comment $comment): bool
     {
