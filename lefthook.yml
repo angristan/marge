@@ -3,19 +3,19 @@ pre-commit:
   commands:
     pint:
       glob: "*.php"
-      run: composer pint -- --test
+      run: composer run pint -- --test
     phpstan:
       glob: "*.php"
-      run: composer phpstan
+      run: composer run phpstan
     tests:
       glob: "*.php"
-      run: php artisan test --parallel
+      run: composer run test
     biome:
       glob: "*.{js,ts,tsx}"
-      run: npx biome check
+      run: npm run lint
     biome-embed:
       glob: "embed/**/*.{js,ts,tsx}"
-      run: cd embed && npm run check
+      run: npm run check --prefix embed
     typecheck:
       glob: "*.{ts,tsx}"
       run: npm run typecheck
