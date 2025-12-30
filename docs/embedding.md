@@ -177,7 +177,7 @@ When logged in as admin, you'll see a "Posting as Admin" indicator above the com
 
 ### CORS
 
-Marge allows cross-origin requests from any domain by default. You can restrict this in Admin > Settings by configuring allowed origins.
+Marge restricts cross-origin requests to the configured site URL by default. You can change this in Admin > Settings by configuring allowed origins (use `*` to allow all domains).
 
 ### Content Security Policy
 

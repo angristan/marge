@@ -84,7 +84,7 @@ class UpdateSettings
             'blocked_ips' => Setting::getValue('blocked_ips', ''),
 
             // CORS
-            'allowed_origins' => Setting::getValue('allowed_origins', '*'),
+            'allowed_origins' => Setting::getValue('allowed_origins', Setting::getValue('site_url', '')),
 
             // Appearance
             'custom_css' => Setting::getValue('custom_css', ''),
