@@ -52,7 +52,6 @@ class SettingsController extends Controller
             // Spam
             'rate_limit_per_minute' => ['nullable', 'integer', 'min:1', 'max:100'],
             'spam_min_time_seconds' => ['nullable', 'integer', 'min:0', 'max:60'],
-            'max_links' => ['nullable', 'integer', 'min:0', 'max:50'],
             'blocked_words' => ['nullable', 'string', 'max:10000'],
             'blocked_ips' => ['nullable', 'string', 'max:10000'],
 

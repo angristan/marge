@@ -43,7 +43,6 @@ interface SettingsIndexProps {
         edit_window_minutes: number;
         rate_limit_per_minute: number;
         spam_min_time_seconds: number;
-        max_links: number;
         blocked_words: string;
         blocked_ips: string;
         allowed_origins: string;
@@ -75,7 +74,6 @@ export default function SettingsIndex({ settings }: SettingsIndexProps) {
         edit_window_minutes: settings.edit_window_minutes,
         rate_limit_per_minute: settings.rate_limit_per_minute,
         spam_min_time_seconds: settings.spam_min_time_seconds,
-        max_links: settings.max_links,
         blocked_words: settings.blocked_words,
         blocked_ips: settings.blocked_ips,
         allowed_origins: settings.allowed_origins,
@@ -306,15 +304,6 @@ export default function SettingsIndex({ settings }: SettingsIndexProps) {
                                     }
                                     min={0}
                                     max={60}
-                                />
-                                <NumberInput
-                                    label="Maximum links per comment"
-                                    value={data.max_links}
-                                    onChange={(value) =>
-                                        setData('max_links', Number(value))
-                                    }
-                                    min={0}
-                                    max={50}
                                 />
                                 <Textarea
                                     label="Blocked words"

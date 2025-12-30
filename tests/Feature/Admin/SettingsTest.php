@@ -54,13 +54,11 @@ describe('Admin Settings', function (): void {
     it('updates spam settings', function (): void {
         $response = $this->post('/admin/settings', [
             'rate_limit_per_minute' => 10,
-            'max_links' => 5,
             'blocked_words' => "spam\nviagra",
         ]);
 
         $response->assertRedirect();
         expect(Setting::getValue('rate_limit_per_minute'))->toBe('10');
-        expect(Setting::getValue('max_links'))->toBe('5');
         expect(Setting::getValue('blocked_words'))->toBe("spam\nviagra");
     });
 

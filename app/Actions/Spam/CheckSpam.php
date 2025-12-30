@@ -44,11 +44,6 @@ class CheckSpam
             return $error;
         }
 
-        // Check for too many links
-        if ($error = $this->checkLinkCount($data['body'])) {
-            return $error;
-        }
-
         return null;
     }
 
@@ -129,24 +124,6 @@ class CheckSpam
             if (str_contains($bodyLower, strtolower($word))) {
                 return 'Your comment contains blocked content.';
             }
-        }
-
-        return null;
-    }
-
-    /**
-     * Check link count in body.
-     */
-    private function checkLinkCount(string $body): ?string
-    {
-        $maxLinks = (int) Setting::getValue('max_links', '3');
-
-        // Count URLs in body
-        $pattern = '/https?:\/\/[^\s]+/i';
-        preg_match_all($pattern, $body, $matches);
-
-        if (count($matches[0]) > $maxLinks) {
-            return 'Too many links in comment.';
         }
 
         return null;

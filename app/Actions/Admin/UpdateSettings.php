@@ -30,7 +30,6 @@ class UpdateSettings
             'edit_window_minutes',
             'rate_limit_per_minute',
             'spam_min_time_seconds',
-            'max_links',
             'blocked_words',
             'blocked_ips',
             'allowed_origins',
@@ -83,7 +82,6 @@ class UpdateSettings
             // Spam
             'rate_limit_per_minute' => (int) Setting::getValue('rate_limit_per_minute', '5'),
             'spam_min_time_seconds' => (int) Setting::getValue('spam_min_time_seconds', '3'),
-            'max_links' => (int) Setting::getValue('max_links', '3'),
             'blocked_words' => Setting::getValue('blocked_words', ''),
             'blocked_ips' => Setting::getValue('blocked_ips', ''),
 

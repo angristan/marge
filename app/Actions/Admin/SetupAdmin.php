@@ -36,7 +36,6 @@ class SetupAdmin
         Setting::setValue('edit_window_minutes', '15');
         Setting::setValue('rate_limit_per_minute', '5');
         Setting::setValue('spam_min_time_seconds', '3');
-        Setting::setValue('max_links', '3');
         Setting::setValue('setup_complete', 'true');
     }
 
