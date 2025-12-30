@@ -112,17 +112,20 @@ export default function Comment({
                     </span>
                     <span className="marge-date">
                         {formatDate(comment.created_at)}
+                        {comment.parent_author &&
+                            visualDepth >= config.max_depth && (
+                                <>
+                                    {' · '}
+                                    <button
+                                        type="button"
+                                        className="marge-reply-to"
+                                        onClick={scrollToParent}
+                                    >
+                                        ↩ {comment.parent_author}
+                                    </button>
+                                </>
+                            )}
                     </span>
-                    {comment.parent_author &&
-                        visualDepth >= config.max_depth && (
-                            <button
-                                type="button"
-                                className="marge-reply-to"
-                                onClick={scrollToParent}
-                            >
-                                ↩ {comment.parent_author}
-                            </button>
-                        )}
                 </div>
             </div>
 
@@ -149,13 +152,24 @@ export default function Comment({
                     </svg>
                     <span>{upvotes}</span>
                 </button>
-
                 <button
                     type="button"
                     className="marge-action"
                     onClick={() => setShowReplyForm(!showReplyForm)}
                 >
-                    {showReplyForm ? 'Cancel' : 'Reply'}
+                    <svg
+                        className="marge-reply-icon"
+                        viewBox="0 0 24 24"
+                        fill="currentColor"
+                        aria-hidden="true"
+                    >
+                        {showReplyForm ? (
+                            <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
+                        ) : (
+                            <path d="M10 9V5l-7 7 7 7v-4.1c5 0 8.5 1.6 11 5.1-1-5-4-10-11-11z" />
+                        )}
+                    </svg>
+                    <span>{showReplyForm ? 'Cancel' : 'Reply'}</span>
                 </button>
             </div>
 
