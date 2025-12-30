@@ -1,7 +1,6 @@
 import AdminLayout from '@/Layouts/AdminLayout';
 import {
     Box,
-    Code,
     Container,
     Group,
     Paper,
@@ -145,11 +144,6 @@ export default function Preview({ appUrl, threads }: PreviewProps) {
                                 placeholder="Select a thread"
                                 searchable
                                 clearable
-                                description={
-                                    <Code fz="xs">
-                                        {selectedThread || '/preview-page'}
-                                    </Code>
-                                }
                                 style={{ flex: 1, minWidth: 250 }}
                             />
                         </Group>
