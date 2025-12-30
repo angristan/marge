@@ -249,8 +249,7 @@ export default function CommentsIndex({
                                         truncate
                                         maw={150}
                                     >
-                                        {comment.thread_title ||
-                                            comment.thread_uri}
+                                        {comment.thread_uri}
                                     </Text>
                                 </Table.Td>
                                 <Table.Td>
