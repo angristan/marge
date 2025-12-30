@@ -37,6 +37,7 @@ Route::middleware([RedirectIfSetupRequired::class, AdminAuthenticated::class])->
     // Settings
     Route::get('/settings', [SettingsController::class, 'index'])->name('admin.settings.index');
     Route::post('/settings', [SettingsController::class, 'update'])->name('admin.settings.update');
+    Route::delete('/settings/wipe', [SettingsController::class, 'wipe'])->name('admin.settings.wipe');
 
     // Import/Export
     Route::get('/import', [ImportController::class, 'index'])->name('admin.import.index');

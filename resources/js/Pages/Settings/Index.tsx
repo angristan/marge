@@ -1,9 +1,10 @@
 import AdminLayout from '@/Layouts/AdminLayout';
-import { useForm } from '@inertiajs/react';
+import { router, useForm } from '@inertiajs/react';
 import {
     Alert,
     Button,
     Group,
+    Modal,
     NumberInput,
     Paper,
     PasswordInput,
@@ -16,15 +17,18 @@ import {
     Textarea,
     Title,
 } from '@mantine/core';
+import { useDisclosure } from '@mantine/hooks';
 import { notifications } from '@mantine/notifications';
 import {
+    IconAlertTriangle,
     IconCheck,
     IconMail,
     IconPalette,
     IconSettings,
     IconShield,
+    IconTrash,
 } from '@tabler/icons-react';
-import type { FormEvent } from 'react';
+import { type FormEvent, useState } from 'react';
 
 interface SettingsIndexProps {
     settings: {
@@ -52,6 +56,11 @@ interface SettingsIndexProps {
 }
 
 export default function SettingsIndex({ settings }: SettingsIndexProps) {
+    const [wipeModalOpened, { open: openWipeModal, close: closeWipeModal }] =
+        useDisclosure(false);
+    const [wipeConfirmation, setWipeConfirmation] = useState('');
+    const [isWiping, setIsWiping] = useState(false);
+
     const { data, setData, post, processing, recentlySuccessful } = useForm({
         site_name: settings.site_name,
         site_url: settings.site_url || '',
@@ -85,6 +94,26 @@ export default function SettingsIndex({ settings }: SettingsIndexProps) {
                     color: 'green',
                     icon: <IconCheck size={16} />,
                 });
+            },
+        });
+    };
+
+    const handleWipe = () => {
+        setIsWiping(true);
+        router.delete('/admin/settings/wipe', {
+            onSuccess: () => {
+                closeWipeModal();
+                setWipeConfirmation('');
+                notifications.show({
+                    title: 'Data wiped',
+                    message:
+                        'All comments, threads, and import mappings have been deleted.',
+                    color: 'green',
+                    icon: <IconCheck size={16} />,
+                });
+            },
+            onFinish: () => {
+                setIsWiping(false);
             },
         });
     };
@@ -377,6 +406,74 @@ export default function SettingsIndex({ settings }: SettingsIndexProps) {
                     </Button>
                 </Group>
             </form>
+
+            <Title order={3} mt="xl" mb="md" c="red">
+                Danger Zone
+            </Title>
+            <Paper
+                withBorder
+                p="md"
+                radius="md"
+                style={{ borderColor: 'var(--mantine-color-red-6)' }}
+            >
+                <Group justify="space-between" align="center">
+                    <div>
+                        <Text fw={500}>Wipe all data</Text>
+                        <Text size="sm" c="dimmed">
+                            Delete all comments, threads, and import mappings.
+                            Settings will be preserved.
+                        </Text>
+                    </div>
+                    <Button
+                        color="red"
+                        variant="outline"
+                        leftSection={<IconTrash size={16} />}
+                        onClick={openWipeModal}
+                    >
+                        Wipe All Data
+                    </Button>
+                </Group>
+            </Paper>
+
+            <Modal
+                opened={wipeModalOpened}
+                onClose={closeWipeModal}
+                title={
+                    <Group gap="xs">
+                        <IconAlertTriangle
+                            size={20}
+                            color="var(--mantine-color-red-6)"
+                        />
+                        <Text fw={600}>Confirm Data Wipe</Text>
+                    </Group>
+                }
+            >
+                <Stack>
+                    <Alert color="red" icon={<IconAlertTriangle size={16} />}>
+                        This action cannot be undone. All comments, threads, and
+                        import mappings will be permanently deleted.
+                    </Alert>
+                    <TextInput
+                        label='Type "DELETE" to confirm'
+                        value={wipeConfirmation}
+                        onChange={(e) => setWipeConfirmation(e.target.value)}
+                        placeholder="DELETE"
+                    />
+                    <Group justify="flex-end">
+                        <Button variant="default" onClick={closeWipeModal}>
+                            Cancel
+                        </Button>
+                        <Button
+                            color="red"
+                            onClick={handleWipe}
+                            loading={isWiping}
+                            disabled={wipeConfirmation !== 'DELETE'}
+                        >
+                            Wipe All Data
+                        </Button>
+                    </Group>
+                </Stack>
+            </Modal>
         </AdminLayout>
     );
 }

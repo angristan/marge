@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Admin;
 
 use App\Actions\Admin\UpdateSettings;
+use App\Actions\Admin\WipeAllData;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -77,5 +78,18 @@ class SettingsController extends Controller
         UpdateSettings::run($validated);
 
         return back()->with('success', 'Settings updated.');
+    }
+
+    /**
+     * Wipe all data (comments, threads, import mappings).
+     */
+    public function wipe(): RedirectResponse
+    {
+        $counts = WipeAllData::run();
+
+        return back()->with(
+            'success',
+            "Deleted {$counts['comments']} comments, {$counts['threads']} threads, and {$counts['mappings']} import mappings."
+        );
     }
 }
