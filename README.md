@@ -12,6 +12,7 @@ A self-hosted comment system for static sites and blogs. Modern replacement for 
 - **Email verification** - Verified badge for confirmed emails
 - **Upvoting** - Anonymous upvotes with duplicate prevention
 - **Moderation** - Approve, spam, delete from admin panel or email
+- **Admin comments** - Post as admin from your site when logged in
 - **Spam protection** - Honeypot, rate limiting, blocked words (no 3rd party)
 - **Import from isso** - Migrate your existing comments
 - **Atom feeds** - Subscribe to comment threads

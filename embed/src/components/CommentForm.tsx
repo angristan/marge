@@ -69,42 +69,50 @@ export default function CommentForm({
         <form className="marge-form" onSubmit={handleSubmit}>
             {error && <div className="marge-error">{error}</div>}
 
-            <div className="marge-form-row">
-                <input
-                    type="text"
-                    className="marge-input"
-                    placeholder={
-                        config.require_author ? 'Name *' : 'Name (optional)'
-                    }
-                    value={author}
-                    onInput={(e) =>
-                        setAuthor((e.target as HTMLInputElement).value)
-                    }
-                    required={config.require_author}
-                />
-                <input
-                    type="email"
-                    className="marge-input"
-                    placeholder={
-                        config.require_email ? 'Email *' : 'Email (optional)'
-                    }
-                    value={email}
-                    onInput={(e) =>
-                        setEmail((e.target as HTMLInputElement).value)
-                    }
-                    required={config.require_email}
-                />
-            </div>
+            {!config.is_admin && (
+                <>
+                    <div className="marge-form-row">
+                        <input
+                            type="text"
+                            className="marge-input"
+                            placeholder={
+                                config.require_author
+                                    ? 'Name *'
+                                    : 'Name (optional)'
+                            }
+                            value={author}
+                            onInput={(e) =>
+                                setAuthor((e.target as HTMLInputElement).value)
+                            }
+                            required={config.require_author}
+                        />
+                        <input
+                            type="email"
+                            className="marge-input"
+                            placeholder={
+                                config.require_email
+                                    ? 'Email *'
+                                    : 'Email (optional)'
+                            }
+                            value={email}
+                            onInput={(e) =>
+                                setEmail((e.target as HTMLInputElement).value)
+                            }
+                            required={config.require_email}
+                        />
+                    </div>
 
-            <input
-                type="text"
-                className="marge-input"
-                placeholder="Website (optional)"
-                value={website}
-                onInput={(e) =>
-                    setWebsite((e.target as HTMLInputElement).value)
-                }
-            />
+                    <input
+                        type="text"
+                        className="marge-input"
+                        placeholder="Website (optional)"
+                        value={website}
+                        onInput={(e) =>
+                            setWebsite((e.target as HTMLInputElement).value)
+                        }
+                    />
+                </>
+            )}
 
             <textarea
                 className="marge-textarea"
@@ -157,9 +165,11 @@ export default function CommentForm({
                     >
                         {submitting
                             ? 'Posting...'
-                            : parentId
-                              ? 'Reply'
-                              : 'Post Comment'}
+                            : config.is_admin
+                              ? 'Post as Admin'
+                              : parentId
+                                ? 'Reply'
+                                : 'Post Comment'}
                     </button>
                 </div>
             </div>

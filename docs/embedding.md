@@ -160,6 +160,19 @@ Add a link to your HTML `<head>`:
 >
 ```
 
+## Posting as Admin
+
+When you're logged into the Marge admin panel, you can post comments as admin directly from your website. Admin comments display with an "Admin" badge.
+
+**Requirements:**
+- Your website and Marge must be on the same domain (or subdomain)
+- You must be logged into the admin panel in the same browser
+- CORS must be configured with `supports_credentials: true` (enabled by default)
+
+When logged in as admin, you'll see a "Posting as Admin" indicator above the comment form. Admin comments are automatically approved regardless of moderation settings.
+
+**Note:** If your site and Marge are on different domains, cookies won't be shared by default due to browser security restrictions.
+
 ## Security Considerations
 
 ### CORS

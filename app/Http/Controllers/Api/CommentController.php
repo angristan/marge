@@ -57,6 +57,9 @@ class CommentController extends Controller
             return response()->json(['error' => $spamError], 422);
         }
 
+        // Check if user is authenticated as admin via session
+        $isAdmin = (bool) $request->session()->get('admin_authenticated', false);
+
         $comment = CreateComment::run(
             [
                 'uri' => urldecode($uri),
@@ -68,6 +71,7 @@ class CommentController extends Controller
                 'notify_replies' => $validated['notify_replies'] ?? false,
                 'title' => $validated['title'] ?? null,
                 'url' => $validated['url'] ?? null,
+                'is_admin' => $isAdmin,
             ],
             $request->ip(),
             $request->userAgent()

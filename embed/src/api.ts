@@ -30,6 +30,7 @@ export interface Config {
     max_depth: number;
     edit_window_minutes: number;
     timestamp: string;
+    is_admin: boolean;
 }
 
 export interface CreateCommentResponse {
@@ -55,7 +56,9 @@ class Api {
     }
 
     async getConfig(): Promise<Config> {
-        const response = await fetch(`${this.baseUrl}/api/config`);
+        const response = await fetch(`${this.baseUrl}/api/config`, {
+            credentials: 'include',
+        });
         if (!response.ok) throw new Error('Failed to load config');
         return response.json();
     }
@@ -91,6 +94,7 @@ class Api {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(data),
+                credentials: 'include',
             },
         );
         if (!response.ok) {
