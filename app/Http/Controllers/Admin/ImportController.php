@@ -11,6 +11,7 @@ use App\Actions\Import\ImportFromJson;
 use App\Actions\Import\ImportFromWordPress;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
@@ -23,7 +24,7 @@ class ImportController extends Controller
         return Inertia::render('Import/Index');
     }
 
-    public function importIsso(Request $request): JsonResponse
+    public function importIsso(Request $request): RedirectResponse
     {
         $request->validate([
             'file' => ['required', 'file', 'max:102400'], // 100MB max
@@ -35,23 +36,15 @@ class ImportController extends Controller
         try {
             $result = ImportFromIsso::run(Storage::disk('local')->path($path));
 
-            return response()->json([
-                'success' => true,
-                'message' => "Imported {$result['threads']} threads and {$result['comments']} comments",
-                'threads' => $result['threads'],
-                'comments' => $result['comments'],
-            ]);
+            return back()->with('success', "Imported {$result['threads']} threads and {$result['comments']} comments");
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Import failed: '.$e->getMessage(),
-            ], 422);
+            return back()->withErrors(['file' => 'Import failed: '.$e->getMessage()]);
         } finally {
             Storage::disk('local')->delete($path);
         }
     }
 
-    public function importJson(Request $request): JsonResponse
+    public function importJson(Request $request): RedirectResponse
     {
         $request->validate([
             'file' => ['required', 'file', 'max:102400', 'mimes:json'],
@@ -63,23 +56,15 @@ class ImportController extends Controller
         try {
             $result = ImportFromJson::run(Storage::disk('local')->path($path));
 
-            return response()->json([
-                'success' => true,
-                'message' => "Imported {$result['threads']} threads and {$result['comments']} comments",
-                'threads' => $result['threads'],
-                'comments' => $result['comments'],
-            ]);
+            return back()->with('success', "Imported {$result['threads']} threads and {$result['comments']} comments");
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Import failed: '.$e->getMessage(),
-            ], 422);
+            return back()->withErrors(['file' => 'Import failed: '.$e->getMessage()]);
         } finally {
             Storage::disk('local')->delete($path);
         }
     }
 
-    public function importWordPress(Request $request): JsonResponse
+    public function importWordPress(Request $request): RedirectResponse
     {
         $request->validate([
             'file' => ['required', 'file', 'max:102400'], // 100MB max
@@ -91,23 +76,15 @@ class ImportController extends Controller
         try {
             $result = ImportFromWordPress::run(Storage::disk('local')->path($path));
 
-            return response()->json([
-                'success' => true,
-                'message' => "Imported {$result['threads']} threads and {$result['comments']} comments",
-                'threads' => $result['threads'],
-                'comments' => $result['comments'],
-            ]);
+            return back()->with('success', "Imported {$result['threads']} threads and {$result['comments']} comments");
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Import failed: '.$e->getMessage(),
-            ], 422);
+            return back()->withErrors(['file' => 'Import failed: '.$e->getMessage()]);
         } finally {
             Storage::disk('local')->delete($path);
         }
     }
 
-    public function importDisqus(Request $request): JsonResponse
+    public function importDisqus(Request $request): RedirectResponse
     {
         $request->validate([
             'file' => ['required', 'file', 'max:102400'], // 100MB max
@@ -119,17 +96,9 @@ class ImportController extends Controller
         try {
             $result = ImportFromDisqus::run(Storage::disk('local')->path($path));
 
-            return response()->json([
-                'success' => true,
-                'message' => "Imported {$result['threads']} threads and {$result['comments']} comments",
-                'threads' => $result['threads'],
-                'comments' => $result['comments'],
-            ]);
+            return back()->with('success', "Imported {$result['threads']} threads and {$result['comments']} comments");
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Import failed: '.$e->getMessage(),
-            ], 422);
+            return back()->withErrors(['file' => 'Import failed: '.$e->getMessage()]);
         } finally {
             Storage::disk('local')->delete($path);
         }

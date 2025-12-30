@@ -5,6 +5,7 @@ import {
     Card,
     Container,
     Group,
+    Progress,
     Stack,
     Tabs,
     Text,
@@ -12,6 +13,7 @@ import {
 } from '@mantine/core';
 import { Dropzone } from '@mantine/dropzone';
 import { notifications } from '@mantine/notifications';
+import { router, useForm, usePage } from '@inertiajs/react';
 import {
     IconBrandWordpress,
     IconCheck,
@@ -22,60 +24,62 @@ import {
     IconUpload,
     IconX,
 } from '@tabler/icons-react';
-import { useState } from 'react';
+import { useEffect } from 'react';
 
 type ImportType = 'isso' | 'json' | 'wordpress' | 'disqus';
 
-export default function ImportIndex() {
-    const [loading, setLoading] = useState<ImportType | null>(null);
+type PageProps = {
+    flash: {
+        success?: string;
+        error?: string;
+    };
+};
 
-    const handleImport = async (files: File[], type: ImportType) => {
+export default function ImportIndex() {
+    const { flash } = usePage<PageProps>().props;
+
+    const issoForm = useForm<{ file: File | null }>({ file: null });
+    const jsonForm = useForm<{ file: File | null }>({ file: null });
+    const wordpressForm = useForm<{ file: File | null }>({ file: null });
+    const disqusForm = useForm<{ file: File | null }>({ file: null });
+
+    const forms = {
+        isso: issoForm,
+        json: jsonForm,
+        wordpress: wordpressForm,
+        disqus: disqusForm,
+    };
+
+    useEffect(() => {
+        if (flash.success) {
+            notifications.show({
+                title: 'Import successful',
+                message: flash.success,
+                color: 'green',
+                icon: <IconCheck size={16} />,
+            });
+        }
+    }, [flash.success]);
+
+    const handleImport = (files: File[], type: ImportType) => {
         const file = files[0];
         if (!file) return;
 
-        setLoading(type);
-        const formData = new FormData();
-        formData.append('file', file);
+        const form = forms[type];
+        form.setData('file', file);
 
-        try {
-            const response = await fetch(`/admin/import/${type}`, {
-                method: 'POST',
-                body: formData,
-                headers: {
-                    'X-CSRF-TOKEN':
-                        document
-                            .querySelector('meta[name="csrf-token"]')
-                            ?.getAttribute('content') || '',
-                },
-            });
-
-            const data = await response.json();
-
-            if (data.success) {
-                notifications.show({
-                    title: 'Import successful',
-                    message: data.message,
-                    color: 'green',
-                    icon: <IconCheck size={16} />,
-                });
-            } else {
+        router.post(`/admin/import/${type}`, { file }, {
+            forceFormData: true,
+            onError: (errors) => {
+                const message = errors.file || 'An error occurred during import';
                 notifications.show({
                     title: 'Import failed',
-                    message: data.message,
+                    message,
                     color: 'red',
                     icon: <IconX size={16} />,
                 });
-            }
-        } catch {
-            notifications.show({
-                title: 'Import failed',
-                message: 'An error occurred during import',
-                color: 'red',
-                icon: <IconX size={16} />,
-            });
-        } finally {
-            setLoading(null);
-        }
+            },
+        });
     };
 
     const handleExport = async () => {
@@ -117,7 +121,7 @@ export default function ImportIndex() {
             title: 'Import from Isso',
             description: 'Upload your isso SQLite database file (comments.db)',
             icon: IconDatabase,
-            accept: undefined, // SQLite files have inconsistent MIME types across browsers
+            accept: undefined,
             dropText: 'Drag isso database here or click to select',
             dropHint: 'File should be comments.db (max 100MB)',
         },
@@ -186,72 +190,82 @@ export default function ImportIndex() {
                             </Tabs.Tab>
                         </Tabs.List>
 
-                        {importSources.map((source) => (
-                            <Tabs.Panel key={source.type} value={source.type}>
-                                <Card withBorder mt="md">
-                                    <Stack gap="md">
-                                        <div>
-                                            <Text fw={500}>{source.title}</Text>
-                                            <Text size="sm" c="dimmed">
-                                                {source.description}
-                                            </Text>
-                                        </div>
+                        {importSources.map((source) => {
+                            const form = forms[source.type];
+                            return (
+                                <Tabs.Panel key={source.type} value={source.type}>
+                                    <Card withBorder mt="md">
+                                        <Stack gap="md">
+                                            <div>
+                                                <Text fw={500}>{source.title}</Text>
+                                                <Text size="sm" c="dimmed">
+                                                    {source.description}
+                                                </Text>
+                                            </div>
 
-                                        <Dropzone
-                                            onDrop={(files) =>
-                                                handleImport(files, source.type)
-                                            }
-                                            loading={loading === source.type}
-                                            accept={source.accept}
-                                            maxSize={100 * 1024 * 1024}
-                                            maxFiles={1}
-                                        >
-                                            <Group
-                                                justify="center"
-                                                gap="xl"
-                                                mih={120}
-                                                style={{
-                                                    pointerEvents: 'none',
-                                                }}
+                                            <Dropzone
+                                                onDrop={(files) =>
+                                                    handleImport(files, source.type)
+                                                }
+                                                loading={form.processing}
+                                                accept={source.accept}
+                                                maxSize={100 * 1024 * 1024}
+                                                maxFiles={1}
                                             >
-                                                <Dropzone.Accept>
-                                                    <IconUpload
-                                                        size={40}
-                                                        stroke={1.5}
-                                                    />
-                                                </Dropzone.Accept>
-                                                <Dropzone.Reject>
-                                                    <IconX
-                                                        size={40}
-                                                        stroke={1.5}
-                                                    />
-                                                </Dropzone.Reject>
-                                                <Dropzone.Idle>
-                                                    <source.icon
-                                                        size={40}
-                                                        stroke={1.5}
-                                                    />
-                                                </Dropzone.Idle>
+                                                <Group
+                                                    justify="center"
+                                                    gap="xl"
+                                                    mih={120}
+                                                    style={{
+                                                        pointerEvents: 'none',
+                                                    }}
+                                                >
+                                                    <Dropzone.Accept>
+                                                        <IconUpload
+                                                            size={40}
+                                                            stroke={1.5}
+                                                        />
+                                                    </Dropzone.Accept>
+                                                    <Dropzone.Reject>
+                                                        <IconX
+                                                            size={40}
+                                                            stroke={1.5}
+                                                        />
+                                                    </Dropzone.Reject>
+                                                    <Dropzone.Idle>
+                                                        <source.icon
+                                                            size={40}
+                                                            stroke={1.5}
+                                                        />
+                                                    </Dropzone.Idle>
 
-                                                <div>
-                                                    <Text size="lg" inline>
-                                                        {source.dropText}
-                                                    </Text>
-                                                    <Text
-                                                        size="sm"
-                                                        c="dimmed"
-                                                        inline
-                                                        mt={7}
-                                                    >
-                                                        {source.dropHint}
-                                                    </Text>
-                                                </div>
-                                            </Group>
-                                        </Dropzone>
-                                    </Stack>
-                                </Card>
-                            </Tabs.Panel>
-                        ))}
+                                                    <div>
+                                                        <Text size="lg" inline>
+                                                            {source.dropText}
+                                                        </Text>
+                                                        <Text
+                                                            size="sm"
+                                                            c="dimmed"
+                                                            inline
+                                                            mt={7}
+                                                        >
+                                                            {source.dropHint}
+                                                        </Text>
+                                                    </div>
+                                                </Group>
+                                            </Dropzone>
+
+                                            {form.progress && (
+                                                <Progress
+                                                    value={form.progress.percentage}
+                                                    animated
+                                                />
+                                            )}
+                                        </Stack>
+                                    </Card>
+                                </Tabs.Panel>
+                            );
+                        })}
 
                         <Tabs.Panel value="export">
                             <Card withBorder mt="md">
