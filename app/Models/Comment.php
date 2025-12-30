@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Casts\BinaryBlob;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -77,42 +78,10 @@ class Comment extends Model
             'is_admin' => 'boolean',
             'email_verified' => 'boolean',
             'upvotes' => 'integer',
+            'voters_bloom' => BinaryBlob::class,
             'notify_replies' => 'boolean',
             'edit_token_expires_at' => 'datetime',
         ];
-    }
-
-    /**
-     * Get the voters_bloom attribute.
-     * Handles PostgreSQL bytea streams and hex-encoded format correctly.
-     */
-    public function getVotersBloomAttribute(mixed $value): ?string
-    {
-        if ($value === null) {
-            return null;
-        }
-
-        // PostgreSQL returns bytea columns as stream resources
-        if (is_resource($value)) {
-            // Rewind stream to ensure we read from the beginning
-            // (in case something else moved the position)
-            rewind($value);
-            $value = stream_get_contents($value);
-
-            if ($value === false || $value === '') {
-                return null;
-            }
-        }
-
-        // Handle PostgreSQL hex-encoded bytea format (e.g., \x00ff...)
-        if (is_string($value) && str_starts_with($value, '\\x')) {
-            $decoded = hex2bin(substr($value, 2));
-
-            // hex2bin returns false on invalid input
-            return $decoded === false ? null : $decoded;
-        }
-
-        return $value;
     }
 
     /**
