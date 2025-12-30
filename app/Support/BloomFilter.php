@@ -38,11 +38,22 @@ class BloomFilter
     }
 
     /**
-     * Create from a binary string.
+     * Create from a binary string or stream resource (PostgreSQL returns bytea as stream).
+     *
+     * @param  string|resource|null  $binary
      */
-    public static function fromBinary(?string $binary): self
+    public static function fromBinary(mixed $binary): self
     {
-        if ($binary === null || $binary === '') {
+        if ($binary === null) {
+            return new self;
+        }
+
+        // PostgreSQL returns bytea columns as stream resources
+        if (is_resource($binary)) {
+            $binary = stream_get_contents($binary);
+        }
+
+        if ($binary === '' || $binary === false) {
             return new self;
         }
 

@@ -18,10 +18,12 @@ class PostgresSearchDriver implements SearchDriver
         // Sanitize the search term for tsquery
         $sanitized = $this->sanitizeForTsQuery($term);
 
-        return $query->whereRaw(
-            "to_tsvector('english', coalesce(body_markdown, '') || ' ' || coalesce(author, '')) @@ plainto_tsquery('english', ?)",
-            [$sanitized]
-        );
+        return $query->where(function (Builder $q) use ($sanitized) {
+            $q->whereRaw(
+                "to_tsvector('english', coalesce(body_markdown, '') || ' ' || coalesce(author, '')) @@ plainto_tsquery('english', ?)",
+                [$sanitized]
+            )->orWhere('email', 'ILIKE', '%'.$sanitized.'%');
+        });
     }
 
     protected function sanitizeForTsQuery(string $term): string

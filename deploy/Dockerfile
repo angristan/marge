@@ -1,5 +1,9 @@
 # Build stage for frontend assets
-FROM node:20-alpine AS frontend
+ARG PHP_VERSION=8.5
+ARG FRANKENPHP_VERSION=1.11
+ARG NODE_VERSION=24
+
+FROM node:${NODE_VERSION}-alpine AS frontend
 
 WORKDIR /app
 
@@ -19,7 +23,7 @@ RUN npm run build
 RUN cd embed && npm run build
 
 # Production image with FrankenPHP
-FROM dunglas/frankenphp:latest-php8.5-alpine
+FROM dunglas/frankenphp:${FRANKENPHP_VERSION}-php${PHP_VERSION} AS base
 
 # Install PHP extensions
 RUN install-php-extensions \
