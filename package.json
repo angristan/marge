@@ -5,7 +5,8 @@
     "scripts": {
         "build": "vite build",
         "dev": "vite",
-        "typecheck": "tsc --noEmit"
+        "typecheck": "tsc --noEmit",
+        "prepare": "lefthook install"
     },
     "dependencies": {
         "@inertiajs/react": "^2.0.0",
@@ -31,6 +32,7 @@
         "axios": "^1.11.0",
         "concurrently": "^9.0.1",
         "laravel-vite-plugin": "^2.0.0",
+        "lefthook": "^2.0.13",
         "postcss": "^8.5.0",
         "postcss-preset-mantine": "^1.17.0",
         "postcss-simple-vars": "^7.0.0",
