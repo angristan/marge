@@ -59,9 +59,10 @@ class GetThreadComments
     /**
      * Format a single comment.
      *
+     * @param  Comment|null  $rootParent  The parent comment for nested replies (to show "replying to")
      * @return array<string, mixed>
      */
-    private function formatComment(Comment $comment, bool $includeHidden): array
+    private function formatComment(Comment $comment, bool $includeHidden, ?Comment $rootParent = null): array
     {
         $replies = $comment->replies;
 
@@ -72,6 +73,8 @@ class GetThreadComments
         return [
             'id' => $comment->id,
             'parent_id' => $comment->parent_id,
+            'parent_author' => $rootParent?->author,
+            'depth' => $comment->depth,
             'author' => $comment->author,
             'email_verified' => $comment->email_verified,
             'is_admin' => $comment->is_admin,
@@ -83,7 +86,7 @@ class GetThreadComments
             'replies' => $replies
                 ->sortBy('created_at')
                 ->values()
-                ->map(fn (Comment $reply) => $this->formatComment($reply, $includeHidden))
+                ->map(fn (Comment $reply) => $this->formatComment($reply, $includeHidden, $comment))
                 ->toArray(),
         ];
     }

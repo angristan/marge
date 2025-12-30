@@ -53,8 +53,29 @@ export default function Comment({
         });
     };
 
+    // Cap visual indentation at max_depth, but allow unlimited replies
+    const visualDepth = Math.min(depth, config.max_depth);
+
+    const scrollToParent = () => {
+        if (!comment.parent_id) return;
+        const parentEl = document.querySelector(
+            `[data-comment-id="${comment.parent_id}"]`,
+        );
+        if (parentEl) {
+            parentEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            parentEl.classList.add('marge-comment-highlight');
+            setTimeout(() => {
+                parentEl.classList.remove('marge-comment-highlight');
+            }, 2000);
+        }
+    };
+
     return (
-        <div className="marge-comment" data-depth={depth}>
+        <div
+            className="marge-comment"
+            data-depth={visualDepth}
+            data-comment-id={comment.id}
+        >
             <div className="marge-comment-header">
                 <img
                     src={comment.avatar}
@@ -92,6 +113,16 @@ export default function Comment({
                     <span className="marge-date">
                         {formatDate(comment.created_at)}
                     </span>
+                    {comment.parent_author &&
+                        visualDepth >= config.max_depth && (
+                            <button
+                                type="button"
+                                className="marge-reply-to"
+                                onClick={scrollToParent}
+                            >
+                                ↩ {comment.parent_author}
+                            </button>
+                        )}
                 </div>
             </div>
 
@@ -112,15 +143,13 @@ export default function Comment({
                     <span>{upvotes}</span>
                 </button>
 
-                {depth < config.max_depth && (
-                    <button
-                        type="button"
-                        className="marge-action"
-                        onClick={() => setShowReplyForm(!showReplyForm)}
-                    >
-                        {showReplyForm ? 'Cancel' : 'Reply'}
-                    </button>
-                )}
+                <button
+                    type="button"
+                    className="marge-action"
+                    onClick={() => setShowReplyForm(!showReplyForm)}
+                >
+                    {showReplyForm ? 'Cancel' : 'Reply'}
+                </button>
             </div>
 
             {showReplyForm && (

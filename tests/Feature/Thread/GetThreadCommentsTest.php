@@ -100,6 +100,58 @@ describe('GET /api/threads/{uri}/comments', function (): void {
             ->assertJsonCount(1, 'comments.0.replies');
     });
 
+    it('returns parent_author for nested comments', function (): void {
+        $thread = Thread::create(['uri' => '/test']);
+        $parent = Comment::create([
+            'thread_id' => $thread->id,
+            'author' => 'John Doe',
+            'body_markdown' => 'Parent',
+            'body_html' => '<p>Parent</p>',
+            'status' => 'approved',
+            'depth' => 0,
+        ]);
+        Comment::create([
+            'thread_id' => $thread->id,
+            'parent_id' => $parent->id,
+            'author' => 'Jane Doe',
+            'body_markdown' => 'Reply',
+            'body_html' => '<p>Reply</p>',
+            'status' => 'approved',
+            'depth' => 1,
+        ]);
+
+        $response = $this->getJson('/api/threads/test/comments');
+
+        $response->assertOk()
+            ->assertJsonPath('comments.0.parent_author', null)
+            ->assertJsonPath('comments.0.replies.0.parent_author', 'John Doe');
+    });
+
+    it('returns depth for comments', function (): void {
+        $thread = Thread::create(['uri' => '/test']);
+        $parent = Comment::create([
+            'thread_id' => $thread->id,
+            'body_markdown' => 'Parent',
+            'body_html' => '<p>Parent</p>',
+            'status' => 'approved',
+            'depth' => 0,
+        ]);
+        Comment::create([
+            'thread_id' => $thread->id,
+            'parent_id' => $parent->id,
+            'body_markdown' => 'Reply',
+            'body_html' => '<p>Reply</p>',
+            'status' => 'approved',
+            'depth' => 1,
+        ]);
+
+        $response = $this->getJson('/api/threads/test/comments');
+
+        $response->assertOk()
+            ->assertJsonPath('comments.0.depth', 0)
+            ->assertJsonPath('comments.0.replies.0.depth', 1);
+    });
+
     it('returns comment metadata', function (): void {
         $thread = Thread::create(['uri' => '/test']);
         Comment::create([

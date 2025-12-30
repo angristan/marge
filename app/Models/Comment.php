@@ -14,6 +14,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property int $id
  * @property int $thread_id
  * @property int|null $parent_id
+ * @property int $depth
  * @property string|null $author
  * @property string|null $email
  * @property string|null $website
@@ -51,6 +52,7 @@ class Comment extends Model
     protected $fillable = [
         'thread_id',
         'parent_id',
+        'depth',
         'author',
         'email',
         'website',
@@ -77,6 +79,7 @@ class Comment extends Model
             'is_admin' => 'boolean',
             'email_verified' => 'boolean',
             'upvotes' => 'integer',
+            'depth' => 'integer',
             'notify_replies' => 'boolean',
             'edit_token_expires_at' => 'datetime',
         ];

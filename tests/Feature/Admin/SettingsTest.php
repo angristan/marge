@@ -87,7 +87,7 @@ describe('Admin Settings', function (): void {
 
     it('validates numeric fields', function (): void {
         $response = $this->post('/admin/settings', [
-            'max_depth' => 0, // Min is 1
+            'max_depth' => 4, // Max is 3
         ]);
 
         $response->assertSessionHasErrors(['max_depth']);

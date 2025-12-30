@@ -237,13 +237,13 @@ export default function SettingsIndex({ settings }: SettingsIndexProps) {
                                 />
                                 <NumberInput
                                     label="Max reply depth"
-                                    description="Maximum nesting level for replies"
+                                    description="Maximum nesting level for replies (0 = no replies allowed)"
                                     value={data.max_depth}
                                     onChange={(value) =>
                                         setData('max_depth', Number(value))
                                     }
-                                    min={1}
-                                    max={10}
+                                    min={0}
+                                    max={3}
                                 />
                                 <NumberInput
                                     label="Edit window (minutes)"

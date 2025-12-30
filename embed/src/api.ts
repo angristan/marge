@@ -1,6 +1,8 @@
 export interface Comment {
     id: number;
     parent_id: number | null;
+    parent_author: string | null;
+    depth: number;
     author: string | null;
     email_verified: boolean;
     is_admin: boolean;

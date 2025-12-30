@@ -45,6 +45,19 @@ class CreateComment
             $data['url'] ?? null
         );
 
+        // Calculate depth from parent
+        $parentId = $data['parent_id'] ?? null;
+        $depth = 0;
+
+        if ($parentId !== null) {
+            $parentComment = Comment::find($parentId);
+            if ($parentComment === null) {
+                throw new \InvalidArgumentException('Parent comment not found');
+            }
+
+            $depth = $parentComment->depth + 1;
+        }
+
         // Check if email is pre-verified
         $emailVerified = false;
         if (isset($data['email'])) {
@@ -57,7 +70,8 @@ class CreateComment
         // Create the comment
         $comment = Comment::create([
             'thread_id' => $thread->id,
-            'parent_id' => $data['parent_id'] ?? null,
+            'parent_id' => $parentId,
+            'depth' => $depth,
             'author' => $data['author'] ?? null,
             'email' => $data['email'] ?? null,
             'website' => $this->sanitizeWebsite($data['website'] ?? null),

@@ -42,7 +42,7 @@ class SettingsController extends Controller
             'require_email' => ['nullable', 'boolean'],
 
             // Limits
-            'max_depth' => ['nullable', 'integer', 'min:1', 'max:10'],
+            'max_depth' => ['nullable', 'integer', 'min:0', 'max:3'],
             'edit_window_minutes' => ['nullable', 'integer', 'min:0', 'max:1440'],
 
             // Spam

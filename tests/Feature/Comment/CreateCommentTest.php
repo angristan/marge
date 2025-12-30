@@ -121,6 +121,69 @@ describe('POST /api/threads/{uri}/comments', function (): void {
         ]);
     });
 
+    it('sets correct depth for nested comments', function (): void {
+        $thread = Thread::create(['uri' => '/test']);
+
+        $parent = Comment::create([
+            'thread_id' => $thread->id,
+            'body_markdown' => 'Parent',
+            'body_html' => '<p>Parent</p>',
+            'status' => 'approved',
+            'depth' => 0,
+        ]);
+
+        $response = $this->postJson('/api/threads/test/comments', [
+            'body' => 'Level 1 reply',
+            'parent_id' => $parent->id,
+        ]);
+
+        $response->assertStatus(201);
+
+        $reply = Comment::where('body_markdown', 'Level 1 reply')->first();
+        expect($reply->depth)->toBe(1);
+    });
+
+    it('allows replies at any depth', function (): void {
+        $thread = Thread::create(['uri' => '/test']);
+
+        $level0 = Comment::create([
+            'thread_id' => $thread->id,
+            'body_markdown' => 'Level 0',
+            'body_html' => '<p>Level 0</p>',
+            'status' => 'approved',
+            'depth' => 0,
+        ]);
+
+        $level1 = Comment::create([
+            'thread_id' => $thread->id,
+            'parent_id' => $level0->id,
+            'body_markdown' => 'Level 1',
+            'body_html' => '<p>Level 1</p>',
+            'status' => 'approved',
+            'depth' => 1,
+        ]);
+
+        $level2 = Comment::create([
+            'thread_id' => $thread->id,
+            'parent_id' => $level1->id,
+            'body_markdown' => 'Level 2',
+            'body_html' => '<p>Level 2</p>',
+            'status' => 'approved',
+            'depth' => 2,
+        ]);
+
+        // Should succeed - no depth limit enforced
+        $response = $this->postJson('/api/threads/test/comments', [
+            'body' => 'Level 3 reply',
+            'parent_id' => $level2->id,
+        ]);
+
+        $response->assertStatus(201);
+
+        $reply = Comment::where('body_markdown', 'Level 3 reply')->first();
+        expect($reply->depth)->toBe(3);
+    });
+
     it('validates body is required', function (): void {
         $response = $this->postJson('/api/threads/test/comments', []);
 

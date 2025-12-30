@@ -225,6 +225,35 @@
     color: var(--marge-muted);
 }
 
+.marge-reply-to {
+    font-size: 12px;
+    color: var(--marge-muted);
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    font-family: inherit;
+    transition: color 0.15s ease;
+}
+
+.marge-reply-to:hover {
+    color: var(--marge-primary);
+}
+
+/* Highlight animation when scrolling to a comment */
+.marge-comment-highlight {
+    animation: marge-highlight 2s ease-out;
+}
+
+@keyframes marge-highlight {
+    0% {
+        background-color: rgba(59, 130, 246, 0.2);
+    }
+    100% {
+        background-color: transparent;
+    }
+}
+
 .marge-badge {
     font-size: 10px;
     padding: 2px 6px;

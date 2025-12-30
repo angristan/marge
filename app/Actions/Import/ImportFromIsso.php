@@ -130,10 +130,15 @@ class ImportFromIsso
             return;
         }
 
-        // Map parent ID
+        // Map parent ID and calculate depth
         $parentId = null;
+        $depth = 0;
         if ($issoComment['parent'] !== null && $issoComment['parent'] !== 0) {
             $parentId = $this->commentMappings[$issoComment['parent']] ?? null;
+            if ($parentId !== null) {
+                $parentComment = Comment::find($parentId);
+                $depth = $parentComment ? $parentComment->depth + 1 : 0;
+            }
         }
 
         // Determine status from isso mode:
@@ -151,6 +156,7 @@ class ImportFromIsso
         $comment = Comment::create([
             'thread_id' => $threadId,
             'parent_id' => $parentId,
+            'depth' => $depth,
             'author' => $issoComment['author'],
             'email' => $issoComment['email'],
             'website' => $issoComment['website'],

@@ -60,22 +60,26 @@ class CommentController extends Controller
         // Check if user is authenticated as admin via session
         $isAdmin = (bool) $request->session()->get('admin_authenticated', false);
 
-        $comment = CreateComment::run(
-            [
-                'uri' => urldecode($uri),
-                'parent_id' => $validated['parent_id'] ?? null,
-                'author' => $validated['author'] ?? null,
-                'email' => $validated['email'] ?? null,
-                'website' => $validated['website'] ?? null,
-                'body' => $validated['body'],
-                'notify_replies' => $validated['notify_replies'] ?? false,
-                'title' => $validated['title'] ?? null,
-                'url' => $validated['url'] ?? null,
-                'is_admin' => $isAdmin,
-            ],
-            $request->ip(),
-            $request->userAgent()
-        );
+        try {
+            $comment = CreateComment::run(
+                [
+                    'uri' => urldecode($uri),
+                    'parent_id' => $validated['parent_id'] ?? null,
+                    'author' => $validated['author'] ?? null,
+                    'email' => $validated['email'] ?? null,
+                    'website' => $validated['website'] ?? null,
+                    'body' => $validated['body'],
+                    'notify_replies' => $validated['notify_replies'] ?? false,
+                    'title' => $validated['title'] ?? null,
+                    'url' => $validated['url'] ?? null,
+                    'is_admin' => $isAdmin,
+                ],
+                $request->ip(),
+                $request->userAgent()
+            );
+        } catch (\InvalidArgumentException $e) {
+            return response()->json(['error' => $e->getMessage()], 422);
+        }
 
         return response()->json([
             'id' => $comment->id,
