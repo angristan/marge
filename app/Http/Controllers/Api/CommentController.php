@@ -86,7 +86,9 @@ class CommentController extends Controller
             'author' => $comment->display_author,
             'email_verified' => $comment->email_verified,
             'is_admin' => $comment->is_admin,
-            'avatar' => Gravatar::url($comment->display_email),
+            'avatar' => $comment->display_email
+                ? Gravatar::url($comment->display_email)
+                : Gravatar::urlForIp($comment->remote_addr, (string) $comment->thread_id),
             'website' => $comment->website,
             'body_html' => $comment->body_html,
             'status' => $comment->status,
@@ -107,7 +109,9 @@ class CommentController extends Controller
             'author' => $comment->display_author,
             'email_verified' => $comment->email_verified,
             'is_admin' => $comment->is_admin,
-            'avatar' => Gravatar::url($comment->display_email),
+            'avatar' => $comment->display_email
+                ? Gravatar::url($comment->display_email)
+                : Gravatar::urlForIp($comment->remote_addr, (string) $comment->thread_id),
             'website' => $comment->website,
             'body_html' => $comment->body_html,
             'body_markdown' => $comment->body_markdown,

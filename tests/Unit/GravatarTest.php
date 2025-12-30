@@ -66,4 +66,34 @@ describe('Gravatar', function (): void {
 
         expect($hash1)->not->toBe($hash2);
     });
+
+    it('generates consistent URL for IP', function (): void {
+        $url1 = Gravatar::urlForIp('192.168.1.1', 'thread-1');
+        $url2 = Gravatar::urlForIp('192.168.1.1', 'thread-1');
+
+        expect($url1)->toBe($url2);
+        expect($url1)->toContain('https://www.gravatar.com/avatar/');
+        expect($url1)->toContain('d=identicon');
+        expect($url1)->toContain('f=y');
+    });
+
+    it('generates different URLs for different IPs', function (): void {
+        $url1 = Gravatar::urlForIp('192.168.1.1', 'thread-1');
+        $url2 = Gravatar::urlForIp('192.168.1.2', 'thread-1');
+
+        expect($url1)->not->toBe($url2);
+    });
+
+    it('generates different URLs for different salts', function (): void {
+        $url1 = Gravatar::urlForIp('192.168.1.1', 'thread-1');
+        $url2 = Gravatar::urlForIp('192.168.1.1', 'thread-2');
+
+        expect($url1)->not->toBe($url2);
+    });
+
+    it('respects size parameter for IP URL', function (): void {
+        $url = Gravatar::urlForIp('192.168.1.1', 'salt', 40);
+
+        expect($url)->toContain('s=40');
+    });
 });

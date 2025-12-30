@@ -54,7 +54,9 @@ class CommentsController extends Controller
                 'author' => $comment->display_author,
                 'email' => $comment->email,
                 'website' => $comment->website,
-                'avatar' => Gravatar::url($comment->display_email),
+                'avatar' => $comment->display_email
+                    ? Gravatar::url($comment->display_email)
+                    : Gravatar::urlForIp($comment->remote_addr, (string) $comment->thread_id),
                 'body_markdown' => $comment->body_markdown,
                 'body_html' => $comment->body_html,
                 'status' => $comment->status,

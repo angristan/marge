@@ -51,4 +51,19 @@ class Gravatar
 
         return md5($ip.$salt);
     }
+
+    /**
+     * Generate a Gravatar URL for an IP address (for anonymous users).
+     * Uses the IP hash to generate a consistent identicon.
+     */
+    public static function urlForIp(?string $ip, string $salt = '', int $size = 80): string
+    {
+        $hash = self::hashForIp($ip, $salt);
+
+        return sprintf(
+            'https://www.gravatar.com/avatar/%s?s=%d&d=identicon&r=g&f=y',
+            $hash,
+            $size
+        );
+    }
 }
