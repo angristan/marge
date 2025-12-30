@@ -94,12 +94,22 @@ class Comment extends Model
 
         // PostgreSQL returns bytea columns as stream resources
         if (is_resource($value)) {
+            // Rewind stream to ensure we read from the beginning
+            // (in case something else moved the position)
+            rewind($value);
             $value = stream_get_contents($value);
+
+            if ($value === false || $value === '') {
+                return null;
+            }
         }
 
         // Handle PostgreSQL hex-encoded bytea format (e.g., \x00ff...)
         if (is_string($value) && str_starts_with($value, '\\x')) {
-            return hex2bin(substr($value, 2));
+            $decoded = hex2bin(substr($value, 2));
+
+            // hex2bin returns false on invalid input
+            return $decoded === false ? null : $decoded;
         }
 
         return $value;

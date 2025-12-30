@@ -79,4 +79,39 @@ describe('BloomFilter', function (): void {
         // Should be under 5% false positive rate
         expect($falsePositives)->toBeLessThan(50);
     });
+
+    it('handles PostgreSQL hex-encoded format', function (): void {
+        // Create a filter and add a voter
+        $filter = new BloomFilter;
+        $filter->add('voter1');
+        $binary = $filter->toBinary();
+
+        // Simulate PostgreSQL hex-encoded bytea format (\x followed by hex)
+        $hexEncoded = '\\x'.bin2hex($binary);
+
+        // fromBinary should handle hex-encoded format
+        $restored = BloomFilter::fromBinary($hexEncoded);
+
+        expect($restored->mightContain('voter1'))->toBeTrue();
+        expect($restored->mightContain('voter2'))->toBeFalse();
+    });
+
+    it('handles stream resource input', function (): void {
+        // Create a filter and add a voter
+        $filter = new BloomFilter;
+        $filter->add('voter1');
+        $binary = $filter->toBinary();
+
+        // Create an in-memory stream
+        $stream = fopen('php://memory', 'r+');
+        fwrite($stream, $binary);
+        rewind($stream);
+
+        // fromBinary should handle stream resources
+        $restored = BloomFilter::fromBinary($stream);
+        fclose($stream);
+
+        expect($restored->mightContain('voter1'))->toBeTrue();
+        expect($restored->mightContain('voter2'))->toBeFalse();
+    });
 });

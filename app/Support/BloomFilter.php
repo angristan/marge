@@ -50,11 +50,22 @@ class BloomFilter
 
         // PostgreSQL returns bytea columns as stream resources
         if (is_resource($binary)) {
+            rewind($binary);
             $binary = stream_get_contents($binary);
         }
 
         if ($binary === '' || $binary === false) {
             return new self;
+        }
+
+        // Handle PostgreSQL hex-encoded bytea format (e.g., \x00ff...)
+        // This is a fallback in case the value wasn't decoded by an accessor
+        if (is_string($binary) && str_starts_with($binary, '\\x')) {
+            $decoded = hex2bin(substr($binary, 2));
+            if ($decoded === false || $decoded === '') {
+                return new self;
+            }
+            $binary = $decoded;
         }
 
         return new self($binary, strlen($binary));
