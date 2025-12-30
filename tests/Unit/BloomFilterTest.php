@@ -21,27 +21,45 @@ describe('BloomFilter', function (): void {
         expect($filter->mightContain('another'))->toBeFalse();
     });
 
-    it('can be serialized and restored', function (): void {
+    it('can be serialized to hex and restored', function (): void {
         $filter = new BloomFilter;
         $filter->add('voter1');
         $filter->add('voter2');
 
-        $binary = $filter->toBinary();
-        $restored = BloomFilter::fromBinary($binary);
+        $hex = $filter->toHex();
+        $restored = BloomFilter::fromHex($hex);
 
         expect($restored->mightContain('voter1'))->toBeTrue();
         expect($restored->mightContain('voter2'))->toBeTrue();
         expect($restored->mightContain('voter3'))->toBeFalse();
     });
 
-    it('handles null binary input', function (): void {
-        $filter = BloomFilter::fromBinary(null);
+    it('produces valid hex string', function (): void {
+        $filter = new BloomFilter;
+        $filter->add('test');
+
+        $hex = $filter->toHex();
+
+        // Should be 256 chars (128 bytes * 2)
+        expect(strlen($hex))->toBe(256);
+        // Should be valid hex
+        expect(ctype_xdigit($hex))->toBeTrue();
+    });
+
+    it('handles null hex input', function (): void {
+        $filter = BloomFilter::fromHex(null);
 
         expect($filter->mightContain('test'))->toBeFalse();
     });
 
-    it('handles empty binary input', function (): void {
-        $filter = BloomFilter::fromBinary('');
+    it('handles empty hex input', function (): void {
+        $filter = BloomFilter::fromHex('');
+
+        expect($filter->mightContain('test'))->toBeFalse();
+    });
+
+    it('handles invalid hex input', function (): void {
+        $filter = BloomFilter::fromHex('not-valid-hex!');
 
         expect($filter->mightContain('test'))->toBeFalse();
     });
@@ -78,40 +96,5 @@ describe('BloomFilter', function (): void {
 
         // Should be under 5% false positive rate
         expect($falsePositives)->toBeLessThan(50);
-    });
-
-    it('handles PostgreSQL hex-encoded format', function (): void {
-        // Create a filter and add a voter
-        $filter = new BloomFilter;
-        $filter->add('voter1');
-        $binary = $filter->toBinary();
-
-        // Simulate PostgreSQL hex-encoded bytea format (\x followed by hex)
-        $hexEncoded = '\\x'.bin2hex($binary);
-
-        // fromBinary should handle hex-encoded format
-        $restored = BloomFilter::fromBinary($hexEncoded);
-
-        expect($restored->mightContain('voter1'))->toBeTrue();
-        expect($restored->mightContain('voter2'))->toBeFalse();
-    });
-
-    it('handles stream resource input', function (): void {
-        // Create a filter and add a voter
-        $filter = new BloomFilter;
-        $filter->add('voter1');
-        $binary = $filter->toBinary();
-
-        // Create an in-memory stream
-        $stream = fopen('php://memory', 'r+');
-        fwrite($stream, $binary);
-        rewind($stream);
-
-        // fromBinary should handle stream resources
-        $restored = BloomFilter::fromBinary($stream);
-        fclose($stream);
-
-        expect($restored->mightContain('voter1'))->toBeTrue();
-        expect($restored->mightContain('voter2'))->toBeFalse();
     });
 });

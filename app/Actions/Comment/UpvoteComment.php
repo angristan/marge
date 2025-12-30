@@ -6,6 +6,7 @@ namespace App\Actions\Comment;
 
 use App\Models\Comment;
 use App\Support\BloomFilter;
+use Illuminate\Support\Facades\DB;
 use Lorisleiva\Actions\Concerns\AsAction;
 
 class UpvoteComment
@@ -15,28 +16,34 @@ class UpvoteComment
     /**
      * Upvote a comment.
      * Returns the new upvote count, or null if already voted.
+     *
+     * Uses row locking to prevent race conditions when multiple
+     * users vote simultaneously.
      */
     public function handle(Comment $comment, ?string $ip = null, ?string $userAgent = null): ?int
     {
-        // Create voter identifier
         $voterId = BloomFilter::createVoterId($ip, $userAgent);
 
-        // Load existing bloom filter
-        $filter = BloomFilter::fromBinary($comment->voters_bloom);
+        return DB::transaction(function () use ($comment, $voterId): ?int {
+            // Lock the row to prevent concurrent modifications
+            /** @var Comment $comment */
+            $comment = Comment::lockForUpdate()->find($comment->id);
 
-        // Check if already voted
-        if ($filter->mightContain($voterId)) {
-            return null;
-        }
+            // Load existing bloom filter
+            $filter = BloomFilter::fromHex($comment->voters_bloom);
 
-        // Add to bloom filter
-        $filter->add($voterId);
+            // Check if already voted
+            if ($filter->mightContain($voterId)) {
+                return null;
+            }
 
-        // Update comment - set attributes and save in one operation
-        $comment->upvotes = $comment->upvotes + 1;
-        $comment->voters_bloom = $filter->toBinary();
-        $comment->save();
+            // Add to bloom filter and save
+            $filter->add($voterId);
+            $comment->upvotes = $comment->upvotes + 1;
+            $comment->voters_bloom = $filter->toHex();
+            $comment->save();
 
-        return $comment->upvotes;
+            return $comment->upvotes;
+        });
     }
 }

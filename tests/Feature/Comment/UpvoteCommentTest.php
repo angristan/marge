@@ -86,7 +86,7 @@ describe('POST /api/comments/{id}/upvote', function (): void {
         ]);
     });
 
-    it('stores votes in bloom filter', function (): void {
+    it('stores votes in bloom filter as hex', function (): void {
         $thread = Thread::create(['uri' => '/test']);
         $comment = Comment::create([
             'thread_id' => $thread->id,
@@ -101,5 +101,8 @@ describe('POST /api/comments/{id}/upvote', function (): void {
 
         $comment->refresh();
         expect($comment->voters_bloom)->not->toBeNull();
+        // Should be 256 char hex string (128 bytes)
+        expect(strlen($comment->voters_bloom))->toBe(256);
+        expect(ctype_xdigit($comment->voters_bloom))->toBeTrue();
     });
 });

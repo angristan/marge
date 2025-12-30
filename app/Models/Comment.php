@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use App\Casts\BinaryBlob;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -78,7 +77,6 @@ class Comment extends Model
             'is_admin' => 'boolean',
             'email_verified' => 'boolean',
             'upvotes' => 'integer',
-            'voters_bloom' => BinaryBlob::class,
             'notify_replies' => 'boolean',
             'edit_token_expires_at' => 'datetime',
         ];

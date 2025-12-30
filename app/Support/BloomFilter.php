@@ -6,8 +6,9 @@ namespace App\Support;
 
 /**
  * Simple Bloom filter for tracking upvotes.
- * Uses a compact binary representation to prevent duplicate votes
- * while maintaining voter privacy.
+ *
+ * Uses hex-encoded string storage for database compatibility.
+ * Prevents duplicate votes while maintaining voter privacy.
  */
 class BloomFilter
 {
@@ -29,46 +30,38 @@ class BloomFilter
     public function __construct(?string $filter = null, int $size = self::DEFAULT_SIZE)
     {
         $this->size = $size;
-
-        if ($filter !== null) {
-            $this->filter = $filter;
-        } else {
-            $this->filter = str_repeat("\0", $size);
-        }
+        $this->filter = $filter ?? str_repeat("\0", $size);
     }
 
     /**
-     * Create from a binary string or stream resource.
-     *
-     * @param  string|resource|null  $binary
+     * Create from a hex-encoded string (as stored in database).
      */
-    public static function fromBinary(mixed $binary): self
+    public static function fromHex(?string $hex): self
     {
-        if ($binary === null) {
+        if ($hex === null || $hex === '') {
             return new self;
         }
 
-        // PostgreSQL returns bytea columns as stream resources
-        if (is_resource($binary)) {
-            rewind($binary);
-            $binary = stream_get_contents($binary);
-        }
-
-        if ($binary === '' || $binary === false) {
+        // Validate hex string before decoding
+        if (! ctype_xdigit($hex)) {
             return new self;
         }
 
-        // Handle PostgreSQL hex-encoded bytea format (e.g., \x00ff...)
-        // This is a fallback in case the value wasn't decoded by an accessor
-        if (is_string($binary) && str_starts_with($binary, '\\x')) {
-            $decoded = hex2bin(substr($binary, 2));
-            if ($decoded === false || $decoded === '') {
-                return new self;
-            }
-            $binary = $decoded;
+        $binary = hex2bin($hex);
+
+        if ($binary === false) {
+            return new self;
         }
 
         return new self($binary, strlen($binary));
+    }
+
+    /**
+     * Get hex-encoded string for database storage.
+     */
+    public function toHex(): string
+    {
+        return bin2hex($this->filter);
     }
 
     /**
@@ -100,14 +93,6 @@ class BloomFilter
         }
 
         return true;
-    }
-
-    /**
-     * Get the binary representation of the filter.
-     */
-    public function toBinary(): string
-    {
-        return $this->filter;
     }
 
     /**
