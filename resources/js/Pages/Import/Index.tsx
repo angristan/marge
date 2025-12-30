@@ -117,7 +117,7 @@ export default function ImportIndex() {
             title: 'Import from Isso',
             description: 'Upload your isso SQLite database file (comments.db)',
             icon: IconDatabase,
-            accept: ['application/x-sqlite3', 'application/octet-stream'],
+            accept: undefined, // SQLite files have inconsistent MIME types across browsers
             dropText: 'Drag isso database here or click to select',
             dropHint: 'File should be comments.db (max 100MB)',
         },
