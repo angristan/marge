@@ -50,13 +50,18 @@ export interface CreateCommentResponse {
 
 class Api {
     private baseUrl: string;
+    private guest: boolean;
 
-    constructor(baseUrl: string) {
+    constructor(baseUrl: string, guest: boolean = false) {
         this.baseUrl = baseUrl.replace(/\/$/, '');
+        this.guest = guest;
     }
 
     async getConfig(): Promise<Config> {
-        const response = await fetch(`${this.baseUrl}/api/config`, {
+        const url = this.guest
+            ? `${this.baseUrl}/api/config?guest=1`
+            : `${this.baseUrl}/api/config`;
+        const response = await fetch(url, {
             credentials: 'include',
         });
         if (!response.ok) throw new Error('Failed to load config');

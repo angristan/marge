@@ -49,8 +49,21 @@ Route::middleware([RedirectIfSetupRequired::class, AdminAuthenticated::class])->
 
     // Preview
     Route::get('/preview', function () {
+        $threads = \App\Models\Thread::withCount('comments')
+            ->whereHas('comments')
+            ->orderByDesc('updated_at')
+            ->limit(50)
+            ->get()
+            ->map(fn ($t) => [
+                // Normalize URI to match API behavior (remove trailing slashes)
+                'uri' => '/'.trim($t->uri, '/'),
+                'title' => $t->title,
+                'comments_count' => $t->comments_count,
+            ]);
+
         return Inertia::render('Preview', [
             'appUrl' => config('app.url'),
+            'threads' => $threads,
         ]);
     })->name('admin.preview');
 });

@@ -39,7 +39,7 @@ class GetThreadComments
                 'title' => $thread->title,
             ],
             'comments' => $this->formatComments($comments, $includeHidden),
-            'total' => $thread->approvedCommentsCount(),
+            'total' => $includeHidden ? $thread->comments()->count() : $thread->approvedCommentsCount(),
         ];
     }
 

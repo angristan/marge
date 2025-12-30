@@ -5,6 +5,7 @@ import {
     Container,
     Paper,
     SegmentedControl,
+    Select,
     Stack,
     Text,
     Title,
@@ -17,20 +18,38 @@ declare global {
     }
 }
 
-interface PreviewProps {
-    appUrl: string;
+interface Thread {
+    uri: string;
+    title: string | null;
+    comments_count: number;
 }
 
-export default function Preview({ appUrl }: PreviewProps) {
+interface PreviewProps {
+    appUrl: string;
+    threads: Thread[];
+}
+
+export default function Preview({ appUrl, threads }: PreviewProps) {
     const [theme, setTheme] = useState('auto');
+    const [viewMode, setViewMode] = useState('admin');
+    const [selectedThread, setSelectedThread] = useState<string | null>(null);
     const containerRef = useRef<HTMLDivElement>(null);
+
+    const threadOptions = [
+        { value: '', label: 'New thread (preview-page)' },
+        ...threads.map((t) => ({
+            value: t.uri,
+            label: `${t.title || t.uri} (${t.comments_count} comments)`,
+        })),
+    ];
 
     useEffect(() => {
         if (!containerRef.current) return;
 
         // Clear previous widget
         const container = containerRef.current;
-        container.innerHTML = '<div id="marge-thread"></div>';
+        const threadUri = selectedThread || '/preview-page';
+        container.innerHTML = `<div id="marge-thread" data-uri="${threadUri}"></div>`;
 
         // Remove any existing script
         const existingScript = document.querySelector(
@@ -45,12 +64,15 @@ export default function Preview({ appUrl }: PreviewProps) {
             window.Marge = undefined;
         }
 
-        // Create and append new script
+        // Create and append new script (with cache buster to force reload)
         const script = document.createElement('script');
-        script.src = `${appUrl}/embed/embed.js`;
+        script.src = `${appUrl}/embed/embed.js?t=${Date.now()}`;
         script.setAttribute('data-marge', appUrl);
         script.setAttribute('data-marge-theme', theme);
         script.setAttribute('data-marge-preview', 'true');
+        if (viewMode === 'guest') {
+            script.setAttribute('data-marge-guest', 'true');
+        }
         script.async = true;
         container.appendChild(script);
 
@@ -63,7 +85,7 @@ export default function Preview({ appUrl }: PreviewProps) {
                 scriptToRemove.remove();
             }
         };
-    }, [appUrl, theme]);
+    }, [appUrl, theme, viewMode, selectedThread]);
 
     return (
         <AdminLayout>
@@ -92,8 +114,35 @@ export default function Preview({ appUrl }: PreviewProps) {
                                     ]}
                                 />
                             </div>
+                            <div>
+                                <Text fw={500} mb="xs">
+                                    View as
+                                </Text>
+                                <SegmentedControl
+                                    value={viewMode}
+                                    onChange={setViewMode}
+                                    data={[
+                                        { label: 'Admin', value: 'admin' },
+                                        { label: 'Guest', value: 'guest' },
+                                    ]}
+                                />
+                            </div>
+                            <div>
+                                <Text fw={500} mb="xs">
+                                    Thread
+                                </Text>
+                                <Select
+                                    value={selectedThread}
+                                    onChange={setSelectedThread}
+                                    data={threadOptions}
+                                    placeholder="Select a thread"
+                                    searchable
+                                    clearable
+                                />
+                            </div>
                             <Text size="sm" c="dimmed">
-                                Preview URL: <Code>/preview-page</Code>
+                                Preview URL:{' '}
+                                <Code>{selectedThread || '/preview-page'}</Code>
                             </Text>
                         </Stack>
                     </Paper>

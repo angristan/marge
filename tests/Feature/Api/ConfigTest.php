@@ -33,6 +33,16 @@ describe('GET /api/config', function (): void {
                 'is_admin' => true,
             ]);
     });
+
+    it('returns config with is_admin false when guest param is set even if authenticated', function (): void {
+        $response = $this->withSession(['admin_authenticated' => true])
+            ->getJson('/api/config?guest=1');
+
+        $response->assertStatus(200)
+            ->assertJson([
+                'is_admin' => false,
+            ]);
+    });
 });
 
 describe('POST /api/threads/{uri}/comments', function (): void {

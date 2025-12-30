@@ -10,6 +10,7 @@ interface AppProps {
     pageTitle?: string;
     pageUrl?: string;
     theme?: 'light' | 'dark' | 'auto';
+    guest?: boolean;
 }
 
 export default function App({
@@ -18,8 +19,9 @@ export default function App({
     pageTitle,
     pageUrl,
     theme = 'auto',
+    guest = false,
 }: AppProps) {
-    const [api] = useState(() => new Api(baseUrl));
+    const [api] = useState(() => new Api(baseUrl, guest));
     const [config, setConfig] = useState<Config | null>(null);
     const [data, setData] = useState<ThreadResponse | null>(null);
     const [loading, setLoading] = useState(true);

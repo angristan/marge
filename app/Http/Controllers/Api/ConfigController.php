@@ -25,7 +25,9 @@ class ConfigController extends Controller
             'max_depth' => (int) Setting::getValue('max_depth', '3'),
             'edit_window_minutes' => (int) Setting::getValue('edit_window_minutes', '15'),
             'timestamp' => GenerateTimestamp::run(),
-            'is_admin' => (bool) $request->session()->get('admin_authenticated', false),
+            'is_admin' => $request->query('guest') === '1'
+                ? false
+                : (bool) $request->session()->get('admin_authenticated', false),
         ]);
     }
 }

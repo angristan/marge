@@ -9,6 +9,7 @@ interface OapaskaOptions {
     pageUrl?: string;
     theme?: 'light' | 'dark' | 'auto';
     container?: HTMLElement | string;
+    guest?: boolean;
 }
 
 function init(options: OapaskaOptions) {
@@ -22,7 +23,11 @@ function init(options: OapaskaOptions) {
         return;
     }
 
-    const uri = options.uri || window.location.pathname;
+    // Check container for data-uri attribute as fallback
+    const uri =
+        options.uri ||
+        (container as HTMLElement).dataset.uri ||
+        window.location.pathname;
     const pageTitle = options.pageTitle || document.title;
     const pageUrl = options.pageUrl || window.location.href;
 
@@ -33,6 +38,7 @@ function init(options: OapaskaOptions) {
             pageTitle={pageTitle}
             pageUrl={pageUrl}
             theme={options.theme}
+            guest={options.guest}
         />,
         container,
     );
@@ -55,14 +61,16 @@ function autoInit() {
         | 'dark'
         | 'auto'
         | null;
+    const guest = script.getAttribute('data-marge-guest') === 'true';
+    const uri = script.getAttribute('data-marge-uri') || undefined;
 
     // Wait for DOM to be ready
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', () => {
-            init({ baseUrl, theme: theme || undefined });
+            init({ baseUrl, theme: theme || undefined, guest, uri });
         });
     } else {
-        init({ baseUrl, theme: theme || undefined });
+        init({ baseUrl, theme: theme || undefined, guest, uri });
     }
 }
 

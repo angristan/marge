@@ -13,11 +13,10 @@ Route::middleware('web')->get('config', ConfigController::class);
 // Comment counts (batch)
 Route::post('counts', [ThreadController::class, 'counts']);
 
-// Thread comments
-Route::prefix('threads/{uri}')->where(['uri' => '.*'])->group(function (): void {
+// Thread comments - use web middleware for admin session detection
+Route::prefix('threads/{uri}')->where(['uri' => '.*'])->middleware('web')->group(function (): void {
     Route::get('comments', [ThreadController::class, 'comments']);
-    // Use web middleware for admin session detection
-    Route::middleware('web')->post('comments', [CommentController::class, 'store']);
+    Route::post('comments', [CommentController::class, 'store']);
 });
 
 // Single comment operations
