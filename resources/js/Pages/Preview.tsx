@@ -9,6 +9,7 @@ import {
     Stack,
     Text,
     Title,
+    useComputedColorScheme,
 } from '@mantine/core';
 import { useEffect, useRef, useState } from 'react';
 
@@ -34,6 +35,11 @@ export default function Preview({ appUrl, threads }: PreviewProps) {
     const [viewMode, setViewMode] = useState('admin');
     const [selectedThread, setSelectedThread] = useState<string | null>(null);
     const containerRef = useRef<HTMLDivElement>(null);
+    const computedColorScheme = useComputedColorScheme('light');
+
+    // When theme is 'auto', use the admin panel's effective theme
+    const effectiveTheme =
+        theme === 'auto' ? computedColorScheme : (theme as 'light' | 'dark');
 
     const threadOptions = [
         { value: '', label: 'New thread (preview-page)' },
@@ -68,7 +74,7 @@ export default function Preview({ appUrl, threads }: PreviewProps) {
         const script = document.createElement('script');
         script.src = `${appUrl}/embed/embed.js?t=${Date.now()}`;
         script.setAttribute('data-marge', appUrl);
-        script.setAttribute('data-marge-theme', theme);
+        script.setAttribute('data-marge-theme', effectiveTheme);
         script.setAttribute('data-marge-preview', 'true');
         if (viewMode === 'guest') {
             script.setAttribute('data-marge-guest', 'true');
@@ -85,7 +91,7 @@ export default function Preview({ appUrl, threads }: PreviewProps) {
                 scriptToRemove.remove();
             }
         };
-    }, [appUrl, theme, viewMode, selectedThread]);
+    }, [appUrl, effectiveTheme, viewMode, selectedThread]);
 
     return (
         <AdminLayout>
@@ -153,11 +159,9 @@ export default function Preview({ appUrl, threads }: PreviewProps) {
                         withBorder
                         style={{
                             backgroundColor:
-                                theme === 'dark'
+                                effectiveTheme === 'dark'
                                     ? '#1a1b1e'
-                                    : theme === 'light'
-                                      ? '#ffffff'
-                                      : undefined,
+                                    : '#ffffff',
                         }}
                     >
                         <Box maw={720} mx="auto">
@@ -167,11 +171,9 @@ export default function Preview({ appUrl, threads }: PreviewProps) {
                                     mb="md"
                                     style={{
                                         color:
-                                            theme === 'dark'
+                                            effectiveTheme === 'dark'
                                                 ? '#c1c2c5'
-                                                : theme === 'light'
-                                                  ? '#212529'
-                                                  : undefined,
+                                                : '#212529',
                                     }}
                                 >
                                     Welcome to My Blog
@@ -180,11 +182,9 @@ export default function Preview({ appUrl, threads }: PreviewProps) {
                                     mb="xl"
                                     style={{
                                         color:
-                                            theme === 'dark'
+                                            effectiveTheme === 'dark'
                                                 ? '#909296'
-                                                : theme === 'light'
-                                                  ? '#495057'
-                                                  : undefined,
+                                                : '#495057',
                                     }}
                                 >
                                     This is a sample blog post to demonstrate
@@ -197,11 +197,9 @@ export default function Preview({ appUrl, threads }: PreviewProps) {
                                     mb="xl"
                                     style={{
                                         color:
-                                            theme === 'dark'
+                                            effectiveTheme === 'dark'
                                                 ? '#909296'
-                                                : theme === 'light'
-                                                  ? '#495057'
-                                                  : undefined,
+                                                : '#495057',
                                     }}
                                 >
                                     Try posting a comment below to see how it
@@ -216,7 +214,7 @@ export default function Preview({ appUrl, threads }: PreviewProps) {
                                 mt="xl"
                                 pt="xl"
                                 style={{
-                                    borderTop: `1px solid ${theme === 'dark' ? '#373a40' : '#dee2e6'}`,
+                                    borderTop: `1px solid ${effectiveTheme === 'dark' ? '#373a40' : '#dee2e6'}`,
                                 }}
                             >
                                 <div ref={containerRef}>
