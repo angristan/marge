@@ -10,6 +10,7 @@ export interface Comment {
     website: string | null;
     body_html: string;
     upvotes: number;
+    downvotes: number;
     created_at: string;
     replies: Comment[];
 }
@@ -33,6 +34,8 @@ export interface Config {
     edit_window_minutes: number;
     timestamp: string;
     is_admin: boolean;
+    enable_upvotes: boolean;
+    enable_downvotes: boolean;
 }
 
 export interface CreateCommentResponse {
@@ -45,6 +48,7 @@ export interface CreateCommentResponse {
     body_html: string;
     status: string;
     upvotes: number;
+    downvotes: number;
     created_at: string;
     edit_token: string;
     edit_token_expires_at: string;
@@ -121,6 +125,20 @@ class Api {
         if (!response.ok) {
             const error = await response.json();
             throw new Error(error.error || 'Failed to upvote');
+        }
+        return response.json();
+    }
+
+    async downvoteComment(commentId: number): Promise<{ downvotes: number }> {
+        const response = await fetch(
+            `${this.baseUrl}/api/comments/${commentId}/downvote`,
+            {
+                method: 'POST',
+            },
+        );
+        if (!response.ok) {
+            const error = await response.json();
+            throw new Error(error.error || 'Failed to downvote');
         }
         return response.json();
     }

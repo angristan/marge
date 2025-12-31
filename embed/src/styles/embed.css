@@ -350,7 +350,35 @@
     color: var(--marge-primary);
 }
 
+.marge-vote-group {
+    display: flex;
+}
+
+.marge-vote-group .marge-action {
+    border-radius: 0;
+    margin-left: -1px;
+    position: relative;
+}
+
+.marge-vote-group .marge-action:first-child {
+    border-radius: 4px 0 0 4px;
+    margin-left: 0;
+}
+
+.marge-vote-group .marge-action:last-child {
+    border-radius: 0 4px 4px 0;
+}
+
+.marge-vote-group .marge-action:only-child {
+    border-radius: 4px;
+}
+
+.marge-vote-group .marge-action:hover:not(:disabled) {
+    z-index: 1;
+}
+
 .marge-upvote-icon,
+.marge-downvote-icon,
 .marge-reply-icon {
     width: 12px;
     height: 12px;

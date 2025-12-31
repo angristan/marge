@@ -22,6 +22,7 @@ export default function Comment({
 }: CommentProps) {
     const [showReplyForm, setShowReplyForm] = useState(false);
     const [upvotes, setUpvotes] = useState(comment.upvotes);
+    const [downvotes, setDownvotes] = useState(comment.downvotes);
     const [hasVoted, setHasVoted] = useState(false);
 
     const handleUpvote = async () => {
@@ -30,6 +31,19 @@ export default function Comment({
         try {
             const result = await api.upvoteComment(comment.id);
             setUpvotes(result.upvotes);
+            setHasVoted(true);
+        } catch {
+            // Ignore - likely already voted
+            setHasVoted(true);
+        }
+    };
+
+    const handleDownvote = async () => {
+        if (hasVoted) return;
+
+        try {
+            const result = await api.downvoteComment(comment.id);
+            setDownvotes(result.downvotes);
             setHasVoted(true);
         } catch {
             // Ignore - likely already voted
@@ -136,22 +150,46 @@ export default function Comment({
             />
 
             <div className="marge-comment-actions">
-                <button
-                    type="button"
-                    className={`marge-action ${hasVoted ? 'marge-action-voted' : ''}`}
-                    onClick={handleUpvote}
-                    disabled={hasVoted}
-                >
-                    <svg
-                        className="marge-upvote-icon"
-                        viewBox="0 0 24 24"
-                        fill="currentColor"
-                        aria-hidden="true"
-                    >
-                        <path d="M12 4l-8 8h5v8h6v-8h5z" />
-                    </svg>
-                    <span>{upvotes}</span>
-                </button>
+                {(config.enable_upvotes || config.enable_downvotes) && (
+                    <div className="marge-vote-group">
+                        {config.enable_upvotes && (
+                            <button
+                                type="button"
+                                className={`marge-action ${hasVoted ? 'marge-action-voted' : ''}`}
+                                onClick={handleUpvote}
+                                disabled={hasVoted}
+                            >
+                                <svg
+                                    className="marge-upvote-icon"
+                                    viewBox="0 0 24 24"
+                                    fill="currentColor"
+                                    aria-hidden="true"
+                                >
+                                    <path d="M12 4l-8 8h5v8h6v-8h5z" />
+                                </svg>
+                                <span>{upvotes}</span>
+                            </button>
+                        )}
+                        {config.enable_downvotes && (
+                            <button
+                                type="button"
+                                className={`marge-action ${hasVoted ? 'marge-action-voted' : ''}`}
+                                onClick={handleDownvote}
+                                disabled={hasVoted}
+                            >
+                                <svg
+                                    className="marge-downvote-icon"
+                                    viewBox="0 0 24 24"
+                                    fill="currentColor"
+                                    aria-hidden="true"
+                                >
+                                    <path d="M12 20l8-8h-5V4H9v8H4z" />
+                                </svg>
+                                <span>{downvotes}</span>
+                            </button>
+                        )}
+                    </div>
+                )}
                 <button
                     type="button"
                     className="marge-action"

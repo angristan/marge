@@ -30,6 +30,8 @@ class ConfigController extends Controller
             'edit_window_minutes' => (int) Setting::getValue('edit_window_minutes', '15'),
             'timestamp' => GenerateTimestamp::run(),
             'is_admin' => $isAdmin,
+            'enable_upvotes' => Setting::getValue('enable_upvotes', 'true') === 'true',
+            'enable_downvotes' => Setting::getValue('enable_downvotes', 'false') === 'true',
         ];
 
         return response()->json($config);

@@ -47,6 +47,8 @@ interface SettingsIndexProps {
         blocked_ips: string;
         allowed_origins: string;
         custom_css: string;
+        enable_upvotes: boolean;
+        enable_downvotes: boolean;
         smtp_host: string | null;
         smtp_port: string;
         smtp_username: string | null;
@@ -78,6 +80,8 @@ export default function SettingsIndex({ settings }: SettingsIndexProps) {
         blocked_ips: settings.blocked_ips,
         allowed_origins: settings.allowed_origins,
         custom_css: settings.custom_css,
+        enable_upvotes: settings.enable_upvotes,
+        enable_downvotes: settings.enable_downvotes,
         smtp_host: settings.smtp_host || '',
         smtp_port: settings.smtp_port,
         smtp_username: settings.smtp_username || '',
@@ -253,6 +257,30 @@ export default function SettingsIndex({ settings }: SettingsIndexProps) {
                                     onChange={(e) =>
                                         setData(
                                             'require_email',
+                                            e.target.checked,
+                                        )
+                                    }
+                                />
+                                <Switch
+                                    label="Enable upvotes"
+                                    description="Allow users to upvote comments"
+                                    checked={data.enable_upvotes}
+                                    onChange={(e) => {
+                                        const checked = e.target.checked;
+                                        setData('enable_upvotes', checked);
+                                        if (!checked) {
+                                            setData('enable_downvotes', false);
+                                        }
+                                    }}
+                                />
+                                <Switch
+                                    label="Enable downvotes"
+                                    description="Allow users to downvote comments (requires upvotes)"
+                                    checked={data.enable_downvotes}
+                                    disabled={!data.enable_upvotes}
+                                    onChange={(e) =>
+                                        setData(
+                                            'enable_downvotes',
                                             e.target.checked,
                                         )
                                     }

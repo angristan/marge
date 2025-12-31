@@ -84,6 +84,7 @@ class GetThreadComments
             'website' => $comment->website,
             'body_html' => $comment->body_html,
             'upvotes' => $comment->upvotes,
+            'downvotes' => $comment->downvotes,
             'created_at' => $comment->created_at->toIso8601String(),
             'replies' => $replies
                 ->sortBy('created_at')

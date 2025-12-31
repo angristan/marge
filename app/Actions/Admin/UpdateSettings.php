@@ -34,6 +34,8 @@ class UpdateSettings
             'blocked_ips',
             'allowed_origins',
             'custom_css',
+            'enable_upvotes',
+            'enable_downvotes',
             'smtp_host',
             'smtp_port',
             'smtp_username',
@@ -90,6 +92,10 @@ class UpdateSettings
 
             // Appearance
             'custom_css' => Setting::getValue('custom_css', ''),
+
+            // Voting
+            'enable_upvotes' => Setting::getValue('enable_upvotes', 'true') === 'true',
+            'enable_downvotes' => Setting::getValue('enable_downvotes', 'false') === 'true',
 
             // Email (without password)
             'smtp_host' => Setting::getValue('smtp_host'),

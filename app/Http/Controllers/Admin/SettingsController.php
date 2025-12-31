@@ -44,6 +44,8 @@ class SettingsController extends Controller
             'moderation_mode' => ['nullable', 'string', 'in:none,all,unverified'],
             'require_author' => ['nullable', 'boolean'],
             'require_email' => ['nullable', 'boolean'],
+            'enable_upvotes' => ['nullable', 'boolean'],
+            'enable_downvotes' => ['nullable', 'boolean'],
 
             // Limits
             'max_depth' => ['nullable', 'integer', 'min:0', 'max:3'],
@@ -71,11 +73,15 @@ class SettingsController extends Controller
         ]);
 
         // Convert booleans to strings
-        if (isset($validated['require_author'])) {
-            $validated['require_author'] = $validated['require_author'] ? 'true' : 'false';
+        foreach (['require_author', 'require_email', 'enable_upvotes', 'enable_downvotes'] as $key) {
+            if (isset($validated[$key])) {
+                $validated[$key] = $validated[$key] ? 'true' : 'false';
+            }
         }
-        if (isset($validated['require_email'])) {
-            $validated['require_email'] = $validated['require_email'] ? 'true' : 'false';
+
+        // Downvotes require upvotes to be enabled
+        if (isset($validated['enable_upvotes']) && $validated['enable_upvotes'] === 'false') {
+            $validated['enable_downvotes'] = 'false';
         }
 
         UpdateSettings::run($validated);

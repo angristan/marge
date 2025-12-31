@@ -10,7 +10,7 @@ A self-hosted comment system for static sites and blogs. Modern replacement for 
 - **Dark mode** - Light, dark, or auto (follows system preference)
 - **Email notifications** - Notify authors when they receive replies
 - **Email verification** - Verified badge for confirmed emails
-- **Upvoting** - Anonymous upvotes with duplicate prevention
+- **Voting** - Optional upvotes and downvotes with duplicate prevention
 - **Moderation** - Approve, spam, delete from admin panel or email
 - **Admin comments** - Post as admin from your site when logged in
 - **Spam protection** - Honeypot, rate limiting, blocked words (no 3rd party)

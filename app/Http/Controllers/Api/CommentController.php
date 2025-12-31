@@ -6,6 +6,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Actions\Comment\CreateComment;
 use App\Actions\Comment\DeleteComment;
+use App\Actions\Comment\DownvoteComment;
 use App\Actions\Comment\PreviewMarkdown;
 use App\Actions\Comment\UpdateComment;
 use App\Actions\Comment\UpvoteComment;
@@ -93,6 +94,7 @@ class CommentController extends Controller
             'body_html' => $comment->body_html,
             'status' => $comment->status,
             'upvotes' => $comment->upvotes,
+            'downvotes' => $comment->downvotes,
             'created_at' => $comment->created_at->toIso8601String(),
             'edit_token' => $comment->edit_token,
             'edit_token_expires_at' => $comment->edit_token_expires_at?->toIso8601String(),
@@ -117,6 +119,7 @@ class CommentController extends Controller
             'body_markdown' => $comment->body_markdown,
             'status' => $comment->status,
             'upvotes' => $comment->upvotes,
+            'downvotes' => $comment->downvotes,
             'created_at' => $comment->created_at->toIso8601String(),
         ]);
     }
@@ -190,6 +193,24 @@ class CommentController extends Controller
         }
 
         return response()->json(['upvotes' => $newCount]);
+    }
+
+    /**
+     * Downvote a comment.
+     */
+    public function downvote(Request $request, Comment $comment): JsonResponse
+    {
+        $newCount = DownvoteComment::run(
+            $comment,
+            $request->ip(),
+            $request->userAgent()
+        );
+
+        if ($newCount === null) {
+            return response()->json(['error' => 'Already voted.'], 409);
+        }
+
+        return response()->json(['downvotes' => $newCount]);
     }
 
     /**

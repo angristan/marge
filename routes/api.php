@@ -26,4 +26,5 @@ Route::prefix('comments')->group(function (): void {
     Route::put('{comment}', [CommentController::class, 'update']);
     Route::delete('{comment}', [CommentController::class, 'destroy']);
     Route::post('{comment}/upvote', [CommentController::class, 'upvote']);
+    Route::post('{comment}/downvote', [CommentController::class, 'downvote']);
 });
