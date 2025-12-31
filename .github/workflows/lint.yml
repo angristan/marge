@@ -56,7 +56,7 @@ jobs:
         run: npm ci
 
       - name: biome
-        run: npx biome check
+        run: npm run lint
 
   biome-embed:
     runs-on: ubuntu-latest
@@ -66,9 +66,7 @@ jobs:
         with:
           node-version: "lts/*"
       - name: npm ci
-        working-directory: embed
         run: npm ci
 
       - name: biome
-        working-directory: embed
-        run: npm run check
+        run: npm run lint:embed
