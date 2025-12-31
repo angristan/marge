@@ -1,4 +1,4 @@
-import { useState } from 'preact/hooks';
+import { useEffect, useState } from 'preact/hooks';
 import type Api from '../api';
 import type { Config } from '../api';
 import GitHubLoginButton from './GitHubLoginButton';
@@ -95,6 +95,13 @@ export default function CommentForm({
 
     // For notify replies, use commenter email if available
     const effectiveEmail = config.commenter?.email || email;
+
+    // Auto-enable notify toggle when user logs in with GitHub
+    useEffect(() => {
+        if (isGitHubAuthenticated && config.commenter?.email) {
+            setNotifyReplies(true);
+        }
+    }, [isGitHubAuthenticated, config.commenter?.email]);
 
     const handleLogout = async () => {
         await api.logout();
@@ -201,7 +208,9 @@ export default function CommentForm({
                                 const newEmail = (e.target as HTMLInputElement)
                                     .value;
                                 setEmail(newEmail);
-                                if (!newEmail.trim()) {
+                                if (newEmail.trim()) {
+                                    setNotifyReplies(true);
+                                } else {
                                     setNotifyReplies(false);
                                 }
                             }}
