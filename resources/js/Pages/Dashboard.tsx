@@ -1,6 +1,6 @@
 import AdminLayout from '@/Layouts/AdminLayout';
 import { Link } from '@inertiajs/react';
-import { AreaChart } from '@mantine/charts';
+import { BarChart } from '@mantine/charts';
 import {
     ActionIcon,
     Badge,
@@ -34,10 +34,16 @@ interface DashboardProps {
         spam_comments: number;
         total_threads: number;
         recent_comments: Comment[];
-        comments_this_week: Array<{ date: string; count: number }>;
+        comments_per_month: Array<{ date: string; count: number }>;
     };
     siteName: string;
     siteUrl: string | null;
+}
+
+function formatChartMonth(monthStr: string): string {
+    const [year, month] = monthStr.split('-');
+    const date = new Date(Number.parseInt(year), Number.parseInt(month) - 1);
+    return date.toLocaleDateString('en-US', { month: 'short' });
 }
 
 const statusColors: Record<string, string> = {
@@ -109,14 +115,23 @@ export default function Dashboard({
                 <Grid.Col span={{ base: 12, md: 8 }}>
                     <Paper withBorder p="md" radius="md" mb="lg">
                         <Text size="sm" fw={500} mb="md">
-                            Comments This Week
+                            Comments (Last 12 Months)
                         </Text>
-                        <AreaChart
-                            h={200}
-                            data={stats.comments_this_week}
+                        <BarChart
+                            h={250}
+                            data={stats.comments_per_month}
                             dataKey="date"
-                            series={[{ name: 'count', color: 'blue' }]}
-                            curveType="monotone"
+                            series={[
+                                {
+                                    name: 'count',
+                                    label: 'Comments',
+                                    color: 'indigo',
+                                },
+                            ]}
+                            tickLine="x"
+                            xAxisProps={{
+                                tickFormatter: formatChartMonth,
+                            }}
                         />
                     </Paper>
 

@@ -27,7 +27,7 @@ class GetDashboardStats
             'spam_comments' => Comment::where('status', Comment::STATUS_SPAM)->count(),
             'total_threads' => Thread::count(),
             'recent_comments' => $this->getRecentComments(),
-            'comments_this_week' => $this->getCommentsThisWeek(),
+            'comments_per_month' => $this->getCommentsPerMonth(),
         ];
     }
 
@@ -55,37 +55,37 @@ class GetDashboardStats
     }
 
     /**
-     * Get comments count per day for the last 7 days.
+     * Get comments count per month for the last 12 months.
      *
      * @return array<int, array<string, mixed>>
      */
-    private function getCommentsThisWeek(): array
+    private function getCommentsPerMonth(): array
     {
-        $startDate = now()->subDays(6)->startOfDay();
+        $startDate = now()->subMonths(11)->startOfMonth();
 
-        // SQLite and PostgreSQL compatible date grouping
+        // SQLite and PostgreSQL compatible month grouping
         $driver = DB::getDriverName();
 
         if ($driver === 'sqlite') {
-            $dateColumn = 'date(created_at)';
+            $monthColumn = "strftime('%Y-%m', created_at)";
         } else {
-            $dateColumn = 'DATE(created_at)';
+            $monthColumn = "DATE_FORMAT(created_at, '%Y-%m')";
         }
 
         $results = Comment::where('created_at', '>=', $startDate)
-            ->selectRaw("$dateColumn as date, count(*) as count")
-            ->groupBy('date')
-            ->orderBy('date')
-            ->pluck('count', 'date')
+            ->selectRaw("$monthColumn as month, count(*) as count")
+            ->groupBy('month')
+            ->orderBy('month')
+            ->pluck('count', 'month')
             ->toArray();
 
-        // Fill in missing days with 0
+        // Fill in missing months with 0
         $data = [];
-        for ($i = 6; $i >= 0; $i--) {
-            $date = now()->subDays($i)->format('Y-m-d');
+        for ($i = 11; $i >= 0; $i--) {
+            $month = now()->startOfMonth()->subMonths($i)->format('Y-m');
             $data[] = [
-                'date' => $date,
-                'count' => $results[$date] ?? 0,
+                'date' => $month,
+                'count' => $results[$month] ?? 0,
             ];
         }
 

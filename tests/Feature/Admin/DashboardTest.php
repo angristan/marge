@@ -31,7 +31,7 @@ describe('Admin Dashboard', function (): void {
                 ->has('stats.approved_comments')
                 ->has('stats.spam_comments')
                 ->has('stats.recent_comments')
-                ->has('stats.comments_this_week')
+                ->has('stats.comments_per_month')
         );
     });
 
@@ -65,6 +65,29 @@ describe('Admin Dashboard', function (): void {
                 ->where('stats.approved_comments', 1)
                 ->where('stats.pending_comments', 1)
                 ->where('stats.spam_comments', 1)
+        );
+    });
+
+    it('shows comments per month for the last 12 months', function (): void {
+        $thread = Thread::create(['uri' => '/test']);
+
+        // Create comments in the current month
+        for ($i = 0; $i < 5; $i++) {
+            Comment::create([
+                'thread_id' => $thread->id,
+                'body_markdown' => "Comment $i",
+                'body_html' => "<p>Comment $i</p>",
+                'status' => 'approved',
+            ]);
+        }
+
+        $response = $this->get('/admin');
+
+        $response->assertInertia(
+            fn ($page) => $page
+                ->has('stats.comments_per_month', 12)
+                ->where('stats.comments_per_month.11.date', now()->format('Y-m'))
+                ->where('stats.comments_per_month.11.count', 5)
         );
     });
 
