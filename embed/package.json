@@ -10,8 +10,6 @@
         "check": "biome check --write src/"
     },
     "dependencies": {
-        "@mantine/core": "^8.0.0",
-        "@mantine/hooks": "^8.0.0",
         "preact": "^10.25.0"
     },
     "devDependencies": {
