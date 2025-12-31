@@ -243,6 +243,7 @@ export default function SettingsIndex({ settings }: SettingsIndexProps) {
                                 />
                                 <Switch
                                     label="Require author name"
+                                    description="Commenters can remain anonymous if disabled"
                                     checked={data.require_author}
                                     onChange={(e) =>
                                         setData(
@@ -253,6 +254,7 @@ export default function SettingsIndex({ settings }: SettingsIndexProps) {
                                 />
                                 <Switch
                                     label="Require email"
+                                    description="Required for reply notifications"
                                     checked={data.require_email}
                                     onChange={(e) =>
                                         setData(
