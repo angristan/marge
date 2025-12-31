@@ -44,7 +44,13 @@ class ThreadController extends Controller
             && (bool) $request->session()->get('admin_authenticated', false)
             && $request->query('guest') !== '1';
 
-        $data = GetThreadComments::run($thread, $includeHidden);
+        // Get sort parameter (default to oldest)
+        $sort = $request->query('sort', GetThreadComments::SORT_OLDEST);
+        if (! in_array($sort, GetThreadComments::VALID_SORTS, true)) {
+            $sort = GetThreadComments::SORT_OLDEST;
+        }
+
+        $data = GetThreadComments::run($thread, $includeHidden, $sort);
 
         return response()->json($data);
     }

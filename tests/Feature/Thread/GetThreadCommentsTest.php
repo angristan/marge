@@ -244,4 +244,111 @@ describe('GET /api/threads/{uri}/comments', function (): void {
             ->assertJsonPath('comments.0.author', 'Regular User')
             ->assertJsonPath('comments.0.is_admin', false);
     });
+
+    it('sorts comments by oldest first by default', function (): void {
+        $thread = Thread::create(['uri' => '/test']);
+        Comment::create([
+            'thread_id' => $thread->id,
+            'body_markdown' => 'First',
+            'body_html' => '<p>First</p>',
+            'status' => 'approved',
+            'created_at' => now()->subHours(2),
+        ]);
+        Comment::create([
+            'thread_id' => $thread->id,
+            'body_markdown' => 'Second',
+            'body_html' => '<p>Second</p>',
+            'status' => 'approved',
+            'created_at' => now()->subHour(),
+        ]);
+
+        $response = $this->getJson('/api/threads/test/comments');
+
+        $response->assertOk()
+            ->assertJsonPath('comments.0.body_html', '<p>First</p>')
+            ->assertJsonPath('comments.1.body_html', '<p>Second</p>');
+    });
+
+    it('sorts comments by newest first when requested', function (): void {
+        $thread = Thread::create(['uri' => '/test']);
+        Comment::create([
+            'thread_id' => $thread->id,
+            'body_markdown' => 'First',
+            'body_html' => '<p>First</p>',
+            'status' => 'approved',
+            'created_at' => now()->subHours(2),
+        ]);
+        Comment::create([
+            'thread_id' => $thread->id,
+            'body_markdown' => 'Second',
+            'body_html' => '<p>Second</p>',
+            'status' => 'approved',
+            'created_at' => now()->subHour(),
+        ]);
+
+        $response = $this->getJson('/api/threads/test/comments?sort=newest');
+
+        $response->assertOk()
+            ->assertJsonPath('comments.0.body_html', '<p>Second</p>')
+            ->assertJsonPath('comments.1.body_html', '<p>First</p>');
+    });
+
+    it('sorts comments by popularity when requested', function (): void {
+        $thread = Thread::create(['uri' => '/test']);
+        Comment::create([
+            'thread_id' => $thread->id,
+            'body_markdown' => 'Less popular',
+            'body_html' => '<p>Less popular</p>',
+            'status' => 'approved',
+            'upvotes' => 2,
+            'downvotes' => 1,
+        ]);
+        Comment::create([
+            'thread_id' => $thread->id,
+            'body_markdown' => 'Most popular',
+            'body_html' => '<p>Most popular</p>',
+            'status' => 'approved',
+            'upvotes' => 10,
+            'downvotes' => 0,
+        ]);
+        Comment::create([
+            'thread_id' => $thread->id,
+            'body_markdown' => 'Least popular',
+            'body_html' => '<p>Least popular</p>',
+            'status' => 'approved',
+            'upvotes' => 0,
+            'downvotes' => 5,
+        ]);
+
+        $response = $this->getJson('/api/threads/test/comments?sort=popular');
+
+        $response->assertOk()
+            ->assertJsonPath('comments.0.body_html', '<p>Most popular</p>')
+            ->assertJsonPath('comments.1.body_html', '<p>Less popular</p>')
+            ->assertJsonPath('comments.2.body_html', '<p>Least popular</p>');
+    });
+
+    it('ignores invalid sort parameter and uses default', function (): void {
+        $thread = Thread::create(['uri' => '/test']);
+        Comment::create([
+            'thread_id' => $thread->id,
+            'body_markdown' => 'First',
+            'body_html' => '<p>First</p>',
+            'status' => 'approved',
+            'created_at' => now()->subHours(2),
+        ]);
+        Comment::create([
+            'thread_id' => $thread->id,
+            'body_markdown' => 'Second',
+            'body_html' => '<p>Second</p>',
+            'status' => 'approved',
+            'created_at' => now()->subHour(),
+        ]);
+
+        $response = $this->getJson('/api/threads/test/comments?sort=invalid');
+
+        $response->assertOk()
+            ->assertJsonPath('comments.0.body_html', '<p>First</p>')
+            ->assertJsonPath('comments.1.body_html', '<p>Second</p>');
+    });
 });

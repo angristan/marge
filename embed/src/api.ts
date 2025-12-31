@@ -74,10 +74,14 @@ class Api {
         return response.json();
     }
 
-    async getComments(uri: string): Promise<ThreadResponse> {
+    async getComments(
+        uri: string,
+        sort?: 'oldest' | 'newest' | 'popular',
+    ): Promise<ThreadResponse> {
         const encoded = encodeURIComponent(uri);
+        const params = sort ? `?sort=${sort}` : '';
         const response = await fetch(
-            `${this.baseUrl}/api/threads/${encoded}/comments`,
+            `${this.baseUrl}/api/threads/${encoded}/comments${params}`,
         );
         if (!response.ok) throw new Error('Failed to load comments');
         return response.json();

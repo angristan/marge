@@ -22,6 +22,7 @@ GET /api/threads/{uri}/comments
 
 **Parameters:**
 - `uri` (path) - URL-encoded page path
+- `sort` (query, optional) - Sort order: `oldest`, `newest`, `popular` (default: `oldest`)
 
 **Response:**
 ```json

@@ -7,6 +7,7 @@ A self-hosted comment system for static sites and blogs. Modern replacement for 
 - **Simple embedding** - Single script tag to add comments
 - **Markdown support** - GitHub-flavored markdown with live preview
 - **Nested replies** - Configurable nesting depth
+- **Sorting** - Sort by oldest, newest, or popular (by votes)
 - **Dark mode** - Light, dark, or auto (follows system preference)
 - **Email notifications** - Notify authors when they receive replies
 - **Email verification** - Verified badge for confirmed emails

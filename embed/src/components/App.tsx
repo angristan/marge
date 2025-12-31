@@ -4,6 +4,8 @@ import type { Config, ThreadResponse } from '../api';
 import Comment from './Comment';
 import CommentForm from './CommentForm';
 
+type SortOrder = 'oldest' | 'newest' | 'popular';
+
 interface AppProps {
     baseUrl: string;
     uri: string;
@@ -11,6 +13,7 @@ interface AppProps {
     pageUrl?: string;
     theme?: 'light' | 'dark' | 'auto';
     guest?: boolean;
+    defaultSort?: SortOrder;
 }
 
 export default function App({
@@ -20,19 +23,21 @@ export default function App({
     pageUrl,
     theme = 'auto',
     guest = false,
+    defaultSort = 'oldest',
 }: AppProps) {
     const [api] = useState(() => new Api(baseUrl, guest));
     const [config, setConfig] = useState<Config | null>(null);
     const [data, setData] = useState<ThreadResponse | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const [sort, setSort] = useState<SortOrder>(defaultSort);
 
     const loadData = useCallback(async () => {
         try {
             setError(null);
             const [configData, commentsData] = await Promise.all([
                 api.getConfig(),
-                api.getComments(uri),
+                api.getComments(uri, sort),
             ]);
             setConfig(configData);
             setData(commentsData);
@@ -43,7 +48,7 @@ export default function App({
         } finally {
             setLoading(false);
         }
-    }, [api, uri]);
+    }, [api, uri, sort]);
 
     useEffect(() => {
         loadData();
@@ -98,12 +103,36 @@ export default function App({
 
     if (!config || !data) return null;
 
+    const sortLabels: Record<SortOrder, string> = {
+        oldest: 'Oldest',
+        newest: 'Newest',
+        popular: 'Popular',
+    };
+
     return (
         <div className={`marge-container marge-theme-${effectiveTheme}`}>
             <div className="marge-header">
                 <h3 className="marge-title">
                     {data.total} {data.total === 1 ? 'Comment' : 'Comments'}
                 </h3>
+                {data.total > 1 && (
+                    <div className="marge-sort">
+                        <span>Sort by</span>
+                        <select
+                            className="marge-sort-select"
+                            value={sort}
+                            onChange={(e) =>
+                                setSort(e.currentTarget.value as SortOrder)
+                            }
+                        >
+                            <option value="oldest">{sortLabels.oldest}</option>
+                            <option value="newest">{sortLabels.newest}</option>
+                            <option value="popular">
+                                {sortLabels.popular}
+                            </option>
+                        </select>
+                    </div>
+                )}
             </div>
 
             <CommentForm

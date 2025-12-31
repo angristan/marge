@@ -25,6 +25,7 @@ That's it! Marge will automatically initialize and load comments for the current
 |-----------|-------------|---------|
 | `data-marge` | **Required.** URL of your Marge instance | - |
 | `data-marge-theme` | Color theme: `light`, `dark`, `auto` | `auto` |
+| `data-marge-sort` | Comment sort order: `oldest`, `newest`, `popular` | `oldest` |
 
 ### Examples
 
@@ -52,6 +53,18 @@ That's it! Marge will automatically initialize and load comments for the current
 <div id="marge-thread"></div>
 ```
 
+#### Show Newest Comments First
+
+```html
+<script
+  src="https://comments.example.com/embed/embed.js"
+  data-marge="https://comments.example.com"
+  data-marge-sort="newest"
+  async
+></script>
+<div id="marge-thread"></div>
+```
+
 ## Manual Initialization
 
 For more control, initialize manually:
@@ -68,7 +81,8 @@ For more control, initialize manually:
       uri: '/custom-uri',          // Override page identifier
       pageTitle: 'My Page Title',  // Override page title
       pageUrl: 'https://...',      // Override canonical URL
-      theme: 'auto'                // 'light', 'dark', or 'auto'
+      theme: 'auto',               // 'light', 'dark', or 'auto'
+      sort: 'oldest'               // 'oldest', 'newest', or 'popular'
     });
   });
 </script>

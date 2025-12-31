@@ -2,6 +2,8 @@ import { render } from 'preact';
 import App from './components/App';
 import './styles/embed.css';
 
+export type SortOrder = 'oldest' | 'newest' | 'popular';
+
 interface OapaskaOptions {
     baseUrl: string;
     uri?: string;
@@ -10,6 +12,7 @@ interface OapaskaOptions {
     theme?: 'light' | 'dark' | 'auto';
     container?: HTMLElement | string;
     guest?: boolean;
+    sort?: SortOrder;
 }
 
 function init(options: OapaskaOptions) {
@@ -39,6 +42,7 @@ function init(options: OapaskaOptions) {
             pageUrl={pageUrl}
             theme={options.theme}
             guest={options.guest}
+            defaultSort={options.sort}
         />,
         container,
     );
@@ -63,14 +67,19 @@ function autoInit() {
         | null;
     const guest = script.getAttribute('data-marge-guest') === 'true';
     const uri = script.getAttribute('data-marge-uri') || undefined;
+    const sortAttr = script.getAttribute('data-marge-sort');
+    const sort =
+        sortAttr && ['oldest', 'newest', 'popular'].includes(sortAttr)
+            ? (sortAttr as SortOrder)
+            : undefined;
 
     // Wait for DOM to be ready
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', () => {
-            init({ baseUrl, theme: theme || undefined, guest, uri });
+            init({ baseUrl, theme: theme || undefined, guest, uri, sort });
         });
     } else {
-        init({ baseUrl, theme: theme || undefined, guest, uri });
+        init({ baseUrl, theme: theme || undefined, guest, uri, sort });
     }
 }
 
