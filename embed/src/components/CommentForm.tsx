@@ -10,7 +10,6 @@ interface CommentFormProps {
     pageUrl?: string;
     parentId?: number | null;
     onSubmit: () => void;
-    onCancel?: () => void;
 }
 
 export default function CommentForm({
@@ -21,7 +20,6 @@ export default function CommentForm({
     pageUrl,
     parentId,
     onSubmit,
-    onCancel,
 }: CommentFormProps) {
     const [author, setAuthor] = useState('');
     const [email, setEmail] = useState('');
@@ -30,6 +28,24 @@ export default function CommentForm({
     const [notifyReplies, setNotifyReplies] = useState(false);
     const [submitting, setSubmitting] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [previewMode, setPreviewMode] = useState(false);
+    const [previewHtml, setPreviewHtml] = useState('');
+    const [previewLoading, setPreviewLoading] = useState(false);
+
+    const handlePreviewToggle = async (showPreview: boolean) => {
+        if (showPreview && body.trim()) {
+            setPreviewLoading(true);
+            try {
+                const { html } = await api.previewMarkdown(body);
+                setPreviewHtml(html);
+            } catch {
+                setPreviewHtml('<p>Failed to load preview</p>');
+            } finally {
+                setPreviewLoading(false);
+            }
+        }
+        setPreviewMode(showPreview);
+    };
 
     const handleSubmit = async (e: Event) => {
         e.preventDefault();
@@ -123,7 +139,21 @@ export default function CommentForm({
                 }
                 required
                 rows={4}
+                style={{ display: previewMode ? 'none' : undefined }}
             />
+            {previewMode && (
+                <div className="marge-preview">
+                    {previewLoading ? (
+                        <div className="marge-preview-loading">Loading...</div>
+                    ) : (
+                        <div
+                            className="marge-comment-body"
+                            // biome-ignore lint/security/noDangerouslySetInnerHtml: HTML is sanitized server-side
+                            dangerouslySetInnerHTML={{ __html: previewHtml }}
+                        />
+                    )}
+                </div>
+            )}
 
             {/* Honeypot field - hidden from users */}
             <input
@@ -149,15 +179,14 @@ export default function CommentForm({
                 </label>
 
                 <div className="marge-form-actions">
-                    {onCancel && (
-                        <button
-                            type="button"
-                            className="marge-btn marge-btn-secondary"
-                            onClick={onCancel}
-                        >
-                            Cancel
-                        </button>
-                    )}
+                    <button
+                        type="button"
+                        className="marge-btn marge-btn-secondary"
+                        onClick={() => handlePreviewToggle(!previewMode)}
+                        disabled={!body.trim() && !previewMode}
+                    >
+                        {previewMode ? 'Edit' : 'Preview'}
+                    </button>
                     <button
                         type="submit"
                         className="marge-btn marge-btn-primary"

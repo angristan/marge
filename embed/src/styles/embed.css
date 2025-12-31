@@ -82,6 +82,20 @@
     font-family: inherit;
 }
 
+/* Preview */
+.marge-preview {
+    min-height: 100px;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid var(--marge-border);
+    border-radius: 6px;
+    background: var(--marge-bg);
+}
+
+.marge-preview-loading {
+    color: var(--marge-muted);
+    font-size: 13px;
+}
+
 .marge-form-footer {
     display: flex;
     justify-content: space-between;

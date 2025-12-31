@@ -5,7 +5,7 @@ A self-hosted comment system for static sites and blogs. Modern replacement for 
 ## Features
 
 - **Simple embedding** - Single script tag to add comments
-- **Markdown support** - Comments support GitHub-flavored markdown
+- **Markdown support** - GitHub-flavored markdown with live preview
 - **Nested replies** - Configurable nesting depth
 - **Dark mode** - Light, dark, or auto (follows system preference)
 - **Email notifications** - Notify authors when they receive replies
@@ -17,7 +17,7 @@ A self-hosted comment system for static sites and blogs. Modern replacement for 
 - **Import from isso** - Migrate your existing comments
 - **Atom feeds** - Subscribe to comment threads
 - **Dual database support** - SQLite (default) or PostgreSQL
-- **Lightweight embed** - ~9KB gzipped
+- **Lightweight embed** - ~10KB gzipped
 
 ## Quick Start
 

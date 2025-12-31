@@ -219,7 +219,6 @@ export default function Comment({
                         uri={uri}
                         parentId={comment.id}
                         onSubmit={handleReplySubmit}
-                        onCancel={() => setShowReplyForm(false)}
                     />
                 </div>
             )}
