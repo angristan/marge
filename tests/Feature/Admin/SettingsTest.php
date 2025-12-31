@@ -11,7 +11,8 @@ use App\Models\Thread;
 uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
 
 beforeEach(function (): void {
-    SetupAdmin::run('admin', 'admin@example.com', 'password123', 'Test Site', 'https://example.com');
+    SetupAdmin::run('admin', 'password123', 'Test Site', 'https://example.com');
+    Setting::setValue('admin_email', 'admin@example.com');
 
     $this->post('/admin/login', [
         'username' => 'admin',

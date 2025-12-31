@@ -21,7 +21,6 @@ export default function Setup() {
         site_name: '',
         site_url: '',
         username: '',
-        email: '',
         password: '',
         password_confirmation: '',
     });
@@ -41,7 +40,6 @@ export default function Setup() {
             case 1:
                 return (
                     data.username.length >= 3 &&
-                    data.email.length > 0 &&
                     data.password.length >= 8 &&
                     data.password === data.password_confirmation
                 );
@@ -103,18 +101,6 @@ export default function Setup() {
                                     error={errors.username}
                                     required
                                     minLength={3}
-                                />
-                                <TextInput
-                                    label="Email"
-                                    description="Used for Gravatar when posting as admin"
-                                    placeholder="admin@example.com"
-                                    type="email"
-                                    value={data.email}
-                                    onChange={(e) =>
-                                        setData('email', e.target.value)
-                                    }
-                                    error={errors.email}
-                                    required
                                 />
                                 <PasswordInput
                                     label="Password"
