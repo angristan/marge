@@ -106,7 +106,6 @@ export default function Setup() {
                                 />
                                 <TextInput
                                     label="Email"
-                                    description="Used for Gravatar when posting as admin"
                                     placeholder="admin@example.com"
                                     type="email"
                                     value={data.email}
