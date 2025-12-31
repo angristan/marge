@@ -62,13 +62,19 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                             hiddenFrom="sm"
                             size="sm"
                         />
-                        <Title order={3}>Marge</Title>
+                        <img
+                            src="/bulla.png"
+                            alt="Bulla"
+                            width={28}
+                            height={28}
+                        />
+                        <Title order={3}>Bulla</Title>
                     </Group>
                     <Group>
                         <ActionIcon
                             variant="subtle"
                             component="a"
-                            href="https://github.com/angristan/marge"
+                            href="https://github.com/angristan/bulla"
                             target="_blank"
                             rel="noopener noreferrer"
                             aria-label="GitHub"

@@ -31,7 +31,7 @@ export default function GitHubLoginButton({
 
         // Listen for postMessage from callback page (may work in some browsers)
         const handleMessage = (event: MessageEvent) => {
-            if (event.data?.type === 'marge-github-auth') {
+            if (event.data?.type === 'bulla-github-auth') {
                 window.removeEventListener('message', handleMessage);
                 clearInterval(checkClosed);
                 popup?.close();
@@ -58,11 +58,11 @@ export default function GitHubLoginButton({
     return (
         <button
             type="button"
-            className="marge-btn marge-btn-github"
+            className="bulla-btn bulla-btn-github"
             onClick={handleClick}
         >
             <svg
-                className="marge-github-icon"
+                className="bulla-github-icon"
                 viewBox="0 0 16 16"
                 width="16"
                 height="16"

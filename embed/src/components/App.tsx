@@ -103,28 +103,28 @@ export default function App({
     const getAccentStyles = (accentColor?: string) => {
         if (!accentColor) return {};
         return {
-            '--marge-primary': accentColor,
-            '--marge-primary-hover': accentColor,
+            '--bulla-primary': accentColor,
+            '--bulla-primary-hover': accentColor,
         } as React.CSSProperties;
     };
 
     if (loading) {
         return (
-            <div className={`marge-container marge-theme-${effectiveTheme}`}>
-                <div className="marge-loading">Loading comments...</div>
+            <div className={`bulla-container bulla-theme-${effectiveTheme}`}>
+                <div className="bulla-loading">Loading comments...</div>
             </div>
         );
     }
 
     if (error) {
         return (
-            <div className={`marge-container marge-theme-${effectiveTheme}`}>
-                <div className="marge-error">
+            <div className={`bulla-container bulla-theme-${effectiveTheme}`}>
+                <div className="bulla-error">
                     {error}
                     <button
                         type="button"
                         onClick={loadData}
-                        className="marge-btn marge-btn-secondary"
+                        className="bulla-btn bulla-btn-secondary"
                     >
                         Retry
                     </button>
@@ -145,18 +145,18 @@ export default function App({
 
     return (
         <div
-            className={`marge-container marge-theme-${effectiveTheme}`}
+            className={`bulla-container bulla-theme-${effectiveTheme}`}
             style={accentStyles}
         >
-            <div className="marge-header">
-                <h3 className="marge-title">
+            <div className="bulla-header">
+                <h3 className="bulla-title">
                     {data.total} {data.total === 1 ? 'Comment' : 'Comments'}
                 </h3>
                 {data.total > 1 && (
-                    <div className="marge-sort">
+                    <div className="bulla-sort">
                         <span>Sort by</span>
                         <select
-                            className="marge-sort-select"
+                            className="bulla-sort-select"
                             value={sort}
                             onChange={(e) =>
                                 setSort(e.currentTarget.value as SortOrder)
@@ -182,9 +182,9 @@ export default function App({
                 onConfigRefresh={refreshConfig}
             />
 
-            <div className="marge-comments">
+            <div className="bulla-comments">
                 {data.comments.length === 0 ? (
-                    <div className="marge-empty">
+                    <div className="bulla-empty">
                         No comments yet. Be the first to comment!
                     </div>
                 ) : (
@@ -203,13 +203,13 @@ export default function App({
                 )}
             </div>
 
-            <div className="marge-footer">
+            <div className="bulla-footer">
                 <a
-                    href="https://github.com/angristan/marge"
+                    href="https://github.com/angristan/bulla"
                     target="_blank"
                     rel="noopener noreferrer"
                 >
-                    Powered by Marge
+                    Powered by Bulla
                 </a>
             </div>
         </div>

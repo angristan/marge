@@ -1,6 +1,6 @@
 # API Reference
 
-Marge provides a REST API for the embed widget and external integrations.
+Bulla provides a REST API for the embed widget and external integrations.
 
 ## Base URL
 
@@ -277,7 +277,7 @@ Returns the 50 most recent approved comments for a specific thread.
 
 ## Webhooks
 
-Marge does not currently support webhooks. Use Atom feeds for syndication.
+Bulla does not currently support webhooks. Use Atom feeds for syndication.
 
 ## Rate Limits
 

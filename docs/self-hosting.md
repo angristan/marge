@@ -1,6 +1,6 @@
-# Self-Hosting Marge
+# Self-Hosting Bulla
 
-This guide covers deploying Marge on your own server.
+This guide covers deploying Bulla on your own server.
 
 ## Requirements
 
@@ -14,9 +14,9 @@ This guide covers deploying Marge on your own server.
 ```bash
 docker run -d \
   -p 8000:8000 \
-  -v marge_data:/app/database \
+  -v bulla_data:/app/database \
   -e APP_URL=https://comments.example.com \
-  ghcr.io/your-username/marge:latest
+  ghcr.io/your-username/bulla:latest
 ```
 
 ### With PostgreSQL
@@ -24,16 +24,16 @@ docker run -d \
 ```yaml
 # docker-compose.yml
 services:
-  marge:
-    image: ghcr.io/your-username/marge:latest
+  bulla:
+    image: ghcr.io/your-username/bulla:latest
     ports:
       - "8000:8000"
     environment:
       APP_URL: https://comments.example.com
       DB_CONNECTION: pgsql
       DB_HOST: postgres
-      DB_DATABASE: marge
-      DB_USERNAME: marge
+      DB_DATABASE: bulla
+      DB_USERNAME: bulla
       DB_PASSWORD: secret
     depends_on:
       - postgres
@@ -43,8 +43,8 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
     environment:
-      POSTGRES_DB: marge
-      POSTGRES_USER: marge
+      POSTGRES_DB: bulla
+      POSTGRES_USER: bulla
       POSTGRES_PASSWORD: secret
 
 volumes:
@@ -60,12 +60,12 @@ docker compose up -d
 
 | Variable | Description | Default |
 |----------|-------------|---------|
-| `APP_URL` | Public URL of your Marge instance | `http://localhost` |
+| `APP_URL` | Public URL of your Bulla instance | `http://localhost` |
 | `APP_KEY` | Application encryption key (auto-generated if missing) | - |
 | `DB_CONNECTION` | Database driver: `sqlite` or `pgsql` | `sqlite` |
 | `DB_HOST` | PostgreSQL host | `localhost` |
 | `DB_PORT` | PostgreSQL port | `5432` |
-| `DB_DATABASE` | Database name | `marge` |
+| `DB_DATABASE` | Database name | `bulla` |
 | `DB_USERNAME` | Database username | - |
 | `DB_PASSWORD` | Database password | - |
 | `MAIL_MAILER` | Mail driver: `smtp`, `log` | `log` |
@@ -91,9 +91,9 @@ Allow commenters to authenticate with GitHub instead of entering name/email manu
 3. Fill in:
    - **Application name:** Your site name (e.g., "My Blog Comments")
    - **Homepage URL:** Your site URL
-   - **Authorization callback URL:** `https://your-marge-url/auth/github/callback`
+   - **Authorization callback URL:** `https://your-bulla-url/auth/github/callback`
 4. Copy the Client ID and generate a Client Secret
-5. In Marge Admin > Settings > Authentication:
+5. In Bulla Admin > Settings > Authentication:
    - Enable "GitHub Login"
    - Enter your Client ID and Client Secret
 
@@ -134,13 +134,13 @@ server {
 The database is stored at `database/database.sqlite`. Back up this file regularly:
 
 ```bash
-docker cp marge:/app/database/database.sqlite ./backup-$(date +%F).sqlite
+docker cp bulla:/app/database/database.sqlite ./backup-$(date +%F).sqlite
 ```
 
 ### PostgreSQL
 
 ```bash
-docker compose exec postgres pg_dump -U marge marge > backup-$(date +%F).sql
+docker compose exec postgres pg_dump -U bulla bulla > backup-$(date +%F).sql
 ```
 
 ## Updating
@@ -156,8 +156,8 @@ If not using Docker:
 
 ```bash
 # Clone repository
-git clone https://github.com/your-username/marge
-cd marge
+git clone https://github.com/your-username/bulla
+cd bulla
 
 # Install PHP dependencies
 composer install --no-dev --optimize-autoloader

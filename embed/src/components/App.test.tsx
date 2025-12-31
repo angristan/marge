@@ -178,8 +178,8 @@ describe('App', () => {
         render(<App baseUrl="https://example.com" uri="/test" theme="light" />);
 
         await waitFor(() => {
-            const container = document.querySelector('.marge-container');
-            expect(container).toHaveClass('marge-theme-light');
+            const container = document.querySelector('.bulla-container');
+            expect(container).toHaveClass('bulla-theme-light');
         });
     });
 
@@ -187,8 +187,8 @@ describe('App', () => {
         render(<App baseUrl="https://example.com" uri="/test" theme="dark" />);
 
         await waitFor(() => {
-            const container = document.querySelector('.marge-container');
-            expect(container).toHaveClass('marge-theme-dark');
+            const container = document.querySelector('.bulla-container');
+            expect(container).toHaveClass('bulla-theme-dark');
         });
     });
 
@@ -198,8 +198,8 @@ describe('App', () => {
         );
 
         await waitFor(() => {
-            const container = document.querySelector('.marge-container');
-            expect(container).toHaveClass('marge-theme-dark');
+            const container = document.querySelector('.bulla-container');
+            expect(container).toHaveClass('bulla-theme-dark');
         });
 
         rerender(
@@ -207,19 +207,19 @@ describe('App', () => {
         );
 
         await waitFor(() => {
-            const container = document.querySelector('.marge-container');
-            expect(container).toHaveClass('marge-theme-light');
+            const container = document.querySelector('.bulla-container');
+            expect(container).toHaveClass('bulla-theme-light');
         });
     });
 
-    it('renders footer with link to Marge', async () => {
+    it('renders footer with link to Bulla', async () => {
         render(<App baseUrl="https://example.com" uri="/test" />);
 
         await waitFor(() => {
-            const link = screen.getByRole('link', { name: 'Powered by Marge' });
+            const link = screen.getByRole('link', { name: 'Powered by Bulla' });
             expect(link).toHaveAttribute(
                 'href',
-                'https://github.com/angristan/marge',
+                'https://github.com/angristan/bulla',
             );
         });
     });

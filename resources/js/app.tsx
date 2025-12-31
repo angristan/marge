@@ -16,7 +16,7 @@ const theme = createTheme({
 });
 
 createInertiaApp({
-    title: (title) => (title ? `${title} - Marge` : 'Marge'),
+    title: (title) => (title ? `${title} - Bulla` : 'Bulla'),
     resolve: (name) => {
         const pages = import.meta.glob('./Pages/**/*.tsx', { eager: true });
         return pages[`./Pages/${name}.tsx`];

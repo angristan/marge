@@ -1,8 +1,8 @@
-# Marge - Development Guidelines
+# Bulla - Development Guidelines
 
 ## Project Overview
 
-Marge is a self-hosted comment system built with Laravel, designed to replace isso.
+Bulla is a self-hosted comment system built with Laravel, designed to replace isso.
 
 ## Tech Stack
 

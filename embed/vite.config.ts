@@ -16,7 +16,7 @@ export default defineConfig({
         emptyOutDir: true,
         lib: {
             entry: 'src/index.tsx',
-            name: 'Marge',
+            name: 'Bulla',
             fileName: () => 'embed.js',
             formats: ['iife'],
         },

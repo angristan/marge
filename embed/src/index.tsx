@@ -4,7 +4,7 @@ import './styles/embed.css';
 
 export type SortOrder = 'oldest' | 'newest' | 'popular';
 
-interface MargeOptions {
+interface BullaOptions {
     baseUrl: string;
     uri?: string;
     pageTitle?: string;
@@ -15,14 +15,14 @@ interface MargeOptions {
     sort?: SortOrder;
 }
 
-function init(options: MargeOptions) {
+function init(options: BullaOptions) {
     const container =
         typeof options.container === 'string'
             ? document.querySelector(options.container)
-            : options.container || document.getElementById('marge-thread');
+            : options.container || document.getElementById('bulla-thread');
 
     if (!container) {
-        console.error('[Marge] Container element not found');
+        console.error('[Bulla] Container element not found');
         return;
     }
 
@@ -54,21 +54,21 @@ function autoInit() {
     // Fall back to finding the script by its data attribute
     const script =
         (document.currentScript as HTMLScriptElement) ||
-        document.querySelector('script[data-marge]');
+        document.querySelector('script[data-bulla]');
     if (!script) return;
 
-    const baseUrl = script.getAttribute('data-marge');
+    const baseUrl = script.getAttribute('data-bulla');
     if (!baseUrl) return;
 
     const getTheme = () =>
-        script.getAttribute('data-marge-theme') as
+        script.getAttribute('data-bulla-theme') as
             | 'light'
             | 'dark'
             | 'auto'
             | null;
-    const guest = script.getAttribute('data-marge-guest') === 'true';
-    const uri = script.getAttribute('data-marge-uri') || undefined;
-    const sortAttr = script.getAttribute('data-marge-sort');
+    const guest = script.getAttribute('data-bulla-guest') === 'true';
+    const uri = script.getAttribute('data-bulla-uri') || undefined;
+    const sortAttr = script.getAttribute('data-bulla-sort');
     const sort =
         sortAttr && ['oldest', 'newest', 'popular'].includes(sortAttr)
             ? (sortAttr as SortOrder)
@@ -84,7 +84,7 @@ function autoInit() {
         for (const mutation of mutations) {
             if (
                 mutation.type === 'attributes' &&
-                mutation.attributeName === 'data-marge-theme'
+                mutation.attributeName === 'data-bulla-theme'
             ) {
                 doInit();
                 break;

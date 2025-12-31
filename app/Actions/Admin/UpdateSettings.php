@@ -72,7 +72,7 @@ class UpdateSettings
     {
         return [
             // General
-            'site_name' => Setting::getValue('site_name', 'Marge'),
+            'site_name' => Setting::getValue('site_name', 'Bulla'),
             'site_url' => Setting::getValue('site_url'),
             'admin_display_name' => Setting::getValue('admin_display_name', 'Admin'),
             'admin_badge_label' => Setting::getValue('admin_badge_label', 'Author'),

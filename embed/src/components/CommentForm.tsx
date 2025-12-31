@@ -102,13 +102,13 @@ export default function CommentForm({
     };
 
     return (
-        <form className="marge-form" onSubmit={handleSubmit}>
-            {error && <div className="marge-error">{error}</div>}
+        <form className="bulla-form" onSubmit={handleSubmit}>
+            {error && <div className="bulla-error">{error}</div>}
 
             {showAuthSection && (
-                <div className="marge-auth-section">
+                <div className="bulla-auth-section">
                     {isGitHubAuthenticated ? (
-                        <div className="marge-commenter-info">
+                        <div className="bulla-commenter-info">
                             <a
                                 href={
                                     config.commenter?.github_username
@@ -117,19 +117,19 @@ export default function CommentForm({
                                 }
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="marge-commenter-profile"
+                                className="bulla-commenter-profile"
                             >
                                 {config.commenter?.github_username && (
                                     <img
                                         src={`https://github.com/${config.commenter?.github_username}.png`}
                                         alt=""
-                                        className="marge-commenter-avatar"
+                                        className="bulla-commenter-avatar"
                                     />
                                 )}
-                                <span className="marge-commenter-name">
+                                <span className="bulla-commenter-name">
                                     {config.commenter?.name}
                                     {config.commenter?.github_username && (
-                                        <span className="marge-commenter-username">
+                                        <span className="bulla-commenter-username">
                                             {' '}
                                             (@
                                             {config.commenter?.github_username})
@@ -139,7 +139,7 @@ export default function CommentForm({
                             </a>
                             <button
                                 type="button"
-                                className="marge-btn-logout"
+                                className="bulla-btn-logout"
                                 onClick={handleLogout}
                             >
                                 <svg
@@ -163,7 +163,7 @@ export default function CommentForm({
                                 authUrl={api.getGitHubAuthUrl()}
                                 onSuccess={onConfigRefresh}
                             />
-                            <span className="marge-auth-divider">
+                            <span className="bulla-auth-divider">
                                 or comment as guest
                             </span>
                         </>
@@ -173,10 +173,10 @@ export default function CommentForm({
 
             {!hideIdentityFields && (
                 <>
-                    <div className="marge-form-row">
+                    <div className="bulla-form-row">
                         <input
                             type="text"
-                            className="marge-input"
+                            className="bulla-input"
                             placeholder={
                                 config.require_author
                                     ? 'Name *'
@@ -190,7 +190,7 @@ export default function CommentForm({
                         />
                         <input
                             type="email"
-                            className="marge-input"
+                            className="bulla-input"
                             placeholder={
                                 config.require_email
                                     ? 'Email *'
@@ -211,7 +211,7 @@ export default function CommentForm({
 
                     <input
                         type="text"
-                        className="marge-input"
+                        className="bulla-input"
                         placeholder="Website (optional)"
                         value={website}
                         onInput={(e) =>
@@ -222,7 +222,7 @@ export default function CommentForm({
             )}
 
             <textarea
-                className="marge-textarea"
+                className="bulla-textarea"
                 placeholder="Write your comment... (Markdown supported)"
                 value={body}
                 onInput={(e) =>
@@ -233,12 +233,12 @@ export default function CommentForm({
                 style={{ display: previewMode ? 'none' : undefined }}
             />
             {previewMode && (
-                <div className="marge-preview">
+                <div className="bulla-preview">
                     {previewLoading ? (
-                        <div className="marge-preview-loading">Loading...</div>
+                        <div className="bulla-preview-loading">Loading...</div>
                     ) : (
                         <div
-                            className="marge-comment-body"
+                            className="bulla-comment-body"
                             // biome-ignore lint/security/noDangerouslySetInnerHtml: HTML is sanitized server-side
                             dangerouslySetInnerHTML={{ __html: previewHtml }}
                         />
@@ -255,9 +255,9 @@ export default function CommentForm({
                 autoComplete="off"
             />
 
-            <div className="marge-form-footer">
+            <div className="bulla-form-footer">
                 <label
-                    className="marge-checkbox"
+                    className="bulla-checkbox"
                     title={
                         !effectiveEmail?.trim()
                             ? 'Enter an email to enable notifications'
@@ -277,10 +277,10 @@ export default function CommentForm({
                     <span>Notify me of replies</span>
                 </label>
 
-                <div className="marge-form-actions">
+                <div className="bulla-form-actions">
                     <button
                         type="button"
-                        className="marge-btn marge-btn-secondary"
+                        className="bulla-btn bulla-btn-secondary"
                         onClick={() => handlePreviewToggle(!previewMode)}
                         disabled={!body.trim() && !previewMode}
                     >
@@ -288,7 +288,7 @@ export default function CommentForm({
                     </button>
                     <button
                         type="submit"
-                        className="marge-btn marge-btn-primary"
+                        className="bulla-btn bulla-btn-primary"
                         disabled={submitting || !body.trim()}
                     >
                         {submitting

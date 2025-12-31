@@ -32,7 +32,7 @@ class ConfigController extends Controller
             && Setting::getValue('enable_github_login', 'false') === 'true';
 
         $config = [
-            'site_name' => Setting::getValue('site_name', 'Marge'),
+            'site_name' => Setting::getValue('site_name', 'Bulla'),
             'require_author' => Setting::getValue('require_author', 'false') === 'true',
             'require_email' => Setting::getValue('require_email', 'false') === 'true',
             'moderation_mode' => Setting::getValue('moderation_mode', 'none'),

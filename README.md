@@ -1,6 +1,10 @@
-# Marge
+# Bulla
 
-A self-hosted comment system for static sites and blogs. Modern replacement for isso.
+<p align="center">
+  <img src="public/bulla.png" alt="Bulla" width="128" height="128">
+</p>
+
+A self-hosted comment system for static sites and blogs.
 
 ## Features
 
@@ -27,9 +31,9 @@ A self-hosted comment system for static sites and blogs. Modern replacement for 
 ```bash
 docker run -d \
   -p 8000:8000 \
-  -v marge_data:/app/database \
+  -v bulla_data:/app/database \
   -e APP_URL=https://comments.example.com \
-  ghcr.io/your-username/marge:latest
+  ghcr.io/your-username/bulla:latest
 ```
 
 Then visit `http://localhost:8000/admin/setup` to configure.
@@ -40,11 +44,11 @@ Add to your website:
 
 ```html
 <script
-  src="https://comments.example.com/embed/embed.js"
-  data-marge="https://comments.example.com"
-  async
+    src="https://comments.example.com/embed/embed.js"
+    data-bulla="https://comments.example.com"
+    async
 ></script>
-<div id="marge-thread"></div>
+<div id="bulla-thread"></div>
 ```
 
 ## Documentation
@@ -65,8 +69,8 @@ Add to your website:
 
 ```bash
 # Clone repository
-git clone https://github.com/your-username/marge
-cd marge
+git clone https://github.com/your-username/bulla
+cd bulla
 
 # Install dependencies
 composer install

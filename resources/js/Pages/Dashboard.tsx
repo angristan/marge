@@ -52,8 +52,8 @@ export default function Dashboard({
     siteName,
     siteUrl,
 }: DashboardProps) {
-    const embedCode = `<script src="${siteUrl || window.location.origin}/embed.js" data-marge="${siteUrl || window.location.origin}" async></script>
-<div id="marge-thread"></div>`;
+    const embedCode = `<script src="${siteUrl || window.location.origin}/embed.js" data-bulla="${siteUrl || window.location.origin}" async></script>
+<div id="bulla-thread"></div>`;
 
     return (
         <AdminLayout>

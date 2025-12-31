@@ -118,7 +118,7 @@ export default function ImportIndex() {
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = `marge-export-${new Date().toISOString().split('T')[0]}.json`;
+            a.download = `bulla-export-${new Date().toISOString().split('T')[0]}.json`;
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
@@ -226,11 +226,11 @@ export default function ImportIndex() {
         {
             type: 'json' as ImportType,
             title: 'Import from JSON',
-            description: 'Upload a previously exported Marge JSON file',
+            description: 'Upload a previously exported Bulla JSON file',
             icon: IconJson,
             accept: ['application/json'],
             dropText: 'Drag JSON file here or click to select',
-            dropHint: 'Must be an Marge export file (max 100MB)',
+            dropHint: 'Must be an Bulla export file (max 100MB)',
         },
     ];
 

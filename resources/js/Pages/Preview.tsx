@@ -16,7 +16,7 @@ import { useEffect, useRef } from 'react';
 
 declare global {
     interface Window {
-        Marge?: unknown;
+        Bulla?: unknown;
     }
 }
 
@@ -56,29 +56,29 @@ export default function Preview({ appUrl, threads }: PreviewProps) {
         // Clear previous widget
         const container = containerRef.current;
         const threadUri = selectedThread || '/preview-page';
-        container.innerHTML = `<div id="marge-thread" data-uri="${threadUri}"></div>`;
+        container.innerHTML = `<div id="bulla-thread" data-uri="${threadUri}"></div>`;
 
         // Remove any existing script
         const existingScript = document.querySelector(
-            'script[data-marge-preview]',
+            'script[data-bulla-preview]',
         );
         if (existingScript) {
             existingScript.remove();
         }
 
-        // Clean up Marge global state if it exists
-        if (typeof window !== 'undefined' && window.Marge) {
-            window.Marge = undefined;
+        // Clean up Bulla global state if it exists
+        if (typeof window !== 'undefined' && window.Bulla) {
+            window.Bulla = undefined;
         }
 
         // Create and append new script (with cache buster to force reload)
         const script = document.createElement('script');
         script.src = `${appUrl}/embed/embed.js?t=${Date.now()}`;
-        script.setAttribute('data-marge', appUrl);
-        script.setAttribute('data-marge-theme', theme);
-        script.setAttribute('data-marge-preview', 'true');
+        script.setAttribute('data-bulla', appUrl);
+        script.setAttribute('data-bulla-theme', theme);
+        script.setAttribute('data-bulla-preview', 'true');
         if (viewMode === 'guest') {
-            script.setAttribute('data-marge-guest', 'true');
+            script.setAttribute('data-bulla-guest', 'true');
         }
         script.async = true;
         container.appendChild(script);
@@ -86,7 +86,7 @@ export default function Preview({ appUrl, threads }: PreviewProps) {
         return () => {
             // Cleanup on unmount
             const scriptToRemove = document.querySelector(
-                'script[data-marge-preview]',
+                'script[data-bulla-preview]',
             );
             if (scriptToRemove) {
                 scriptToRemove.remove();
@@ -172,7 +172,7 @@ export default function Preview({ appUrl, threads }: PreviewProps) {
                                     }}
                                 >
                                     This is a sample blog post to demonstrate
-                                    how the Marge comment widget integrates with
+                                    how the Bulla comment widget integrates with
                                     your content. The widget below allows
                                     visitors to leave comments, reply to others,
                                     and engage with your content.
@@ -202,7 +202,7 @@ export default function Preview({ appUrl, threads }: PreviewProps) {
                                 }}
                             >
                                 <div ref={containerRef}>
-                                    <div id="marge-thread" />
+                                    <div id="bulla-thread" />
                                 </div>
                             </Box>
                         </Box>

@@ -42,7 +42,7 @@
             if (window.opener) {
                 try {
                     window.opener.postMessage({
-                        type: 'marge-github-auth',
+                        type: 'bulla-github-auth',
                         success: @json($success)
                     }, '*');
                 } catch (e) {

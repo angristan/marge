@@ -1,64 +1,64 @@
-/* Marge Embed Widget Styles */
+/* Bulla Embed Widget Styles */
 
-.marge-container {
-    --marge-bg: rgba(0, 0, 0, 0.03);
-    --marge-bg-elevated: rgba(0, 0, 0, 0.04);
-    --marge-text: rgba(0, 0, 0, 0.87);
-    --marge-muted: rgba(0, 0, 0, 0.5);
-    --marge-border: rgba(0, 0, 0, 0.08);
-    --marge-primary: #3b82f6;
-    --marge-primary-hover: #2563eb;
-    --marge-success: #10b981;
-    --marge-error: #ef4444;
-    --marge-error-bg: rgba(239, 68, 68, 0.08);
+.bulla-container {
+    --bulla-bg: rgba(0, 0, 0, 0.03);
+    --bulla-bg-elevated: rgba(0, 0, 0, 0.04);
+    --bulla-text: rgba(0, 0, 0, 0.87);
+    --bulla-muted: rgba(0, 0, 0, 0.5);
+    --bulla-border: rgba(0, 0, 0, 0.08);
+    --bulla-primary: #3b82f6;
+    --bulla-primary-hover: #2563eb;
+    --bulla-success: #10b981;
+    --bulla-error: #ef4444;
+    --bulla-error-bg: rgba(239, 68, 68, 0.08);
 
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
     font-size: 14px;
     line-height: 1.5;
-    color: var(--marge-text);
+    color: var(--bulla-text);
 }
 
-.marge-theme-dark {
-    --marge-bg: rgba(255, 255, 255, 0.04);
-    --marge-bg-elevated: rgba(255, 255, 255, 0.06);
-    --marge-text: rgba(255, 255, 255, 0.87);
-    --marge-muted: rgba(255, 255, 255, 0.5);
-    --marge-border: rgba(255, 255, 255, 0.08);
-    --marge-primary: #60a5fa;
-    --marge-primary-hover: #3b82f6;
-    --marge-error-bg: rgba(239, 68, 68, 0.12);
+.bulla-theme-dark {
+    --bulla-bg: rgba(255, 255, 255, 0.04);
+    --bulla-bg-elevated: rgba(255, 255, 255, 0.06);
+    --bulla-text: rgba(255, 255, 255, 0.87);
+    --bulla-muted: rgba(255, 255, 255, 0.5);
+    --bulla-border: rgba(255, 255, 255, 0.08);
+    --bulla-primary: #60a5fa;
+    --bulla-primary-hover: #3b82f6;
+    --bulla-error-bg: rgba(239, 68, 68, 0.12);
 }
 
 /* Header */
-.marge-header {
+.bulla-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 1rem;
 }
 
-.marge-title {
+.bulla-title {
     font-size: 1.25rem;
     font-weight: 600;
     margin: 0;
 }
 
 /* Sort */
-.marge-sort {
+.bulla-sort {
     display: flex;
     align-items: center;
     gap: 0.5rem;
     font-size: 13px;
-    color: var(--marge-muted);
+    color: var(--bulla-muted);
 }
 
-.marge-sort-select {
+.bulla-sort-select {
     padding: 0.375rem 1.5rem 0.375rem 0.5rem;
     font-size: 13px;
-    border: 1px solid var(--marge-border);
+    border: 1px solid var(--bulla-border);
     border-radius: 4px;
-    background: var(--marge-bg);
-    color: var(--marge-text);
+    background: var(--bulla-bg);
+    color: var(--bulla-text);
     cursor: pointer;
     appearance: none;
     -webkit-appearance: none;
@@ -67,27 +67,27 @@
     background-position: right 0.5rem center;
 }
 
-.marge-sort-select:focus {
+.bulla-sort-select:focus {
     outline: none;
-    border-color: var(--marge-primary);
+    border-color: var(--bulla-primary);
 }
 
 /* GitHub Auth Section */
-.marge-auth-section {
+.bulla-auth-section {
     display: flex;
     align-items: center;
     gap: 0.75rem;
     margin-bottom: 1rem;
     padding-bottom: 1rem;
-    border-bottom: 1px solid var(--marge-border);
+    border-bottom: 1px solid var(--bulla-border);
 }
 
-.marge-auth-divider {
-    color: var(--marge-muted);
+.bulla-auth-divider {
+    color: var(--bulla-muted);
     font-size: 13px;
 }
 
-.marge-btn-github {
+.bulla-btn-github {
     display: flex;
     align-items: center;
     gap: 0.375rem;
@@ -102,36 +102,36 @@
     transition: background 0.15s ease;
 }
 
-.marge-btn-github:hover {
+.bulla-btn-github:hover {
     background: #1b1f23;
 }
 
-.marge-theme-dark .marge-btn-github {
+.bulla-theme-dark .bulla-btn-github {
     background: #6e7681;
 }
 
-.marge-theme-dark .marge-btn-github:hover {
+.bulla-theme-dark .bulla-btn-github:hover {
     background: #8b949e;
 }
 
-.marge-github-icon {
+.bulla-github-icon {
     width: 14px;
     height: 14px;
     flex-shrink: 0;
 }
 
 /* Commenter Info */
-.marge-commenter-info {
+.bulla-commenter-info {
     display: flex;
     align-items: center;
     gap: 0.5rem;
     width: 100%;
     padding: 0.5rem 0.75rem;
-    background: var(--marge-bg-elevated);
+    background: var(--bulla-bg-elevated);
     border-radius: 6px;
 }
 
-.marge-commenter-profile {
+.bulla-commenter-profile {
     display: flex;
     align-items: center;
     gap: 0.5rem;
@@ -142,18 +142,18 @@
     transition: opacity 0.15s ease;
 }
 
-.marge-commenter-profile:hover {
+.bulla-commenter-profile:hover {
     opacity: 0.8;
 }
 
-.marge-commenter-avatar {
+.bulla-commenter-avatar {
     width: 24px;
     height: 24px;
     border-radius: 50%;
     flex-shrink: 0;
 }
 
-.marge-commenter-name {
+.bulla-commenter-name {
     font-weight: 500;
     font-size: 13px;
     overflow: hidden;
@@ -161,18 +161,18 @@
     white-space: nowrap;
 }
 
-.marge-commenter-username {
+.bulla-commenter-username {
     font-weight: 400;
-    color: var(--marge-muted);
+    color: var(--bulla-muted);
 }
 
-.marge-btn-logout {
+.bulla-btn-logout {
     display: flex;
     align-items: center;
     gap: 0.25rem;
     background: transparent;
     border: none;
-    color: var(--marge-muted);
+    color: var(--bulla-muted);
     font-size: 12px;
     cursor: pointer;
     padding: 0.25rem 0.5rem;
@@ -181,96 +181,96 @@
     flex-shrink: 0;
 }
 
-.marge-btn-logout:hover {
-    color: var(--marge-error);
-    background: var(--marge-error-bg);
+.bulla-btn-logout:hover {
+    color: var(--bulla-error);
+    background: var(--bulla-error-bg);
 }
 
 /* Form */
-.marge-form {
+.bulla-form {
     margin-bottom: 1.5rem;
     padding: 1rem;
-    background: var(--marge-bg);
-    border: 1px solid var(--marge-border);
+    background: var(--bulla-bg);
+    border: 1px solid var(--bulla-border);
     border-radius: 8px;
 }
 
-.marge-form-row {
+.bulla-form-row {
     display: flex;
     gap: 0.5rem;
     margin-bottom: 0.5rem;
 }
 
-.marge-input,
-.marge-textarea {
+.bulla-input,
+.bulla-textarea {
     width: 100%;
     padding: 0.5rem 0.75rem;
     font-size: 14px;
-    border: 1px solid var(--marge-border);
+    border: 1px solid var(--bulla-border);
     border-radius: 6px;
-    background: var(--marge-bg);
-    color: var(--marge-text);
+    background: var(--bulla-bg);
+    color: var(--bulla-text);
     box-sizing: border-box;
 }
 
-.marge-input {
+.bulla-input {
     margin-bottom: 0.5rem;
 }
 
-.marge-input:focus,
-.marge-textarea:focus {
+.bulla-input:focus,
+.bulla-textarea:focus {
     outline: none;
-    border-color: var(--marge-primary);
+    border-color: var(--bulla-primary);
     box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
 }
 
-.marge-textarea {
+.bulla-textarea {
     resize: vertical;
     min-height: 100px;
     font-family: inherit;
 }
 
 /* Preview */
-.marge-preview {
+.bulla-preview {
     min-height: 100px;
     padding: 0.5rem 0.75rem;
-    border: 1px solid var(--marge-border);
+    border: 1px solid var(--bulla-border);
     border-radius: 6px;
-    background: var(--marge-bg);
+    background: var(--bulla-bg);
 }
 
-.marge-preview-loading {
-    color: var(--marge-muted);
+.bulla-preview-loading {
+    color: var(--bulla-muted);
     font-size: 13px;
 }
 
-.marge-form-footer {
+.bulla-form-footer {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-top: 0.75rem;
 }
 
-.marge-form-actions {
+.bulla-form-actions {
     display: flex;
     gap: 0.5rem;
 }
 
-.marge-checkbox {
+.bulla-checkbox {
     display: flex;
     align-items: center;
     gap: 0.5rem;
     font-size: 13px;
-    color: var(--marge-muted);
+    color: var(--bulla-muted);
     cursor: pointer;
 }
 
-.marge-checkbox input {
+.bulla-checkbox input {
     margin: 0;
 }
 
 /* Buttons */
-.marge-btn {
+.bulla-btn {
     padding: 0.5rem 1rem;
     font-size: 14px;
     font-weight: 500;
@@ -280,118 +280,118 @@
     transition: all 0.15s ease;
 }
 
-.marge-btn:disabled {
+.bulla-btn:disabled {
     opacity: 0.5;
     cursor: not-allowed;
 }
 
-.marge-btn-primary {
-    background: var(--marge-primary);
+.bulla-btn-primary {
+    background: var(--bulla-primary);
     color: white;
 }
 
-.marge-btn-primary:hover:not(:disabled) {
-    background: var(--marge-primary-hover);
+.bulla-btn-primary:hover:not(:disabled) {
+    background: var(--bulla-primary-hover);
 }
 
-.marge-btn-secondary {
+.bulla-btn-secondary {
     background: transparent;
-    color: var(--marge-text);
-    border: 1px solid var(--marge-border);
+    color: var(--bulla-text);
+    border: 1px solid var(--bulla-border);
 }
 
-.marge-btn-secondary:hover:not(:disabled) {
-    background: var(--marge-bg-elevated);
+.bulla-btn-secondary:hover:not(:disabled) {
+    background: var(--bulla-bg-elevated);
 }
 
 /* Error */
-.marge-error {
+.bulla-error {
     padding: 0.75rem;
     margin-bottom: 1rem;
-    background: var(--marge-error-bg);
-    color: var(--marge-error);
+    background: var(--bulla-error-bg);
+    color: var(--bulla-error);
     border-radius: 6px;
     font-size: 13px;
 }
 
 /* Loading */
-.marge-loading {
+.bulla-loading {
     text-align: center;
     padding: 2rem;
-    color: var(--marge-muted);
+    color: var(--bulla-muted);
 }
 
 /* Empty */
-.marge-empty {
+.bulla-empty {
     text-align: center;
     padding: 2rem;
-    color: var(--marge-muted);
+    color: var(--bulla-muted);
 }
 
 /* Comments */
-.marge-comments {
+.bulla-comments {
     margin-top: 1.5rem;
 }
 
-.marge-comment {
+.bulla-comment {
     padding: 1rem;
-    background: var(--marge-bg);
-    border: 1px solid var(--marge-border);
+    background: var(--bulla-bg);
+    border: 1px solid var(--bulla-border);
     border-radius: 8px;
     margin-bottom: 1rem;
 }
 
-.marge-comment[data-depth="1"],
-.marge-comment[data-depth="2"],
-.marge-comment[data-depth="3"] {
+.bulla-comment[data-depth="1"],
+.bulla-comment[data-depth="2"],
+.bulla-comment[data-depth="3"] {
     margin-left: 1.5rem;
-    border-left: 3px solid var(--marge-primary);
+    border-left: 3px solid var(--bulla-primary);
 }
 
-.marge-comment-header {
+.bulla-comment-header {
     display: flex;
     align-items: center;
     gap: 0.75rem;
     margin-bottom: 0.75rem;
 }
 
-.marge-avatar {
+.bulla-avatar {
     width: 36px;
     height: 36px;
     border-radius: 50%;
-    background: var(--marge-bg-elevated);
+    background: var(--bulla-bg-elevated);
 }
 
-.marge-comment-meta {
+.bulla-comment-meta {
     display: flex;
     flex-direction: column;
     flex: 1;
 }
 
-.marge-author {
+.bulla-author {
     font-weight: 600;
     display: flex;
     align-items: center;
     gap: 0.5rem;
 }
 
-.marge-author a {
+.bulla-author a {
     color: inherit;
     text-decoration: none;
 }
 
-.marge-author a:hover {
+.bulla-author a:hover {
     text-decoration: underline;
 }
 
-.marge-date {
+.bulla-date {
     font-size: 12px;
-    color: var(--marge-muted);
+    color: var(--bulla-muted);
 }
 
-.marge-reply-to {
+.bulla-reply-to {
     font-size: 12px;
-    color: var(--marge-muted);
+    color: var(--bulla-muted);
     background: none;
     border: none;
     padding: 0;
@@ -400,16 +400,16 @@
     transition: color 0.15s ease;
 }
 
-.marge-reply-to:hover {
-    color: var(--marge-primary);
+.bulla-reply-to:hover {
+    color: var(--bulla-primary);
 }
 
 /* Highlight animation when scrolling to a comment */
-.marge-comment-highlight {
-    animation: marge-highlight 2s ease-out;
+.bulla-comment-highlight {
+    animation: bulla-highlight 2s ease-out;
 }
 
-@keyframes marge-highlight {
+@keyframes bulla-highlight {
     0% {
         background-color: rgba(59, 130, 246, 0.2);
     }
@@ -418,226 +418,226 @@
     }
 }
 
-.marge-badge {
+.bulla-badge {
     font-size: 10px;
     padding: 2px 6px;
     border-radius: 4px;
     font-weight: 500;
 }
 
-.marge-badge-admin {
-    background: var(--marge-primary);
+.bulla-badge-admin {
+    background: var(--bulla-primary);
     color: white;
 }
 
-.marge-badge-github {
+.bulla-badge-github {
     display: inline-flex;
     align-items: center;
     background: #24292e;
     color: white;
 }
 
-.marge-theme-dark .marge-badge-github {
+.bulla-theme-dark .bulla-badge-github {
     background: #6e7681;
 }
 
-.marge-badge-verified {
-    background: var(--marge-success);
+.bulla-badge-verified {
+    background: var(--bulla-success);
     color: white;
 }
 
 /* Comment body */
-.marge-comment-body {
+.bulla-comment-body {
     margin-bottom: 0.75rem;
     overflow-wrap: break-word;
 }
 
-.marge-comment-body p {
+.bulla-comment-body p {
     margin: 0 0 0.5rem 0;
 }
 
-.marge-comment-body p:last-child {
+.bulla-comment-body p:last-child {
     margin-bottom: 0;
 }
 
-.marge-comment-body code {
-    background: var(--marge-bg-elevated);
+.bulla-comment-body code {
+    background: var(--bulla-bg-elevated);
     padding: 2px 6px;
     border-radius: 4px;
     font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
     font-size: 13px;
 }
 
-.marge-comment-body pre {
-    background: var(--marge-bg-elevated);
+.bulla-comment-body pre {
+    background: var(--bulla-bg-elevated);
     padding: 1rem;
     border-radius: 6px;
     overflow-x: auto;
 }
 
-.marge-comment-body pre code {
+.bulla-comment-body pre code {
     background: none;
     padding: 0;
 }
 
-.marge-comment-body a {
-    color: var(--marge-primary);
+.bulla-comment-body a {
+    color: var(--bulla-primary);
 }
 
-.marge-comment-body blockquote {
+.bulla-comment-body blockquote {
     margin: 0.5rem 0;
     padding-left: 1rem;
-    border-left: 3px solid var(--marge-border);
-    color: var(--marge-muted);
+    border-left: 3px solid var(--bulla-border);
+    color: var(--bulla-muted);
 }
 
 /* Actions */
-.marge-comment-actions {
+.bulla-comment-actions {
     display: flex;
     gap: 0.375rem;
 }
 
-.marge-action {
+.bulla-action {
     display: flex;
     align-items: center;
     gap: 0.2rem;
     padding: 0.2rem 0.4rem;
     font-size: 11px;
-    color: var(--marge-muted);
-    background: var(--marge-bg);
-    border: 1px solid var(--marge-border);
+    color: var(--bulla-muted);
+    background: var(--bulla-bg);
+    border: 1px solid var(--bulla-border);
     border-radius: 4px;
     cursor: pointer;
     transition: all 0.15s ease;
 }
 
-.marge-action:hover:not(:disabled) {
-    border-color: var(--marge-primary);
-    color: var(--marge-primary);
+.bulla-action:hover:not(:disabled) {
+    border-color: var(--bulla-primary);
+    color: var(--bulla-primary);
 }
 
-.marge-action:disabled {
+.bulla-action:disabled {
     cursor: default;
 }
 
-.marge-action-voted {
-    color: var(--marge-primary);
+.bulla-action-voted {
+    color: var(--bulla-primary);
 }
 
-.marge-vote-group {
+.bulla-vote-group {
     display: flex;
 }
 
-.marge-vote-group .marge-action {
+.bulla-vote-group .bulla-action {
     border-radius: 0;
     margin-left: -1px;
     position: relative;
 }
 
-.marge-vote-group .marge-action:first-child {
+.bulla-vote-group .bulla-action:first-child {
     border-radius: 4px 0 0 4px;
     margin-left: 0;
 }
 
-.marge-vote-group .marge-action:last-child {
+.bulla-vote-group .bulla-action:last-child {
     border-radius: 0 4px 4px 0;
 }
 
-.marge-vote-group .marge-action:only-child {
+.bulla-vote-group .bulla-action:only-child {
     border-radius: 4px;
 }
 
-.marge-vote-group .marge-action:hover:not(:disabled) {
+.bulla-vote-group .bulla-action:hover:not(:disabled) {
     z-index: 1;
 }
 
-.marge-upvote-icon,
-.marge-downvote-icon,
-.marge-reply-icon {
+.bulla-upvote-icon,
+.bulla-downvote-icon,
+.bulla-reply-icon {
     width: 12px;
     height: 12px;
 }
 
 /* Reply form */
-.marge-reply-form {
+.bulla-reply-form {
     margin-top: 1rem;
     padding-top: 1rem;
-    border-top: 1px solid var(--marge-border);
+    border-top: 1px solid var(--bulla-border);
 }
 
 /* Replies */
-.marge-replies {
+.bulla-replies {
     margin-top: 1rem;
 }
 
 /* Footer */
-.marge-footer {
+.bulla-footer {
     margin-top: 1.5rem;
     padding-top: 1rem;
-    border-top: 1px solid var(--marge-border);
+    border-top: 1px solid var(--bulla-border);
     text-align: center;
     font-size: 12px;
 }
 
-.marge-footer a {
-    color: var(--marge-muted);
+.bulla-footer a {
+    color: var(--bulla-muted);
     text-decoration: none;
 }
 
-.marge-footer a:hover {
-    color: var(--marge-primary);
+.bulla-footer a:hover {
+    color: var(--bulla-primary);
 }
 
 /* Responsive */
 @media (max-width: 480px) {
-    .marge-form-row {
+    .bulla-form-row {
         flex-direction: column;
     }
 
-    .marge-form-footer {
+    .bulla-form-footer {
         flex-direction: column;
         align-items: stretch;
         gap: 0.75rem;
     }
 
-    .marge-form-actions {
+    .bulla-form-actions {
         justify-content: flex-end;
     }
 
-    .marge-comment[data-depth="1"],
-    .marge-comment[data-depth="2"],
-    .marge-comment[data-depth="3"] {
+    .bulla-comment[data-depth="1"],
+    .bulla-comment[data-depth="2"],
+    .bulla-comment[data-depth="3"] {
         margin-left: 0.75rem;
     }
 }
 
 /* Container queries for nested forms */
-.marge-form {
+.bulla-form {
     container-type: inline-size;
 }
 
 @container (max-width: 400px) {
-    .marge-form-row {
+    .bulla-form-row {
         flex-direction: column;
     }
 
-    .marge-form-footer {
+    .bulla-form-footer {
         flex-direction: column;
         align-items: stretch;
         gap: 0.75rem;
     }
 
-    .marge-form-actions {
+    .bulla-form-actions {
         justify-content: flex-end;
     }
 }
 
 @container (max-width: 300px) {
-    .marge-checkbox span {
+    .bulla-checkbox span {
         font-size: 12px;
     }
 
-    .marge-btn {
+    .bulla-btn {
         padding: 0.5rem 0.75rem;
         font-size: 13px;
     }

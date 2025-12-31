@@ -25,7 +25,7 @@ export default function Login() {
     return (
         <Container size={420} my={100}>
             <Center mb="xl">
-                <Title order={1}>Marge</Title>
+                <Title order={1}>Bulla</Title>
             </Center>
 
             <Paper withBorder shadow="md" p={30} radius="md">

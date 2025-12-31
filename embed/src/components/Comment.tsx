@@ -79,28 +79,28 @@ export default function Comment({
         );
         if (parentEl) {
             parentEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            parentEl.classList.add('marge-comment-highlight');
+            parentEl.classList.add('bulla-comment-highlight');
             setTimeout(() => {
-                parentEl.classList.remove('marge-comment-highlight');
+                parentEl.classList.remove('bulla-comment-highlight');
             }, 2000);
         }
     };
 
     return (
         <div
-            className="marge-comment"
+            className="bulla-comment"
             data-depth={visualDepth}
             data-comment-id={comment.id}
         >
-            <div className="marge-comment-header">
+            <div className="bulla-comment-header">
                 <img
                     src={comment.avatar}
                     alt=""
-                    className="marge-avatar"
+                    className="bulla-avatar"
                     loading="lazy"
                 />
-                <div className="marge-comment-meta">
-                    <span className="marge-author">
+                <div className="bulla-comment-meta">
+                    <span className="bulla-author">
                         {comment.website ? (
                             <a
                                 href={comment.website}
@@ -113,7 +113,7 @@ export default function Comment({
                             comment.author || 'Anonymous'
                         )}
                         {comment.is_admin && (
-                            <span className="marge-badge marge-badge-admin">
+                            <span className="bulla-badge bulla-badge-admin">
                                 {config.admin_badge_label}
                             </span>
                         )}
@@ -126,7 +126,7 @@ export default function Comment({
                                 }
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="marge-badge marge-badge-github"
+                                className="bulla-badge bulla-badge-github"
                                 title={
                                     comment.github_username
                                         ? `Logged in with GitHub as @${comment.github_username}`
@@ -154,7 +154,7 @@ export default function Comment({
                             </a>
                         )}
                     </span>
-                    <span className="marge-date">
+                    <span className="bulla-date">
                         {formatDate(comment.created_at)}
                         {comment.parent_author &&
                             visualDepth >= config.max_depth && (
@@ -162,7 +162,7 @@ export default function Comment({
                                     {' · '}
                                     <button
                                         type="button"
-                                        className="marge-reply-to"
+                                        className="bulla-reply-to"
                                         onClick={scrollToParent}
                                     >
                                         ↩ {comment.parent_author}
@@ -174,23 +174,23 @@ export default function Comment({
             </div>
 
             <div
-                className="marge-comment-body"
+                className="bulla-comment-body"
                 // biome-ignore lint/security/noDangerouslySetInnerHtml: HTML is sanitized server-side
                 dangerouslySetInnerHTML={{ __html: comment.body_html }}
             />
 
-            <div className="marge-comment-actions">
+            <div className="bulla-comment-actions">
                 {(config.enable_upvotes || config.enable_downvotes) && (
-                    <div className="marge-vote-group">
+                    <div className="bulla-vote-group">
                         {config.enable_upvotes && (
                             <button
                                 type="button"
-                                className={`marge-action ${hasVoted ? 'marge-action-voted' : ''}`}
+                                className={`bulla-action ${hasVoted ? 'bulla-action-voted' : ''}`}
                                 onClick={handleUpvote}
                                 disabled={hasVoted}
                             >
                                 <svg
-                                    className="marge-upvote-icon"
+                                    className="bulla-upvote-icon"
                                     viewBox="0 0 24 24"
                                     fill="currentColor"
                                     aria-hidden="true"
@@ -203,12 +203,12 @@ export default function Comment({
                         {config.enable_downvotes && (
                             <button
                                 type="button"
-                                className={`marge-action ${hasVoted ? 'marge-action-voted' : ''}`}
+                                className={`bulla-action ${hasVoted ? 'bulla-action-voted' : ''}`}
                                 onClick={handleDownvote}
                                 disabled={hasVoted}
                             >
                                 <svg
-                                    className="marge-downvote-icon"
+                                    className="bulla-downvote-icon"
                                     viewBox="0 0 24 24"
                                     fill="currentColor"
                                     aria-hidden="true"
@@ -222,11 +222,11 @@ export default function Comment({
                 )}
                 <button
                     type="button"
-                    className="marge-action"
+                    className="bulla-action"
                     onClick={() => setShowReplyForm(!showReplyForm)}
                 >
                     <svg
-                        className="marge-reply-icon"
+                        className="bulla-reply-icon"
                         viewBox="0 0 24 24"
                         fill="currentColor"
                         aria-hidden="true"
@@ -242,7 +242,7 @@ export default function Comment({
             </div>
 
             {showReplyForm && (
-                <div className="marge-reply-form">
+                <div className="bulla-reply-form">
                     <CommentForm
                         api={api}
                         config={config}
@@ -255,7 +255,7 @@ export default function Comment({
             )}
 
             {comment.replies.length > 0 && (
-                <div className="marge-replies">
+                <div className="bulla-replies">
                     {comment.replies.map((reply) => (
                         <Comment
                             key={reply.id}
