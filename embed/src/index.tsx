@@ -4,7 +4,7 @@ import './styles/embed.css';
 
 export type SortOrder = 'oldest' | 'newest' | 'popular';
 
-interface OapaskaOptions {
+interface MargeOptions {
     baseUrl: string;
     uri?: string;
     pageTitle?: string;
@@ -15,7 +15,7 @@ interface OapaskaOptions {
     sort?: SortOrder;
 }
 
-function init(options: OapaskaOptions) {
+function init(options: MargeOptions) {
     const container =
         typeof options.container === 'string'
             ? document.querySelector(options.container)
