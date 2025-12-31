@@ -10,7 +10,7 @@ interface CommentFormProps {
     pageTitle?: string;
     pageUrl?: string;
     parentId?: number | null;
-    onSubmit: () => void;
+    onSubmit: (newCommentId: number) => void;
     onConfigRefresh: () => void;
 }
 
@@ -56,7 +56,7 @@ export default function CommentForm({
         setSubmitting(true);
 
         try {
-            await api.createComment(uri, {
+            const result = await api.createComment(uri, {
                 parent_id: parentId,
                 author: config.is_admin ? undefined : author || undefined,
                 email: config.is_admin ? undefined : email || undefined,
@@ -74,7 +74,7 @@ export default function CommentForm({
             setEmail('');
             setWebsite('');
             setNotifyReplies(false);
-            onSubmit();
+            onSubmit(result.id);
         } catch (err) {
             setError(
                 err instanceof Error ? err.message : 'Failed to post comment',

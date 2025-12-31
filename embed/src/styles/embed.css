@@ -406,15 +406,15 @@
 
 /* Highlight animation when scrolling to a comment */
 .bulla-comment-highlight {
-    animation: bulla-highlight 2s ease-out;
+    animation: bulla-highlight 5s ease-in-out;
 }
 
 @keyframes bulla-highlight {
     0% {
-        background-color: rgba(59, 130, 246, 0.2);
+        background-color: color-mix(in srgb, var(--bulla-primary) 20%, var(--bulla-bg));
     }
     100% {
-        background-color: transparent;
+        background-color: var(--bulla-bg);
     }
 }
 

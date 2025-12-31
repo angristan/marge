@@ -50,6 +50,44 @@ export default function App({
         }
     }, [api, uri, sort]);
 
+    // Scroll to and highlight a comment by ID
+    const scrollToComment = useCallback((commentId: number) => {
+        // Use requestAnimationFrame to ensure DOM has updated
+        requestAnimationFrame(() => {
+            const commentEl = document.querySelector(
+                `[data-comment-id="${commentId}"]`,
+            );
+            if (commentEl) {
+                commentEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+                // Wait for scroll to finish before highlighting
+                const onScrollEnd = () => {
+                    commentEl.classList.add('bulla-comment-highlight');
+                    setTimeout(() => {
+                        commentEl.classList.remove('bulla-comment-highlight');
+                    }, 5000);
+                };
+
+                // Use scrollend event if supported, otherwise fallback to timeout
+                if ('onscrollend' in window) {
+                    window.addEventListener('scrollend', onScrollEnd, { once: true });
+                } else {
+                    // Fallback: wait for smooth scroll to complete (~500ms)
+                    setTimeout(onScrollEnd, 500);
+                }
+            }
+        });
+    }, []);
+
+    // Handle new comment submission: reload data and scroll to the new comment
+    const handleCommentSubmit = useCallback(
+        async (newCommentId: number) => {
+            await loadData();
+            scrollToComment(newCommentId);
+        },
+        [loadData, scrollToComment],
+    );
+
     // Refresh config only (for GitHub login/logout)
     const refreshConfig = useCallback(async () => {
         try {
@@ -178,7 +216,7 @@ export default function App({
                 uri={uri}
                 pageTitle={pageTitle}
                 pageUrl={pageUrl}
-                onSubmit={loadData}
+                onSubmit={handleCommentSubmit}
                 onConfigRefresh={refreshConfig}
             />
 
@@ -196,7 +234,7 @@ export default function App({
                             config={config}
                             uri={uri}
                             depth={0}
-                            onRefresh={loadData}
+                            onRefresh={handleCommentSubmit}
                             onConfigRefresh={refreshConfig}
                         />
                     ))

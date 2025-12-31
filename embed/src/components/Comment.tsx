@@ -9,7 +9,7 @@ interface CommentProps {
     config: Config;
     uri: string;
     depth: number;
-    onRefresh: () => void;
+    onRefresh: (newCommentId: number) => void;
     onConfigRefresh: () => void;
 }
 
@@ -53,9 +53,9 @@ export default function Comment({
         }
     };
 
-    const handleReplySubmit = () => {
+    const handleReplySubmit = (newCommentId: number) => {
         setShowReplyForm(false);
-        onRefresh();
+        onRefresh(newCommentId);
     };
 
     const formatDate = (dateStr: string) => {
@@ -79,10 +79,22 @@ export default function Comment({
         );
         if (parentEl) {
             parentEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            parentEl.classList.add('bulla-comment-highlight');
-            setTimeout(() => {
-                parentEl.classList.remove('bulla-comment-highlight');
-            }, 2000);
+
+            // Wait for scroll to finish before highlighting
+            const onScrollEnd = () => {
+                parentEl.classList.add('bulla-comment-highlight');
+                setTimeout(() => {
+                    parentEl.classList.remove('bulla-comment-highlight');
+                }, 5000);
+            };
+
+            // Use scrollend event if supported, otherwise fallback to timeout
+            if ('onscrollend' in window) {
+                window.addEventListener('scrollend', onScrollEnd, { once: true });
+            } else {
+                // Fallback: wait for smooth scroll to complete (~500ms)
+                setTimeout(onScrollEnd, 500);
+            }
         }
     };
 
