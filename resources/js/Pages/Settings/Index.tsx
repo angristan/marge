@@ -225,10 +225,6 @@ export default function SettingsIndex({ settings }: SettingsIndexProps) {
                                             label: 'None - All comments auto-approved',
                                         },
                                         {
-                                            value: 'unverified',
-                                            label: 'Unverified - Only unverified emails need approval',
-                                        },
-                                        {
                                             value: 'all',
                                             label: 'All - All comments need approval',
                                         },

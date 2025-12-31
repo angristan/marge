@@ -75,7 +75,6 @@ class ListComments
                 'body_excerpt' => Markdown::toPlainText($comment->body_markdown, 150),
                 'body_html' => $comment->body_html,
                 'status' => $comment->status,
-                'email_verified' => $comment->email_verified,
                 'is_admin' => $comment->is_admin,
                 'upvotes' => $comment->upvotes,
                 'thread_id' => $comment->thread_id,

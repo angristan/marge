@@ -41,7 +41,7 @@ class SettingsController extends Controller
             'admin_email' => ['nullable', 'email', 'max:255'],
 
             // Moderation
-            'moderation_mode' => ['nullable', 'string', 'in:none,all,unverified'],
+            'moderation_mode' => ['nullable', 'string', 'in:none,all'],
             'require_author' => ['nullable', 'boolean'],
             'require_email' => ['nullable', 'boolean'],
             'enable_upvotes' => ['nullable', 'boolean'],

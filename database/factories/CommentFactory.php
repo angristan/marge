@@ -29,7 +29,6 @@ class CommentFactory extends Factory
             'body_markdown' => $body,
             'body_html' => "<p>{$body}</p>",
             'status' => 'approved',
-            'email_verified' => false,
             'upvotes' => 0,
             'voters_bloom' => null,
             'notify_replies' => false,
@@ -59,13 +58,6 @@ class CommentFactory extends Factory
     {
         return $this->state(fn (array $attributes) => [
             'is_admin' => true,
-        ]);
-    }
-
-    public function verified(): static
-    {
-        return $this->state(fn (array $attributes) => [
-            'email_verified' => true,
         ]);
     }
 

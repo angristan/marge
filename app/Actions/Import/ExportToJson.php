@@ -41,7 +41,6 @@ class ExportToJson
                             'website' => $comment->website,
                             'body_markdown' => $comment->body_markdown,
                             'status' => $comment->status,
-                            'email_verified' => $comment->email_verified,
                             'upvotes' => $comment->upvotes,
                             'notify_replies' => $comment->notify_replies,
                             'is_admin' => $comment->is_admin,

@@ -35,7 +35,6 @@ interface Comment {
     avatar: string;
     body_excerpt: string;
     status: string;
-    email_verified: boolean;
     is_admin: boolean;
     upvotes: number;
     thread_id: number;

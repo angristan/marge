@@ -93,7 +93,6 @@ class GetThreadComments
             'parent_author' => $rootParent?->display_author,
             'depth' => $comment->depth,
             'author' => $comment->display_author,
-            'email_verified' => $comment->email_verified,
             'is_admin' => $comment->is_admin,
             'avatar' => $comment->display_email
                 ? Gravatar::url($comment->display_email)

@@ -60,7 +60,6 @@ class CommentsController extends Controller
                 'body_markdown' => $comment->body_markdown,
                 'body_html' => $comment->body_html,
                 'status' => $comment->status,
-                'email_verified' => $comment->email_verified,
                 'is_admin' => $comment->is_admin,
                 'upvotes' => $comment->upvotes,
                 'remote_addr' => $comment->remote_addr,

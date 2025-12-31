@@ -115,14 +115,6 @@ export default function Comment({
                                 Admin
                             </span>
                         )}
-                        {comment.email_verified && (
-                            <span
-                                className="marge-badge marge-badge-verified"
-                                title="Verified email"
-                            >
-                                ✓
-                            </span>
-                        )}
                     </span>
                     <span className="marge-date">
                         {formatDate(comment.created_at)}

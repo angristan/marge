@@ -8,8 +8,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::redirect('/', '/admin');
 
-// Email verification and unsubscribe (public)
-Route::get('/verify/{token}', [EmailController::class, 'verify'])->name('verify');
+// Email unsubscribe (public)
 Route::get('/unsubscribe/{token}', [EmailController::class, 'unsubscribe'])->name('unsubscribe');
 
 // Email moderation links (public but require valid token)

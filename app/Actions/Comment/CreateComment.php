@@ -6,10 +6,8 @@ namespace App\Actions\Comment;
 
 use App\Actions\Email\SendModerationNotification;
 use App\Actions\Email\SendReplyNotification;
-use App\Actions\Email\SendVerificationEmail;
 use App\Actions\Thread\GetOrCreateThread;
 use App\Models\Comment;
-use App\Models\EmailVerification;
 use App\Models\Setting;
 use App\Support\IpAnonymizer;
 use App\Support\Markdown;
@@ -58,14 +56,8 @@ class CreateComment
             $depth = $parentComment->depth + 1;
         }
 
-        // Check if email is pre-verified
-        $emailVerified = false;
-        if (isset($data['email'])) {
-            $emailVerified = EmailVerification::isEmailVerified($data['email']);
-        }
-
         // Determine status based on moderation settings
-        $status = $this->determineStatus($data, $emailVerified);
+        $status = $this->determineStatus($data);
 
         // Create the comment
         $comment = Comment::create([
@@ -79,7 +71,6 @@ class CreateComment
             'body_markdown' => $data['body'],
             'body_html' => Markdown::toHtml($data['body']),
             'status' => $status,
-            'email_verified' => $emailVerified,
             'notify_replies' => $data['notify_replies'] ?? false,
             'remote_addr' => IpAnonymizer::anonymize($ip),
             'user_agent' => $userAgent ? Str::limit($userAgent, 512, '') : null,
@@ -90,21 +81,16 @@ class CreateComment
         ]);
 
         // Send emails (only if email sending is configured)
-        $this->sendEmails($comment, $emailVerified);
+        $this->sendEmails($comment);
 
         return $comment;
     }
 
-    private function sendEmails(Comment $comment, bool $alreadyVerified): void
+    private function sendEmails(Comment $comment): void
     {
         // Only send emails if SMTP is configured
         if (! Setting::getValue('smtp_host')) {
             return;
-        }
-
-        // Send verification email if email provided and not already verified
-        if ($comment->email && ! $alreadyVerified) {
-            SendVerificationEmail::run($comment);
         }
 
         // Send moderation notification if comment is pending
@@ -123,7 +109,7 @@ class CreateComment
      *
      * @param  array<string, mixed>  $data
      */
-    private function determineStatus(array $data, bool $emailVerified): string
+    private function determineStatus(array $data): string
     {
         // Admin comments are always approved
         if ($data['is_admin'] ?? false) {
@@ -135,7 +121,6 @@ class CreateComment
 
         return match ($moderationMode) {
             'all' => Comment::STATUS_PENDING,
-            'unverified' => $emailVerified ? Comment::STATUS_APPROVED : Comment::STATUS_PENDING,
             default => Comment::STATUS_APPROVED,
         };
     }

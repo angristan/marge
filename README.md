@@ -118,7 +118,7 @@ Tests run against both SQLite and PostgreSQL in CI.
 
 All configuration is done through the admin panel after initial setup. Key settings:
 
-- **Moderation mode:** None, unverified only, or all comments
+- **Moderation mode:** None or all comments
 - **Edit window:** How long users can edit their comments
 - **Max nesting depth:** Visual nesting level (0-3), replies unlimited
 - **Rate limiting:** Comments per minute per IP

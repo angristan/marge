@@ -4,7 +4,6 @@ export interface Comment {
     parent_author: string | null;
     depth: number;
     author: string | null;
-    email_verified: boolean;
     is_admin: boolean;
     avatar: string;
     website: string | null;
@@ -41,7 +40,6 @@ export interface Config {
 export interface CreateCommentResponse {
     id: number;
     author: string | null;
-    email_verified: boolean;
     is_admin: boolean;
     avatar: string;
     website: string | null;

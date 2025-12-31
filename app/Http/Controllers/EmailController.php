@@ -6,23 +6,11 @@ namespace App\Http\Controllers;
 
 use App\Actions\Email\ModerateViaEmail;
 use App\Actions\Email\Unsubscribe;
-use App\Actions\Email\VerifyEmail;
 use App\Models\Comment;
 use Illuminate\Http\RedirectResponse;
 
 class EmailController extends Controller
 {
-    public function verify(string $token): RedirectResponse
-    {
-        $verified = VerifyEmail::run($token);
-
-        if ($verified) {
-            return redirect('/')->with('success', 'Your email has been verified!');
-        }
-
-        return redirect('/')->with('error', 'Invalid or expired verification link.');
-    }
-
     public function unsubscribe(string $token): RedirectResponse
     {
         $unsubscribed = Unsubscribe::run($token);

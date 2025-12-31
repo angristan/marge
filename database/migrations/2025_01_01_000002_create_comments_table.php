@@ -27,7 +27,6 @@ return new class extends Migration
 
             // Status: pending, approved, spam, deleted
             $table->string('status', 20)->default('pending');
-            $table->boolean('email_verified')->default(false);
 
             // Engagement
             $table->unsignedInteger('upvotes')->default(0);

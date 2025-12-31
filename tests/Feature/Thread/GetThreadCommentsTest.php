@@ -158,7 +158,6 @@ describe('GET /api/threads/{uri}/comments', function (): void {
             'thread_id' => $thread->id,
             'author' => 'John',
             'email' => 'john@example.com',
-            'email_verified' => true,
             'is_admin' => false,
             'website' => 'https://example.com',
             'body_markdown' => 'Test',
@@ -171,7 +170,6 @@ describe('GET /api/threads/{uri}/comments', function (): void {
 
         $response->assertOk()
             ->assertJsonPath('comments.0.author', 'John')
-            ->assertJsonPath('comments.0.email_verified', true)
             ->assertJsonPath('comments.0.is_admin', false)
             ->assertJsonPath('comments.0.website', 'https://example.com')
             ->assertJsonPath('comments.0.upvotes', 5);

@@ -114,7 +114,6 @@ class ImportFromJson
             'body_markdown' => $bodyMarkdown,
             'body_html' => $bodyHtml,
             'status' => $commentData['status'] ?? Comment::STATUS_APPROVED,
-            'email_verified' => $commentData['email_verified'] ?? false,
             'upvotes' => $commentData['upvotes'] ?? 0,
             'notify_replies' => $commentData['notify_replies'] ?? false,
             'is_admin' => $commentData['is_admin'] ?? false,

@@ -35,7 +35,6 @@ interface CommentShowProps {
         body_markdown: string;
         body_html: string;
         status: string;
-        email_verified: boolean;
         is_admin: boolean;
         upvotes: number;
         remote_addr: string | null;
@@ -100,11 +99,6 @@ export default function CommentShow({ comment }: CommentShowProps) {
                                 <Text fw={600}>
                                     {comment.author || 'Anonymous'}
                                 </Text>
-                                {comment.email_verified && (
-                                    <Badge size="xs" color="green">
-                                        Verified
-                                    </Badge>
-                                )}
                                 {comment.is_admin && (
                                     <Badge size="xs" color="blue">
                                         Admin

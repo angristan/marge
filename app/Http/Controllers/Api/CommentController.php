@@ -85,7 +85,6 @@ class CommentController extends Controller
         return response()->json([
             'id' => $comment->id,
             'author' => $comment->display_author,
-            'email_verified' => $comment->email_verified,
             'is_admin' => $comment->is_admin,
             'avatar' => $comment->display_email
                 ? Gravatar::url($comment->display_email)
@@ -109,7 +108,6 @@ class CommentController extends Controller
         return response()->json([
             'id' => $comment->id,
             'author' => $comment->display_author,
-            'email_verified' => $comment->email_verified,
             'is_admin' => $comment->is_admin,
             'avatar' => $comment->display_email
                 ? Gravatar::url($comment->display_email)

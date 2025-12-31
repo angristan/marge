@@ -22,7 +22,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property string $body_markdown
  * @property string $body_html
  * @property string $status
- * @property bool $email_verified
  * @property int $upvotes
  * @property string|null $voters_bloom
  * @property bool $notify_replies
@@ -60,7 +59,6 @@ class Comment extends Model
         'body_markdown',
         'body_html',
         'status',
-        'email_verified',
         'upvotes',
         'voters_bloom',
         'notify_replies',
@@ -77,7 +75,6 @@ class Comment extends Model
     {
         return [
             'is_admin' => 'boolean',
-            'email_verified' => 'boolean',
             'upvotes' => 'integer',
             'depth' => 'integer',
             'notify_replies' => 'boolean',
