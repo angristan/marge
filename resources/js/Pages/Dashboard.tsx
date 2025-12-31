@@ -52,7 +52,8 @@ export default function Dashboard({
     siteName,
     siteUrl,
 }: DashboardProps) {
-    const embedCode = `<script src="${siteUrl || window.location.origin}/embed/embed.js" data-bulla="${siteUrl || window.location.origin}" async></script>
+    const bullaUrl = window.location.origin;
+    const embedCode = `<script src="${bullaUrl}/embed/embed.js" data-bulla="${bullaUrl}" async></script>
 <div id="bulla-thread"></div>`;
 
     return (
