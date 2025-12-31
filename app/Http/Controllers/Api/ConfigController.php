@@ -42,6 +42,7 @@ class ConfigController extends Controller
             'is_admin' => $isAdmin,
             'enable_upvotes' => Setting::getValue('enable_upvotes', 'true') === 'true',
             'enable_downvotes' => Setting::getValue('enable_downvotes', 'false') === 'true',
+            'admin_badge_label' => Setting::getValue('admin_badge_label', 'Author'),
             'github_auth_enabled' => $githubAuthEnabled,
             'commenter' => $commenter,
         ];

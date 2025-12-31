@@ -38,6 +38,7 @@ class SettingsController extends Controller
             'site_name' => ['nullable', 'string', 'max:255'],
             'site_url' => ['nullable', 'url', 'max:1024'],
             'admin_display_name' => ['nullable', 'string', 'max:255'],
+            'admin_badge_label' => ['nullable', 'string', 'max:50'],
             'admin_email' => ['nullable', 'email', 'max:255'],
 
             // Moderation

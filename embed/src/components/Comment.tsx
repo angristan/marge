@@ -114,7 +114,7 @@ export default function Comment({
                         )}
                         {comment.is_admin && (
                             <span className="marge-badge marge-badge-admin">
-                                Admin
+                                {config.admin_badge_label}
                             </span>
                         )}
                         {!comment.is_admin && comment.is_github_user && (

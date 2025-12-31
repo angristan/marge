@@ -44,6 +44,7 @@ export interface Config {
     is_admin: boolean;
     enable_upvotes: boolean;
     enable_downvotes: boolean;
+    admin_badge_label: string;
     github_auth_enabled: boolean;
     commenter: Commenter | null;
 }

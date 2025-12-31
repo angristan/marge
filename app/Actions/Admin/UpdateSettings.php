@@ -22,6 +22,7 @@ class UpdateSettings
             'site_name',
             'site_url',
             'admin_display_name',
+            'admin_badge_label',
             'admin_email',
             'moderation_mode',
             'require_author',
@@ -73,6 +74,7 @@ class UpdateSettings
             'site_name' => Setting::getValue('site_name', 'Marge'),
             'site_url' => Setting::getValue('site_url'),
             'admin_display_name' => Setting::getValue('admin_display_name', 'Admin'),
+            'admin_badge_label' => Setting::getValue('admin_badge_label', 'Author'),
             'admin_email' => Setting::getValue('admin_email'),
 
             // Moderation

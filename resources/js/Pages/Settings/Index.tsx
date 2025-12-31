@@ -36,6 +36,7 @@ interface SettingsIndexProps {
         site_name: string;
         site_url: string | null;
         admin_display_name: string;
+        admin_badge_label: string;
         admin_email: string | null;
         moderation_mode: string;
         require_author: boolean;
@@ -72,6 +73,7 @@ export default function SettingsIndex({ settings }: SettingsIndexProps) {
         site_name: settings.site_name,
         site_url: settings.site_url || '',
         admin_display_name: settings.admin_display_name,
+        admin_badge_label: settings.admin_badge_label,
         admin_email: settings.admin_email || '',
         moderation_mode: settings.moderation_mode,
         require_author: settings.require_author,
@@ -201,6 +203,18 @@ export default function SettingsIndex({ settings }: SettingsIndexProps) {
                                             e.target.value,
                                         )
                                     }
+                                />
+                                <TextInput
+                                    label="Admin Badge Label"
+                                    description="Badge shown next to admin comments (e.g., Author, Admin, OP)"
+                                    value={data.admin_badge_label}
+                                    onChange={(e) =>
+                                        setData(
+                                            'admin_badge_label',
+                                            e.target.value,
+                                        )
+                                    }
+                                    placeholder="Author"
                                 />
                                 <TextInput
                                     label="Admin Email"

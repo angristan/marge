@@ -18,6 +18,7 @@ describe('GET /api/config', function (): void {
                 'edit_window_minutes',
                 'timestamp',
                 'is_admin',
+                'admin_badge_label',
             ])
             ->assertJson([
                 'is_admin' => false,
