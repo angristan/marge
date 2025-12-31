@@ -3,6 +3,7 @@ import { router, useForm } from '@inertiajs/react';
 import {
     Alert,
     Button,
+    ColorInput,
     Group,
     Modal,
     NumberInput,
@@ -49,6 +50,7 @@ interface SettingsIndexProps {
         blocked_ips: string;
         allowed_origins: string;
         custom_css: string;
+        accent_color: string;
         enable_upvotes: boolean;
         enable_downvotes: boolean;
         enable_github_login: boolean;
@@ -86,6 +88,7 @@ export default function SettingsIndex({ settings }: SettingsIndexProps) {
         blocked_ips: settings.blocked_ips,
         allowed_origins: settings.allowed_origins,
         custom_css: settings.custom_css,
+        accent_color: settings.accent_color,
         enable_upvotes: settings.enable_upvotes,
         enable_downvotes: settings.enable_downvotes,
         enable_github_login: settings.enable_github_login,
@@ -523,6 +526,27 @@ export default function SettingsIndex({ settings }: SettingsIndexProps) {
                     <Tabs.Panel value="appearance">
                         <Paper withBorder p="md" radius="md">
                             <Stack>
+                                <ColorInput
+                                    label="Accent Color"
+                                    description="Primary color used for buttons, links, and highlights"
+                                    value={data.accent_color}
+                                    onChange={(value) =>
+                                        setData('accent_color', value)
+                                    }
+                                    format="hex"
+                                    swatches={[
+                                        '#3b82f6',
+                                        '#8b5cf6',
+                                        '#ec4899',
+                                        '#ef4444',
+                                        '#f97316',
+                                        '#eab308',
+                                        '#22c55e',
+                                        '#14b8a6',
+                                        '#06b6d4',
+                                        '#6366f1',
+                                    ]}
+                                />
                                 <Textarea
                                     label="Custom CSS"
                                     description="CSS to inject into the embed widget"

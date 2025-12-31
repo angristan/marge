@@ -66,6 +66,7 @@ class SettingsController extends Controller
 
             // Appearance
             'custom_css' => ['nullable', 'string', 'max:50000'],
+            'accent_color' => ['nullable', 'string', 'max:7', 'regex:/^#[0-9A-Fa-f]{6}$/'],
 
             // Email
             'smtp_host' => ['nullable', 'string', 'max:255'],

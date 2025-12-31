@@ -143,30 +143,43 @@ Display comment counts anywhere on your site:
 
 ## Styling
 
-Marge uses CSS custom properties for theming. Override them in your stylesheet:
+### Accent Color
+
+The primary accent color (used for buttons, links, and highlights) can be configured in **Admin > Settings > Appearance**.
+
+### Custom CSS
+
+For more control, Marge uses CSS custom properties. The widget uses opacity-based colors to blend with your site's background. Override them in your stylesheet or via **Admin > Settings > Appearance > Custom CSS**:
 
 ```css
 .marge-container {
-  --marge-bg: #ffffff;
-  --marge-text: #1a1a1a;
-  --marge-muted: #6b7280;
-  --marge-border: #e5e7eb;
+  /* Backgrounds use opacity to blend with your site */
+  --marge-bg: rgba(0, 0, 0, 0.03);           /* Slight darkening */
+  --marge-bg-elevated: rgba(0, 0, 0, 0.04);  /* For code blocks, etc. */
+  --marge-text: rgba(0, 0, 0, 0.87);
+  --marge-muted: rgba(0, 0, 0, 0.5);
+  --marge-border: rgba(0, 0, 0, 0.08);
+
+  /* Accent colors (configurable in admin) */
   --marge-primary: #3b82f6;
   --marge-primary-hover: #2563eb;
+
+  /* Status colors */
   --marge-success: #10b981;
   --marge-error: #ef4444;
-  --marge-error-bg: #fef2f2;
+  --marge-error-bg: rgba(239, 68, 68, 0.08);
 }
 
 /* Dark theme */
 .marge-theme-dark {
-  --marge-bg: #1f2937;
-  --marge-text: #f3f4f6;
-  --marge-muted: #9ca3af;
-  --marge-border: #374151;
+  --marge-bg: rgba(255, 255, 255, 0.04);           /* Slight lightening */
+  --marge-bg-elevated: rgba(255, 255, 255, 0.06);
+  --marge-text: rgba(255, 255, 255, 0.87);
+  --marge-muted: rgba(255, 255, 255, 0.5);
+  --marge-border: rgba(255, 255, 255, 0.08);
   --marge-primary: #60a5fa;
   --marge-primary-hover: #3b82f6;
-  --marge-error-bg: #7f1d1d;
+  --marge-error-bg: rgba(239, 68, 68, 0.12);
 }
 ```
 

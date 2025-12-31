@@ -99,6 +99,15 @@ export default function App({
         return () => mediaQuery.removeEventListener('change', handler);
     }, [theme]);
 
+    // Generate CSS custom properties for accent color
+    const getAccentStyles = (accentColor?: string) => {
+        if (!accentColor) return {};
+        return {
+            '--marge-primary': accentColor,
+            '--marge-primary-hover': accentColor,
+        } as React.CSSProperties;
+    };
+
     if (loading) {
         return (
             <div className={`marge-container marge-theme-${effectiveTheme}`}>
@@ -126,6 +135,8 @@ export default function App({
 
     if (!config || !data) return null;
 
+    const accentStyles = getAccentStyles(config.accent_color);
+
     const sortLabels: Record<SortOrder, string> = {
         oldest: 'Oldest',
         newest: 'Newest',
@@ -133,7 +144,10 @@ export default function App({
     };
 
     return (
-        <div className={`marge-container marge-theme-${effectiveTheme}`}>
+        <div
+            className={`marge-container marge-theme-${effectiveTheme}`}
+            style={accentStyles}
+        >
             <div className="marge-header">
                 <h3 className="marge-title">
                     {data.total} {data.total === 1 ? 'Comment' : 'Comments'}

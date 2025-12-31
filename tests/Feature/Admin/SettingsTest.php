@@ -103,6 +103,15 @@ describe('Admin Settings', function (): void {
         expect(Setting::getValue('custom_css', ''))->toBe('');
     });
 
+    it('updates accent color', function (): void {
+        $response = $this->post('/admin/settings', [
+            'accent_color' => '#ef4444',
+        ]);
+
+        $response->assertRedirect();
+        expect(Setting::getValue('accent_color'))->toBe('#ef4444');
+    });
+
     it('wipes all data', function (): void {
         $thread = Thread::create(['uri' => '/test']);
         Comment::create([

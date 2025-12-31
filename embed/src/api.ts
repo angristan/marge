@@ -45,6 +45,7 @@ export interface Config {
     enable_upvotes: boolean;
     enable_downvotes: boolean;
     admin_badge_label: string;
+    accent_color: string;
     github_auth_enabled: boolean;
     commenter: Commenter | null;
 }

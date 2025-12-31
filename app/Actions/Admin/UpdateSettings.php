@@ -35,6 +35,7 @@ class UpdateSettings
             'blocked_ips',
             'allowed_origins',
             'custom_css',
+            'accent_color',
             'enable_upvotes',
             'enable_downvotes',
             'enable_github_login',
@@ -97,6 +98,7 @@ class UpdateSettings
 
             // Appearance
             'custom_css' => Setting::getValue('custom_css', ''),
+            'accent_color' => Setting::getValue('accent_color', '#3b82f6'),
 
             // Voting
             'enable_upvotes' => Setting::getValue('enable_upvotes', 'true') === 'true',

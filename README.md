@@ -123,6 +123,8 @@ All configuration is done through the admin panel after initial setup. Key setti
 - **Max nesting depth:** Visual nesting level (0-3), replies unlimited
 - **Rate limiting:** Comments per minute per IP
 - **Blocked words:** Spam keyword list
+- **Accent color:** Customize the primary color for buttons and links
+- **Custom CSS:** Inject custom styles into the embed widget
 - **SMTP:** Email notification settings
 - **GitHub OAuth:** Client ID and secret for commenter authentication
 
