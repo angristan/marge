@@ -16,6 +16,9 @@ pre-commit:
     biome-embed:
       glob: "embed/**/*.{js,ts,tsx}"
       run: npm run check --prefix embed
+    test-embed:
+      glob: "embed/**/*.{ts,tsx}"
+      run: npm run test:run --prefix embed
     typecheck:
       glob: "*.{ts,tsx}"
       run: npm run typecheck

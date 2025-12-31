@@ -87,3 +87,17 @@ jobs:
 
       - name: Run test suite
         run: php artisan test
+
+  vitest-embed:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "lts/*"
+      - name: npm ci
+        working-directory: embed
+        run: npm ci
+      - name: vitest
+        working-directory: embed
+        run: npm run test:run
