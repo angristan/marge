@@ -58,7 +58,10 @@ export default function App({
                 `[data-comment-id="${commentId}"]`,
             );
             if (commentEl) {
-                commentEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                commentEl.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'center',
+                });
 
                 // Wait for scroll to finish before highlighting
                 const onScrollEnd = () => {
@@ -70,7 +73,9 @@ export default function App({
 
                 // Use scrollend event if supported, otherwise fallback to timeout
                 if ('onscrollend' in window) {
-                    window.addEventListener('scrollend', onScrollEnd, { once: true });
+                    window.addEventListener('scrollend', onScrollEnd, {
+                        once: true,
+                    });
                 } else {
                     // Fallback: wait for smooth scroll to complete (~500ms)
                     setTimeout(onScrollEnd, 500);

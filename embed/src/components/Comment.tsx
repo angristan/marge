@@ -90,7 +90,9 @@ export default function Comment({
 
             // Use scrollend event if supported, otherwise fallback to timeout
             if ('onscrollend' in window) {
-                window.addEventListener('scrollend', onScrollEnd, { once: true });
+                window.addEventListener('scrollend', onScrollEnd, {
+                    once: true,
+                });
             } else {
                 // Fallback: wait for smooth scroll to complete (~500ms)
                 setTimeout(onScrollEnd, 500);
