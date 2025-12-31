@@ -226,11 +226,11 @@ export default function CommentsIndex({
                                             size="sm"
                                             radius="xl"
                                         />
-                                        <div>
-                                            <Text size="sm" fw={500}>
+                                        <div style={{ maxWidth: 180 }}>
+                                            <Text size="sm" fw={500} truncate>
                                                 {comment.author || 'Anonymous'}
                                             </Text>
-                                            <Text size="xs" c="dimmed">
+                                            <Text size="xs" c="dimmed" truncate>
                                                 {comment.email || 'No email'}
                                             </Text>
                                         </div>
