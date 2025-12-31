@@ -1,4 +1,5 @@
 import AdminLayout from '@/Layouts/AdminLayout';
+import { useUrlState } from '@/hooks/useUrlState';
 import { router, useForm, usePage } from '@inertiajs/react';
 import {
     Alert,
@@ -29,6 +30,7 @@ import {
 import { useCallback, useEffect, useState } from 'react';
 
 type ImportType = 'isso' | 'json' | 'wordpress' | 'disqus';
+type ImportTab = ImportType | 'export' | 'claim';
 
 type PageProps = {
     flash: {
@@ -38,6 +40,7 @@ type PageProps = {
 };
 
 export default function ImportIndex() {
+    const [activeTab, setActiveTab] = useUrlState<ImportTab>('tab', 'isso');
     const { flash } = usePage<PageProps>().props;
 
     const issoForm = useForm<{ file: File | null }>({ file: null });
@@ -248,7 +251,10 @@ export default function ImportIndex() {
                         current data as a backup.
                     </Alert>
 
-                    <Tabs defaultValue="isso">
+                    <Tabs
+                        value={activeTab}
+                        onChange={(value) => setActiveTab(value as ImportTab)}
+                    >
                         <Tabs.List>
                             {importSources.map((source) => (
                                 <Tabs.Tab

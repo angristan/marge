@@ -1,4 +1,5 @@
 import AdminLayout from '@/Layouts/AdminLayout';
+import { useUrlState } from '@/hooks/useUrlState';
 import {
     Box,
     Container,
@@ -11,7 +12,7 @@ import {
     Title,
     useComputedColorScheme,
 } from '@mantine/core';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 
 declare global {
     interface Window {
@@ -30,9 +31,14 @@ interface PreviewProps {
     threads: Thread[];
 }
 
+type ViewMode = 'admin' | 'guest';
+
 export default function Preview({ appUrl, threads }: PreviewProps) {
-    const [viewMode, setViewMode] = useState('admin');
-    const [selectedThread, setSelectedThread] = useState<string | null>(null);
+    const [viewMode, setViewMode] = useUrlState<ViewMode>('view', 'admin');
+    const [selectedThread, setSelectedThread] = useUrlState<string>(
+        'thread',
+        '',
+    );
     const containerRef = useRef<HTMLDivElement>(null);
     const theme = useComputedColorScheme('light');
 
@@ -108,7 +114,9 @@ export default function Preview({ appUrl, threads }: PreviewProps) {
                                 <SegmentedControl
                                     size="xs"
                                     value={viewMode}
-                                    onChange={setViewMode}
+                                    onChange={(value) =>
+                                        setViewMode(value as ViewMode)
+                                    }
                                     data={[
                                         { label: 'Admin', value: 'admin' },
                                         { label: 'Guest', value: 'guest' },
@@ -118,8 +126,10 @@ export default function Preview({ appUrl, threads }: PreviewProps) {
                             <Select
                                 label="Thread"
                                 size="xs"
-                                value={selectedThread}
-                                onChange={setSelectedThread}
+                                value={selectedThread || null}
+                                onChange={(value) =>
+                                    setSelectedThread(value || '')
+                                }
                                 data={threadOptions}
                                 placeholder="Select a thread"
                                 searchable

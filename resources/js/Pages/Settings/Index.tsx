@@ -1,4 +1,5 @@
 import AdminLayout from '@/Layouts/AdminLayout';
+import { useUrlState } from '@/hooks/useUrlState';
 import { router, useForm } from '@inertiajs/react';
 import {
     Alert,
@@ -65,7 +66,13 @@ interface SettingsIndexProps {
     };
 }
 
+type SettingsTab = 'general' | 'moderation' | 'auth' | 'email' | 'appearance';
+
 export default function SettingsIndex({ settings }: SettingsIndexProps) {
+    const [activeTab, setActiveTab] = useUrlState<SettingsTab>(
+        'tab',
+        'general',
+    );
     const [wipeModalOpened, { open: openWipeModal, close: closeWipeModal }] =
         useDisclosure(false);
     const [wipeConfirmation, setWipeConfirmation] = useState('');
@@ -143,7 +150,10 @@ export default function SettingsIndex({ settings }: SettingsIndexProps) {
             </Title>
 
             <form onSubmit={handleSubmit}>
-                <Tabs defaultValue="general">
+                <Tabs
+                    value={activeTab}
+                    onChange={(value) => setActiveTab(value as SettingsTab)}
+                >
                     <Tabs.List mb="lg">
                         <Tabs.Tab
                             value="general"
