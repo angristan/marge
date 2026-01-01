@@ -19,6 +19,7 @@ Route::post('/auth/logout', [CommenterAuthController::class, 'logout'])
 
 // Email unsubscribe (public)
 Route::get('/unsubscribe/{token}', [EmailController::class, 'unsubscribe'])->name('unsubscribe');
+Route::get('/unsubscribe/{token}/all', [EmailController::class, 'unsubscribeAll'])->name('unsubscribe.all');
 
 // Email moderation links (public but require valid token)
 Route::get('/moderate/{comment}/approve/{token}', [EmailController::class, 'approve'])->name('moderate.approve');

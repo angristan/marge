@@ -82,4 +82,70 @@ class UnsubscribeTest extends TestCase
         $response->assertRedirect('/');
         $response->assertSessionHas('error');
     }
+
+    public function test_unsubscribe_all_unsubscribes_all_subscriptions_for_email(): void
+    {
+        $thread1 = Thread::factory()->create();
+        $thread2 = Thread::factory()->create();
+        $comment1 = Comment::factory()->create(['thread_id' => $thread1->id]);
+        $comment2 = Comment::factory()->create(['thread_id' => $thread2->id]);
+        $comment3 = Comment::factory()->create(['thread_id' => $thread1->id]);
+
+        $email = 'user@example.com';
+
+        $sub1 = NotificationSubscription::create([
+            'email' => $email,
+            'comment_id' => $comment1->id,
+            'unsubscribe_token' => 'token-1',
+        ]);
+
+        $sub2 = NotificationSubscription::create([
+            'email' => $email,
+            'comment_id' => $comment2->id,
+            'unsubscribe_token' => 'token-2',
+        ]);
+
+        $sub3 = NotificationSubscription::create([
+            'email' => 'other@example.com',
+            'comment_id' => $comment3->id,
+            'unsubscribe_token' => 'token-3',
+        ]);
+
+        $result = Unsubscribe::run('token-1', all: true);
+
+        $this->assertTrue($result);
+
+        $sub1->refresh();
+        $sub2->refresh();
+        $sub3->refresh();
+
+        $this->assertNotNull($sub1->unsubscribed_at);
+        $this->assertNotNull($sub2->unsubscribed_at);
+        $this->assertNull($sub3->unsubscribed_at); // Different email, should not be affected
+    }
+
+    public function test_unsubscribe_all_endpoint_redirects_on_success(): void
+    {
+        $thread = Thread::factory()->create();
+        $comment = Comment::factory()->create(['thread_id' => $thread->id]);
+
+        NotificationSubscription::create([
+            'email' => 'test@example.com',
+            'comment_id' => $comment->id,
+            'unsubscribe_token' => 'valid-all-token',
+        ]);
+
+        $response = $this->get('/unsubscribe/valid-all-token/all');
+
+        $response->assertRedirect('/');
+        $response->assertSessionHas('success', 'You have been unsubscribed from all reply notifications.');
+    }
+
+    public function test_unsubscribe_all_endpoint_redirects_on_failure(): void
+    {
+        $response = $this->get('/unsubscribe/invalid-token/all');
+
+        $response->assertRedirect('/');
+        $response->assertSessionHas('error');
+    }
 }

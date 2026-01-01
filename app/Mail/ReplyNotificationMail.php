@@ -34,6 +34,7 @@ class ReplyNotificationMail extends Mailable
     public function content(): Content
     {
         $unsubscribeUrl = url("/unsubscribe/{$this->subscription->unsubscribe_token}");
+        $unsubscribeAllUrl = url("/unsubscribe/{$this->subscription->unsubscribe_token}/all");
         $baseUrl = $this->reply->thread->url
             ?? rtrim(\App\Models\Setting::getValue('site_url', ''), '/').$this->reply->thread->uri;
         $threadUrl = "{$baseUrl}#comment-{$this->reply->id}";
@@ -44,6 +45,7 @@ class ReplyNotificationMail extends Mailable
                 'reply' => $this->reply,
                 'parentComment' => $this->parentComment,
                 'unsubscribeUrl' => $unsubscribeUrl,
+                'unsubscribeAllUrl' => $unsubscribeAllUrl,
                 'threadUrl' => $threadUrl,
                 'siteName' => \App\Models\Setting::getValue('site_name', 'Comments'),
             ],

@@ -16,7 +16,7 @@ View Reply
 ---
 
 <x-mail::subcopy>
-[Unsubscribe]({{ $unsubscribeUrl }}) from reply notifications for this comment.
+[Unsubscribe from this comment]({{ $unsubscribeUrl }}) | [Unsubscribe from all]({{ $unsubscribeAllUrl }})
 </x-mail::subcopy>
 
 Thanks,<br>

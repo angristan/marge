@@ -16,7 +16,18 @@ class EmailController extends Controller
         $unsubscribed = Unsubscribe::run($token);
 
         if ($unsubscribed) {
-            return redirect('/')->with('success', 'You have been unsubscribed from reply notifications.');
+            return redirect('/')->with('success', 'You have been unsubscribed from reply notifications for this comment.');
+        }
+
+        return redirect('/')->with('error', 'Invalid unsubscribe link.');
+    }
+
+    public function unsubscribeAll(string $token): RedirectResponse
+    {
+        $unsubscribed = Unsubscribe::run($token, all: true);
+
+        if ($unsubscribed) {
+            return redirect('/')->with('success', 'You have been unsubscribed from all reply notifications.');
         }
 
         return redirect('/')->with('error', 'Invalid unsubscribe link.');

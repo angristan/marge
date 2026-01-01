@@ -11,12 +11,21 @@ class Unsubscribe
 {
     use AsAction;
 
-    public function handle(string $token): bool
+    public function handle(string $token, bool $all = false): bool
     {
         $subscription = NotificationSubscription::where('unsubscribe_token', $token)->first();
 
         if (! $subscription) {
             return false;
+        }
+
+        if ($all) {
+            // Unsubscribe from all notifications for this email
+            NotificationSubscription::where('email', $subscription->email)
+                ->whereNull('unsubscribed_at')
+                ->update(['unsubscribed_at' => now()]);
+
+            return true;
         }
 
         if ($subscription->unsubscribed_at) {
