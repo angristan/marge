@@ -16,9 +16,10 @@ describe('Api', () => {
 
     describe('constructor', () => {
         it('removes trailing slash from baseUrl', () => {
+            vi.stubGlobal('location', { origin: 'https://blog.example.com' });
             const apiWithSlash = new Api('https://example.com/');
             expect(apiWithSlash.getGitHubAuthUrl()).toBe(
-                'https://example.com/auth/github/redirect',
+                'https://example.com/auth/github/redirect?opener_origin=https%3A%2F%2Fblog.example.com',
             );
         });
     });
@@ -268,10 +269,17 @@ describe('Api', () => {
     });
 
     describe('getGitHubAuthUrl', () => {
-        it('returns the github auth redirect url', () => {
+        it('returns the github auth redirect url with opener origin', () => {
+            vi.stubGlobal('location', { origin: 'https://myblog.com' });
             expect(api.getGitHubAuthUrl()).toBe(
-                'https://example.com/auth/github/redirect',
+                'https://example.com/auth/github/redirect?opener_origin=https%3A%2F%2Fmyblog.com',
             );
+        });
+    });
+
+    describe('getBaseUrl', () => {
+        it('returns the base url', () => {
+            expect(api.getBaseUrl()).toBe('https://example.com');
         });
     });
 });

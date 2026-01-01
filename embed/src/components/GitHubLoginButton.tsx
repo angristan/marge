@@ -2,11 +2,13 @@ import { useCallback } from 'preact/hooks';
 
 interface GitHubLoginButtonProps {
     authUrl: string;
+    expectedOrigin: string;
     onSuccess: () => void;
 }
 
 export default function GitHubLoginButton({
     authUrl,
+    expectedOrigin,
     onSuccess,
 }: GitHubLoginButtonProps) {
     const handleClick = useCallback(() => {
@@ -31,6 +33,10 @@ export default function GitHubLoginButton({
 
         // Listen for postMessage from callback page (may work in some browsers)
         const handleMessage = (event: MessageEvent) => {
+            // Validate origin to prevent spoofed messages
+            if (event.origin !== expectedOrigin) {
+                return;
+            }
             if (event.data?.type === 'bulla-github-auth') {
                 window.removeEventListener('message', handleMessage);
                 clearInterval(checkClosed);
@@ -53,7 +59,7 @@ export default function GitHubLoginButton({
                 onSuccess();
             }
         }, 500);
-    }, [authUrl, onSuccess]);
+    }, [authUrl, expectedOrigin, onSuccess]);
 
     return (
         <button

@@ -16,7 +16,7 @@ class CommenterAuthController extends Controller
     /**
      * Redirect to GitHub for authentication.
      */
-    public function redirect(): RedirectResponse|View
+    public function redirect(Request $request): RedirectResponse|View
     {
         // Check if GitHub login is enabled
         if (! $this->isGitHubLoginEnabled()) {
@@ -24,7 +24,14 @@ class CommenterAuthController extends Controller
                 'success' => false,
                 'error' => 'GitHub login is not enabled.',
                 'commenter' => null,
+                'openerOrigin' => null,
             ]);
+        }
+
+        // Store opener origin for postMessage security
+        $openerOrigin = $request->query('opener_origin');
+        if ($openerOrigin && $this->isValidOrigin($openerOrigin)) {
+            $request->session()->put('oauth_opener_origin', $openerOrigin);
         }
 
         $this->configureGitHubDriver();
@@ -43,12 +50,16 @@ class CommenterAuthController extends Controller
      */
     public function callback(Request $request): View
     {
+        // Retrieve and clear the opener origin from session
+        $openerOrigin = $request->session()->pull('oauth_opener_origin');
+
         // Check if GitHub login is enabled
         if (! $this->isGitHubLoginEnabled()) {
             return view('auth.github-callback', [
                 'success' => false,
                 'error' => 'GitHub login is not enabled.',
                 'commenter' => null,
+                'openerOrigin' => $openerOrigin,
             ]);
         }
 
@@ -58,6 +69,7 @@ class CommenterAuthController extends Controller
                 'success' => false,
                 'error' => $request->get('error_description', 'Authentication was denied.'),
                 'commenter' => null,
+                'openerOrigin' => $openerOrigin,
             ]);
         }
 
@@ -79,12 +91,14 @@ class CommenterAuthController extends Controller
                 'success' => true,
                 'error' => null,
                 'commenter' => session('commenter'),
+                'openerOrigin' => $openerOrigin,
             ]);
         } catch (\Exception $e) {
             return view('auth.github-callback', [
                 'success' => false,
                 'error' => 'Authentication failed. Please try again.',
                 'commenter' => null,
+                'openerOrigin' => $openerOrigin,
             ]);
         }
     }
@@ -122,5 +136,30 @@ class CommenterAuthController extends Controller
         $settingEnabled = Setting::getValue('enable_github_login', 'false') === 'true';
 
         return $credentialsConfigured && $settingEnabled;
+    }
+
+    /**
+     * Validate that the origin is a valid URL origin.
+     */
+    private function isValidOrigin(string $origin): bool
+    {
+        $parsed = parse_url($origin);
+
+        // Must have a scheme (http or https) and a host
+        if (! isset($parsed['scheme']) || ! isset($parsed['host'])) {
+            return false;
+        }
+
+        // Only allow http and https schemes
+        if (! in_array($parsed['scheme'], ['http', 'https'], true)) {
+            return false;
+        }
+
+        // Should not have a path (origins don't have paths beyond /)
+        if (isset($parsed['path']) && $parsed['path'] !== '/') {
+            return false;
+        }
+
+        return true;
     }
 }

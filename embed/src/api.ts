@@ -178,7 +178,12 @@ class Api {
     }
 
     getGitHubAuthUrl(): string {
-        return `${this.baseUrl}/auth/github/redirect`;
+        const origin = encodeURIComponent(window.location.origin);
+        return `${this.baseUrl}/auth/github/redirect?opener_origin=${origin}`;
+    }
+
+    getBaseUrl(): string {
+        return this.baseUrl;
     }
 }
 

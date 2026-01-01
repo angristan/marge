@@ -22,6 +22,7 @@ describe('GitHubLoginButton', () => {
         render(
             <GitHubLoginButton
                 authUrl="https://example.com/auth/github"
+                expectedOrigin="https://example.com"
                 onSuccess={onSuccess}
             />,
         );
@@ -37,6 +38,7 @@ describe('GitHubLoginButton', () => {
         render(
             <GitHubLoginButton
                 authUrl="https://example.com/auth/github"
+                expectedOrigin="https://example.com"
                 onSuccess={onSuccess}
             />,
         );
@@ -60,6 +62,7 @@ describe('GitHubLoginButton', () => {
         render(
             <GitHubLoginButton
                 authUrl="https://example.com/auth/github"
+                expectedOrigin="https://example.com"
                 onSuccess={onSuccess}
             />,
         );
@@ -74,6 +77,7 @@ describe('GitHubLoginButton', () => {
         render(
             <GitHubLoginButton
                 authUrl="https://example.com/auth/github"
+                expectedOrigin="https://example.com"
                 onSuccess={onSuccess}
             />,
         );

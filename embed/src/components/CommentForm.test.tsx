@@ -16,6 +16,7 @@ const createMockApi = () => ({
     getGitHubAuthUrl: vi
         .fn()
         .mockReturnValue('https://example.com/auth/github'),
+    getBaseUrl: vi.fn().mockReturnValue('https://example.com'),
 });
 
 const createMockConfig = (overrides: Partial<Config> = {}): Config => ({

@@ -168,6 +168,7 @@ export default function CommentForm({
                         <>
                             <GitHubLoginButton
                                 authUrl={api.getGitHubAuthUrl()}
+                                expectedOrigin={api.getBaseUrl()}
                                 onSuccess={onConfigRefresh}
                             />
                             <span className="bulla-auth-divider">

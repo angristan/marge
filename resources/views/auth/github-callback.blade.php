@@ -41,10 +41,13 @@
             // Try to notify opener via postMessage (works in some browsers)
             if (window.opener) {
                 try {
-                    window.opener.postMessage({
-                        type: 'bulla-github-auth',
-                        success: @json($success)
-                    }, '*');
+                    var targetOrigin = @json($openerOrigin ?? null);
+                    if (targetOrigin) {
+                        window.opener.postMessage({
+                            type: 'bulla-github-auth',
+                            success: @json($success)
+                        }, targetOrigin);
+                    }
                 } catch (e) {
                     // Ignore - parent will refresh on popup close anyway
                 }
