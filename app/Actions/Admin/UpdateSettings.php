@@ -46,9 +46,22 @@ class UpdateSettings
             'github_client_secret',
         ];
 
+        // Settings that should have trailing slashes removed
+        $urlSettings = ['site_url', 'allowed_origins'];
+
         foreach ($settings as $key => $value) {
             if (in_array($key, $allowedSettings, true)) {
-                Setting::setValue($key, $value === '' ? null : (string) $value);
+                $sanitized = $value === '' ? null : (string) $value;
+
+                // Remove trailing slashes from URL settings
+                if ($sanitized !== null && in_array($key, $urlSettings, true)) {
+                    $sanitized = implode(',', array_map(
+                        fn ($url) => rtrim(trim($url), '/'),
+                        explode(',', $sanitized)
+                    ));
+                }
+
+                Setting::setValue($key, $sanitized);
             }
 
             if (in_array($key, $encryptedSettings, true) && $value !== null && $value !== '') {
