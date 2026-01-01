@@ -342,6 +342,7 @@
     margin-bottom: 1rem;
 }
 
+/* Indent comments up to depth 3 */
 .bulla-comment[data-depth="1"],
 .bulla-comment[data-depth="2"],
 .bulla-comment[data-depth="3"] {

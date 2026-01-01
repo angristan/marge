@@ -254,7 +254,7 @@ export default function App({
                             api={api}
                             config={config}
                             uri={uri}
-                            depth={0}
+                            visualDepth={0}
                             onRefresh={handleCommentSubmit}
                             onConfigRefresh={refreshConfig}
                         />

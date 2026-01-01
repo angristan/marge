@@ -82,7 +82,7 @@ describe('Comment', () => {
                 api={mockApi as any}
                 config={createMockConfig()}
                 uri="/test"
-                depth={0}
+                visualDepth={0}
                 onRefresh={onRefresh}
                 onConfigRefresh={onConfigRefresh}
             />,
@@ -99,7 +99,7 @@ describe('Comment', () => {
                 api={mockApi as any}
                 config={createMockConfig()}
                 uri="/test"
-                depth={0}
+                visualDepth={0}
                 onRefresh={onRefresh}
                 onConfigRefresh={onConfigRefresh}
             />,
@@ -115,7 +115,7 @@ describe('Comment', () => {
                 api={mockApi as any}
                 config={createMockConfig()}
                 uri="/test"
-                depth={0}
+                visualDepth={0}
                 onRefresh={onRefresh}
                 onConfigRefresh={onConfigRefresh}
             />,
@@ -132,7 +132,7 @@ describe('Comment', () => {
                 api={mockApi as any}
                 config={createMockConfig({ admin_badge_label: 'Moderator' })}
                 uri="/test"
-                depth={0}
+                visualDepth={0}
                 onRefresh={onRefresh}
                 onConfigRefresh={onConfigRefresh}
             />,
@@ -151,7 +151,7 @@ describe('Comment', () => {
                 api={mockApi as any}
                 config={createMockConfig()}
                 uri="/test"
-                depth={0}
+                visualDepth={0}
                 onRefresh={onRefresh}
                 onConfigRefresh={onConfigRefresh}
             />,
@@ -171,7 +171,7 @@ describe('Comment', () => {
                 api={mockApi as any}
                 config={createMockConfig()}
                 uri="/test"
-                depth={0}
+                visualDepth={0}
                 onRefresh={onRefresh}
                 onConfigRefresh={onConfigRefresh}
             />,
@@ -191,7 +191,7 @@ describe('Comment', () => {
                     enable_downvotes: false,
                 })}
                 uri="/test"
-                depth={0}
+                visualDepth={0}
                 onRefresh={onRefresh}
                 onConfigRefresh={onConfigRefresh}
             />,
@@ -210,7 +210,7 @@ describe('Comment', () => {
                     enable_downvotes: false,
                 })}
                 uri="/test"
-                depth={0}
+                visualDepth={0}
                 onRefresh={onRefresh}
                 onConfigRefresh={onConfigRefresh}
             />,
@@ -234,7 +234,7 @@ describe('Comment', () => {
                     enable_downvotes: true,
                 })}
                 uri="/test"
-                depth={0}
+                visualDepth={0}
                 onRefresh={onRefresh}
                 onConfigRefresh={onConfigRefresh}
             />,
@@ -258,7 +258,7 @@ describe('Comment', () => {
                     enable_downvotes: true,
                 })}
                 uri="/test"
-                depth={0}
+                visualDepth={0}
                 onRefresh={onRefresh}
                 onConfigRefresh={onConfigRefresh}
             />,
@@ -280,7 +280,7 @@ describe('Comment', () => {
                 api={mockApi as any}
                 config={createMockConfig()}
                 uri="/test"
-                depth={0}
+                visualDepth={0}
                 onRefresh={onRefresh}
                 onConfigRefresh={onConfigRefresh}
             />,
@@ -297,7 +297,7 @@ describe('Comment', () => {
         ).toBeInTheDocument();
     });
 
-    it('renders nested replies', () => {
+    it('renders nested replies in .bulla-replies when below max depth', () => {
         const comment = createMockComment({
             replies: [
                 createMockComment({
@@ -308,13 +308,13 @@ describe('Comment', () => {
             ],
         });
 
-        render(
+        const { container } = render(
             <Comment
                 comment={comment}
                 api={mockApi as any}
-                config={createMockConfig()}
+                config={createMockConfig({ max_depth: 3 })}
                 uri="/test"
-                depth={0}
+                visualDepth={0}
                 onRefresh={onRefresh}
                 onConfigRefresh={onConfigRefresh}
             />,
@@ -322,23 +322,27 @@ describe('Comment', () => {
 
         expect(screen.getByText('Test User')).toBeInTheDocument();
         expect(screen.getByText('Reply User')).toBeInTheDocument();
+
+        // Below max depth, replies should be nested in .bulla-replies
+        const repliesWrapper = container.querySelector('.bulla-replies');
+        expect(repliesWrapper).not.toBeNull();
     });
 
-    it('sets data-depth attribute based on visual depth', () => {
+    it('sets data-depth attribute to actual depth', () => {
         render(
             <Comment
                 comment={createMockComment()}
                 api={mockApi as any}
                 config={createMockConfig({ max_depth: 3 })}
                 uri="/test"
-                depth={5}
+                visualDepth={5}
                 onRefresh={onRefresh}
                 onConfigRefresh={onConfigRefresh}
             />,
         );
 
         const commentEl = document.querySelector("[data-comment-id='1']");
-        expect(commentEl).toHaveAttribute('data-depth', '3');
+        expect(commentEl).toHaveAttribute('data-depth', '5');
     });
 
     it('shows parent author link when depth exceeds max_depth', () => {
@@ -347,16 +351,84 @@ describe('Comment', () => {
                 comment={createMockComment({
                     parent_id: 99,
                     parent_author: 'Parent User',
+                    depth: 3,
                 })}
                 api={mockApi as any}
                 config={createMockConfig({ max_depth: 2 })}
                 uri="/test"
-                depth={3}
+                visualDepth={3}
                 onRefresh={onRefresh}
                 onConfigRefresh={onConfigRefresh}
             />,
         );
 
         expect(screen.getByText(/Parent User/)).toBeInTheDocument();
+    });
+
+    it('does not show parent author link when depth is within max_depth', () => {
+        render(
+            <Comment
+                comment={createMockComment({
+                    parent_id: 99,
+                    parent_author: 'Parent User',
+                    depth: 2,
+                })}
+                api={mockApi as any}
+                config={createMockConfig({ max_depth: 3 })}
+                uri="/test"
+                visualDepth={2}
+                onRefresh={onRefresh}
+                onConfigRefresh={onConfigRefresh}
+            />,
+        );
+
+        expect(screen.queryByText(/Parent User/)).toBeNull();
+    });
+
+    it('renders replies as siblings when at max depth', () => {
+        const comment = createMockComment({
+            depth: 3,
+            replies: [
+                createMockComment({
+                    id: 2,
+                    depth: 4,
+                    author: 'Reply 1',
+                    parent_author: 'Test User',
+                }),
+                createMockComment({
+                    id: 3,
+                    depth: 4,
+                    author: 'Reply 2',
+                    parent_author: 'Test User',
+                }),
+            ],
+        });
+
+        const { container } = render(
+            <Comment
+                comment={comment}
+                api={mockApi as any}
+                config={createMockConfig({ max_depth: 3 })}
+                uri="/test"
+                visualDepth={3}
+                onRefresh={onRefresh}
+                onConfigRefresh={onConfigRefresh}
+            />,
+        );
+
+        // At max depth, replies should be siblings (not nested in .bulla-replies)
+        const repliesWrapper = container.querySelector('.bulla-replies');
+        expect(repliesWrapper).toBeNull();
+
+        // Both replies should still be rendered
+        expect(screen.getByText('Reply 1')).toBeInTheDocument();
+        expect(screen.getByText('Reply 2')).toBeInTheDocument();
+
+        // All comments should have the same data-depth
+        const comments = container.querySelectorAll('.bulla-comment');
+        expect(comments).toHaveLength(3);
+        comments.forEach((c) => {
+            expect(c).toHaveAttribute('data-depth', '3');
+        });
     });
 });
