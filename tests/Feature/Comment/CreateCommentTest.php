@@ -74,11 +74,19 @@ describe('POST /api/threads/{uri}/comments', function (): void {
         ]);
     });
 
-    it('adds https to website without protocol', function (): void {
+    it('rejects website without protocol', function (): void {
         $this->postJson('/api/threads/test/comments', [
             'body' => 'Test',
             'website' => 'example.com',
-        ]);
+        ])->assertStatus(422)
+            ->assertJsonValidationErrors(['website']);
+    });
+
+    it('accepts website with https protocol', function (): void {
+        $this->postJson('/api/threads/test/comments', [
+            'body' => 'Test',
+            'website' => 'https://example.com',
+        ])->assertStatus(201);
 
         $this->assertDatabaseHas('comments', [
             'website' => 'https://example.com',

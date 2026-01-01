@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Actions\Comment;
 
-use App\Actions\Email\SendModerationNotification;
+use App\Actions\Email\SendNewCommentNotification;
 use App\Actions\Email\SendReplyNotification;
 use App\Actions\Thread\GetOrCreateThread;
 use App\Models\Comment;
@@ -97,10 +97,8 @@ class CreateComment
             return;
         }
 
-        // Send moderation notification if comment is pending
-        if ($comment->isPending()) {
-            SendModerationNotification::run($comment);
-        }
+        // Send new comment notification to admin (skips admin comments)
+        SendNewCommentNotification::run($comment);
 
         // Send reply notification to parent comment author
         if ($comment->parent_id) {
@@ -138,12 +136,7 @@ class CreateComment
             return null;
         }
 
-        // Add https:// if no protocol
-        if (! str_starts_with($website, 'http://') && ! str_starts_with($website, 'https://')) {
-            $website = 'https://'.$website;
-        }
-
-        // Validate URL
+        // Validate URL (must include protocol)
         if (filter_var($website, FILTER_VALIDATE_URL) === false) {
             return null;
         }

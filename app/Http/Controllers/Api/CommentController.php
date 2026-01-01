@@ -14,6 +14,7 @@ use App\Actions\Spam\CheckSpam;
 use App\Actions\Spam\GenerateTimestamp;
 use App\Http\Controllers\Controller;
 use App\Models\Comment;
+use App\Models\Setting;
 use App\Support\Gravatar;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -25,11 +26,24 @@ class CommentController extends Controller
      */
     public function store(Request $request, string $uri): JsonResponse
     {
+        $requireAuthor = Setting::getValue('require_author', 'false') === 'true';
+        $requireEmail = Setting::getValue('require_email', 'false') === 'true';
+
+        $authorRules = ['nullable', 'string', 'max:255'];
+        if ($requireAuthor) {
+            $authorRules = ['required', 'string', 'max:255'];
+        }
+
+        $emailRules = ['nullable', 'email', 'max:255', 'required_if:notify_replies,true'];
+        if ($requireEmail) {
+            $emailRules = ['required', 'email', 'max:255'];
+        }
+
         $validated = $request->validate([
             'parent_id' => ['nullable', 'integer', 'exists:comments,id'],
-            'author' => ['nullable', 'string', 'max:255'],
-            'email' => ['nullable', 'email', 'max:255', 'required_if:notify_replies,true'],
-            'website' => ['nullable', 'string', 'max:512'],
+            'author' => $authorRules,
+            'email' => $emailRules,
+            'website' => ['nullable', 'string', 'max:512', 'url'],
             'body' => ['required', 'string', 'min:1', 'max:65535'],
             'notify_replies' => ['nullable', 'boolean'],
             'title' => ['nullable', 'string', 'max:512'],
