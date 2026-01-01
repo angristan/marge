@@ -265,26 +265,30 @@ export default function CommentForm({
             />
 
             <div className="bulla-form-footer">
-                <label
-                    className="bulla-checkbox"
-                    title={
-                        !effectiveEmail?.trim()
-                            ? 'Enter an email to enable notifications'
-                            : undefined
-                    }
-                >
-                    <input
-                        type="checkbox"
-                        checked={notifyReplies}
-                        onChange={(e) =>
-                            setNotifyReplies(
-                                (e.target as HTMLInputElement).checked,
-                            )
+                {!config.is_admin ? (
+                    <label
+                        className="bulla-checkbox"
+                        title={
+                            !effectiveEmail?.trim()
+                                ? 'Enter an email to enable notifications'
+                                : undefined
                         }
-                        disabled={!effectiveEmail?.trim()}
-                    />
-                    <span>Notify me of replies</span>
-                </label>
+                    >
+                        <input
+                            type="checkbox"
+                            checked={notifyReplies}
+                            onChange={(e) =>
+                                setNotifyReplies(
+                                    (e.target as HTMLInputElement).checked,
+                                )
+                            }
+                            disabled={!effectiveEmail?.trim()}
+                        />
+                        <span>Notify me of replies</span>
+                    </label>
+                ) : (
+                    <div />
+                )}
 
                 <div className="bulla-form-actions">
                     <button
