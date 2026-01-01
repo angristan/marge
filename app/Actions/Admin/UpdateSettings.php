@@ -32,7 +32,6 @@ class UpdateSettings
             'rate_limit_per_minute',
             'spam_min_time_seconds',
             'blocked_words',
-            'blocked_ips',
             'allowed_origins',
             'custom_css',
             'accent_color',
@@ -86,7 +85,6 @@ class UpdateSettings
             'rate_limit_per_minute' => (int) Setting::getValue('rate_limit_per_minute', '5'),
             'spam_min_time_seconds' => (int) Setting::getValue('spam_min_time_seconds', '3'),
             'blocked_words' => Setting::getValue('blocked_words', ''),
-            'blocked_ips' => Setting::getValue('blocked_ips', ''),
 
             // CORS
             'allowed_origins' => Setting::getValue('allowed_origins', Setting::getValue('site_url', '')),

@@ -47,7 +47,6 @@ interface SettingsIndexProps {
         rate_limit_per_minute: number;
         spam_min_time_seconds: number;
         blocked_words: string;
-        blocked_ips: string;
         allowed_origins: string;
         custom_css: string;
         accent_color: string;
@@ -86,7 +85,6 @@ export default function SettingsIndex({ settings }: SettingsIndexProps) {
         rate_limit_per_minute: settings.rate_limit_per_minute,
         spam_min_time_seconds: settings.spam_min_time_seconds,
         blocked_words: settings.blocked_words,
-        blocked_ips: settings.blocked_ips,
         allowed_origins: settings.allowed_origins,
         custom_css: settings.custom_css,
         accent_color: settings.accent_color,
@@ -360,15 +358,6 @@ export default function SettingsIndex({ settings }: SettingsIndexProps) {
                                     value={data.blocked_words}
                                     onChange={(e) =>
                                         setData('blocked_words', e.target.value)
-                                    }
-                                    minRows={4}
-                                />
-                                <Textarea
-                                    label="Blocked IPs"
-                                    description="One IP per line"
-                                    value={data.blocked_ips}
-                                    onChange={(e) =>
-                                        setData('blocked_ips', e.target.value)
                                     }
                                     minRows={4}
                                 />
