@@ -27,6 +27,11 @@ GET /api/threads/{uri}/comments
 **Response:**
 ```json
 {
+  "thread": {
+    "id": 1,
+    "uri": "/blog/post-1",
+    "title": "My Blog Post"
+  },
   "total": 5,
   "comments": [
     {
@@ -35,13 +40,14 @@ GET /api/threads/{uri}/comments
       "parent_author": null,
       "depth": 0,
       "author": "John Doe",
+      "is_admin": false,
+      "is_github_user": false,
+      "github_username": null,
       "avatar": "https://gravatar.com/avatar/...",
       "website": "https://example.com",
       "body_html": "<p>Comment content</p>",
-      "status": "approved",
-      "email_verified": true,
-      "is_admin": false,
       "upvotes": 3,
+      "downvotes": 0,
       "created_at": "2025-01-15T10:30:00Z",
       "replies": []
     }
@@ -68,7 +74,7 @@ POST /api/threads/{uri}/comments
   "notify_replies": true,
   "title": "Page Title",
   "url": "https://example.com/page",
-  "timestamp": "signed_timestamp_from_api"
+  "timestamp": "signed_timestamp_from_config"
 }
 ```
 
@@ -78,18 +84,46 @@ POST /api/threads/{uri}/comments
 ```json
 {
   "id": 2,
-  "parent_id": null,
-  "parent_author": null,
-  "depth": 0,
   "author": "Jane Doe",
+  "is_admin": false,
+  "is_github_user": false,
+  "github_username": null,
   "avatar": "https://gravatar.com/avatar/...",
+  "website": "https://jane.example.com",
   "body_html": "<p>Comment in <strong>markdown</strong></p>",
   "status": "approved",
-  "email_verified": false,
   "upvotes": 0,
+  "downvotes": 0,
   "created_at": "2025-01-15T11:00:00Z",
   "edit_token": "random_64_char_token",
   "edit_token_expires_at": "2025-01-15T11:15:00Z"
+}
+```
+
+### Get Comment
+
+Retrieve a single comment.
+
+```
+GET /api/comments/{id}
+```
+
+**Response:**
+```json
+{
+  "id": 1,
+  "author": "John Doe",
+  "is_admin": false,
+  "is_github_user": false,
+  "github_username": null,
+  "avatar": "https://gravatar.com/avatar/...",
+  "website": "https://example.com",
+  "body_html": "<p>Comment content</p>",
+  "body_markdown": "Comment content",
+  "status": "approved",
+  "upvotes": 3,
+  "downvotes": 0,
+  "created_at": "2025-01-15T10:30:00Z"
 }
 ```
 
@@ -106,11 +140,23 @@ PUT /api/comments/{id}
 {
   "body": "Updated comment",
   "author": "New Name",
+  "website": "https://example.com",
   "edit_token": "token_from_create_response"
 }
 ```
 
 **Required:** `edit_token`
+
+**Response:**
+```json
+{
+  "id": 1,
+  "author": "New Name",
+  "website": "https://example.com",
+  "body_html": "<p>Updated comment</p>",
+  "body_markdown": "Updated comment"
+}
+```
 
 ### Delete Comment
 
@@ -127,6 +173,13 @@ DELETE /api/comments/{id}
 }
 ```
 
+**Response:**
+```json
+{
+  "deleted": true
+}
+```
+
 ### Upvote Comment
 
 Upvote a comment (one per IP).
@@ -139,6 +192,35 @@ POST /api/comments/{id}/upvote
 ```json
 {
   "upvotes": 4
+}
+```
+
+**Error (409 - Already voted):**
+```json
+{
+  "error": "Already voted."
+}
+```
+
+### Downvote Comment
+
+Downvote a comment (one per IP). Only available when downvotes are enabled.
+
+```
+POST /api/comments/{id}/downvote
+```
+
+**Response:**
+```json
+{
+  "downvotes": 1
+}
+```
+
+**Error (409 - Already voted):**
+```json
+{
+  "error": "Already voted."
 }
 ```
 
@@ -189,7 +271,7 @@ POST /api/counts
 
 ### Get Config
 
-Get public configuration.
+Get public configuration and a signed timestamp for spam protection.
 
 ```
 GET /api/config
@@ -199,29 +281,39 @@ GET /api/config
 ```json
 {
   "site_name": "My Blog",
-  "max_depth": 3,
   "require_author": false,
   "require_email": false,
-  "edit_window_minutes": 15
+  "moderation_mode": "none",
+  "max_depth": 3,
+  "edit_window_minutes": 15,
+  "timestamp": "signed_timestamp_string",
+  "is_admin": false,
+  "enable_upvotes": true,
+  "enable_downvotes": false,
+  "admin_badge_label": "Author",
+  "accent_color": "#3b82f6",
+  "github_auth_enabled": false,
+  "commenter": null,
+  "hide_branding": false
 }
 ```
 
-**Note:** `max_depth` (0-3) controls visual nesting only. Replies are always allowed at any depth. Comments beyond max_depth display a "↩ Author" link to navigate to parent.
-
-### Get Timestamp
-
-Get a signed timestamp for spam protection.
-
-```
-GET /api/timestamp
-```
-
-**Response:**
-```json
-{
-  "timestamp": "signed_timestamp_string"
-}
-```
+**Fields:**
+- `site_name` - Site name displayed in the widget
+- `require_author` - Whether author name is required
+- `require_email` - Whether email is required
+- `moderation_mode` - Comment moderation: `none`, `new_commenters`, or `all`
+- `max_depth` - Visual nesting depth (0-3). Replies are always allowed at any depth.
+- `edit_window_minutes` - Minutes allowed for editing after posting
+- `timestamp` - Signed timestamp for spam protection (pass to create comment)
+- `is_admin` - Whether current session is admin authenticated
+- `enable_upvotes` - Whether upvoting is enabled
+- `enable_downvotes` - Whether downvoting is enabled
+- `admin_badge_label` - Label for admin badge (e.g., "Author", "Admin")
+- `accent_color` - Theme accent color (hex)
+- `github_auth_enabled` - Whether GitHub authentication is available
+- `commenter` - Current GitHub-authenticated user info, or null
+- `hide_branding` - Whether to hide Bulla branding
 
 ## Error Responses
 
@@ -233,6 +325,14 @@ GET /api/timestamp
   "errors": {
     "body": ["The body field is required."]
   }
+}
+```
+
+### Forbidden (403)
+
+```json
+{
+  "error": "Invalid or expired edit token."
 }
 ```
 
@@ -248,10 +348,7 @@ GET /api/timestamp
 
 ```json
 {
-  "message": "Your comment was flagged as spam.",
-  "errors": {
-    "body": ["Your comment was flagged as spam."]
-  }
+  "error": "Your comment was flagged as spam."
 }
 ```
 
