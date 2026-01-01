@@ -27,7 +27,7 @@ A self-hosted comment system for static sites and blogs.
 
 ## Quick Start
 
-### Docker (Recommended)
+Bulla is designed to be easily self-hosted. Just a single Docker container with SQLite. PostgreSQL and imgproxy are optional.
 
 ```bash
 docker run -d \
@@ -37,11 +37,7 @@ docker run -d \
   ghcr.io/your-username/bulla:latest
 ```
 
-Then visit `http://localhost:8000/admin/setup` to configure.
-
-### Embedding
-
-Add to your website:
+To add comments to your site:
 
 ```html
 <script
@@ -52,9 +48,10 @@ Add to your website:
 <div id="bulla-thread"></div>
 ```
 
+Learn more in the [Self-Hosting Guide](docs/self-hosting.md).
+
 ## Documentation
 
-- [Self-Hosting Guide](docs/self-hosting.md)
 - [Embedding Guide](docs/embedding.md)
 - [API Reference](docs/api.md)
 
