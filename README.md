@@ -73,29 +73,21 @@ Add to your website:
 git clone https://github.com/your-username/bulla
 cd bulla
 
-# Install dependencies
-composer install
-npm install
-
 # Set up environment
 cp .env.example .env
 php artisan key:generate
-
-# Run migrations
 php artisan migrate
 
-# Build assets
-npm run dev
-
-# Build embed widget
-cd embed && npm install && npm run build && cd ..
-
-# Run tests
-php artisan test
-
-# Start development server
-php artisan serve
+# Start development (installs deps, runs server + vite + embed watcher)
+composer run dev
 ```
+
+This runs concurrently:
+- Laravel server (`php artisan serve`)
+- Queue worker (`php artisan queue:listen`)
+- Log viewer (`php artisan pail`)
+- Vite for admin assets (`npm run dev`)
+- Embed widget watcher (`npm run dev --prefix embed`)
 
 ## Testing
 
