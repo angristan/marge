@@ -74,7 +74,8 @@ type SettingsTab =
     | 'moderation'
     | 'auth'
     | 'telegram'
-    | 'appearance';
+    | 'appearance'
+    | 'danger';
 
 export default function SettingsIndex({ settings }: SettingsIndexProps) {
     const [activeTab, setActiveTab] = useUrlState<SettingsTab>(
@@ -251,6 +252,13 @@ export default function SettingsIndex({ settings }: SettingsIndexProps) {
                             leftSection={<IconPalette size={16} />}
                         >
                             Appearance
+                        </Tabs.Tab>
+                        <Tabs.Tab
+                            value="danger"
+                            leftSection={<IconAlertTriangle size={16} />}
+                            color="red"
+                        >
+                            Danger Zone
                         </Tabs.Tab>
                     </Tabs.List>
 
@@ -727,42 +735,45 @@ export default function SettingsIndex({ settings }: SettingsIndexProps) {
                             </Stack>
                         </Paper>
                     </Tabs.Panel>
+
+                    <Tabs.Panel value="danger">
+                        <Paper
+                            withBorder
+                            p="md"
+                            radius="md"
+                            style={{
+                                borderColor: 'var(--mantine-color-red-6)',
+                            }}
+                        >
+                            <Group justify="space-between" align="center">
+                                <div>
+                                    <Text fw={500}>Wipe all data</Text>
+                                    <Text size="sm" c="dimmed">
+                                        Delete all comments, threads, and import
+                                        mappings. Settings will be preserved.
+                                    </Text>
+                                </div>
+                                <Button
+                                    color="red"
+                                    variant="outline"
+                                    leftSection={<IconTrash size={16} />}
+                                    onClick={openWipeModal}
+                                >
+                                    Wipe All Data
+                                </Button>
+                            </Group>
+                        </Paper>
+                    </Tabs.Panel>
                 </Tabs>
 
-                <Group justify="flex-end" mt="lg">
-                    <Button type="submit" loading={processing}>
-                        Save Settings
-                    </Button>
-                </Group>
+                {activeTab !== 'danger' && (
+                    <Group justify="flex-end" mt="lg">
+                        <Button type="submit" loading={processing}>
+                            Save Settings
+                        </Button>
+                    </Group>
+                )}
             </form>
-
-            <Title order={3} mt="xl" mb="md" c="red">
-                Danger Zone
-            </Title>
-            <Paper
-                withBorder
-                p="md"
-                radius="md"
-                style={{ borderColor: 'var(--mantine-color-red-6)' }}
-            >
-                <Group justify="space-between" align="center">
-                    <div>
-                        <Text fw={500}>Wipe all data</Text>
-                        <Text size="sm" c="dimmed">
-                            Delete all comments, threads, and import mappings.
-                            Settings will be preserved.
-                        </Text>
-                    </div>
-                    <Button
-                        color="red"
-                        variant="outline"
-                        leftSection={<IconTrash size={16} />}
-                        onClick={openWipeModal}
-                    >
-                        Wipe All Data
-                    </Button>
-                </Group>
-            </Paper>
 
             <Modal
                 opened={wipeModalOpened}
