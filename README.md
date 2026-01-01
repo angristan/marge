@@ -64,6 +64,32 @@ Learn more in the [Self-Hosting Guide](docs/self-hosting.md).
 - **Database:** SQLite (default) or PostgreSQL
 - **Deployment:** Docker with FrankenPHP
 
+## Architecture
+
+```
+┌─────────────────┐     ┌─────────────────┐
+│   Your Site     │     │  Admin Panel    │
+│  (embed.js)     │     │  (React/Inertia)│
+└────────┬────────┘     └────────┬────────┘
+         │                       │
+         │ REST API              │ Inertia
+         │                       │
+         └───────────┬───────────┘
+                     │
+            ┌────────▼────────┐
+            │     Laravel     │
+            │   (API + Auth)  │
+            └────────┬────────┘
+                     │
+            ┌────────▼────────┐
+            │ SQLite/PostgreSQL│
+            └─────────────────┘
+```
+
+- **Embed Widget** (`embed/`) - Lightweight Preact app (~10KB) injected into user sites via script tag. Communicates with the backend via REST API.
+- **Admin Panel** (`resources/js/`) - React SPA using Inertia.js for server-driven routing. Manages comments, settings, and moderation.
+- **Backend** (`app/`) - Laravel API handling comments, authentication, notifications, and storage.
+
 ## Development
 
 ```bash
