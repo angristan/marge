@@ -5,7 +5,7 @@ This guide covers deploying Bulla on your own server.
 ## Requirements
 
 - Docker and Docker Compose (recommended)
-- OR: PHP 8.3+, Composer, Node.js 20+
+- OR: PHP 8.2+, Composer, Node.js 22+
 
 ## Quick Start with Docker
 
@@ -15,8 +15,9 @@ This guide covers deploying Bulla on your own server.
 docker run -d \
   -p 8000:8000 \
   -v bulla_data:/app/database \
+  -v bulla_storage:/app/storage \
   -e APP_URL=https://comments.example.com \
-  ghcr.io/your-username/bulla:latest
+  ghcr.io/angristan/bulla:latest
 ```
 
 ### With PostgreSQL
@@ -25,7 +26,7 @@ docker run -d \
 # docker-compose.yml
 services:
   bulla:
-    image: ghcr.io/your-username/bulla:latest
+    image: ghcr.io/angristan/bulla:latest
     ports:
       - "8000:8000"
     environment:
@@ -35,8 +36,13 @@ services:
       DB_DATABASE: bulla
       DB_USERNAME: bulla
       DB_PASSWORD: secret
+    volumes:
+      - bulla_data:/app/database
+      - bulla_storage:/app/storage
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
 
   postgres:
     image: postgres:16-alpine
@@ -46,8 +52,16 @@ services:
       POSTGRES_DB: bulla
       POSTGRES_USER: bulla
       POSTGRES_PASSWORD: secret
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U bulla"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
 
 volumes:
+  bulla_data:
+  bulla_storage:
   postgres_data:
 ```
 
@@ -160,7 +174,7 @@ If not using Docker:
 
 ```bash
 # Clone repository
-git clone https://github.com/your-username/bulla
+git clone https://github.com/angristan/bulla
 cd bulla
 
 # Install PHP dependencies

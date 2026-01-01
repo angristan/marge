@@ -33,8 +33,9 @@ Bulla is designed to be easily self-hosted. Just a single Docker container with 
 docker run -d \
   -p 8000:8000 \
   -v bulla_data:/app/database \
+  -v bulla_storage:/app/storage \
   -e APP_URL=https://comments.example.com \
-  ghcr.io/your-username/bulla:latest
+  ghcr.io/angristan/bulla:latest
 ```
 
 To add comments to your site:
@@ -67,7 +68,7 @@ Learn more in the [Self-Hosting Guide](docs/self-hosting.md).
 
 ```bash
 # Clone repository
-git clone https://github.com/your-username/bulla
+git clone https://github.com/angristan/bulla
 cd bulla
 
 # Set up environment
