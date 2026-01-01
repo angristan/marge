@@ -18,9 +18,9 @@ A self-hosted comment system for static sites and blogs.
 - **Voting** - Optional upvotes and downvotes with duplicate prevention
 - **Deep linking** - Link directly to any comment with `#comment-{id}`
 - **Moderation** - Approve, spam, delete from admin panel or email
-- **Admin comments** - Post as admin from your site when logged in
+- **Admin comments** - Post as admin from your site when logged in, claim past comments
 - **Spam protection** - Honeypot, rate limiting, blocked words (no 3rd party)
-- **Import from isso** - Migrate your existing comments
+- **Import/Export** - Migrate from isso, Disqus, or WordPress
 - **Atom feeds** - Subscribe to comment threads
 - **Dual database support** - SQLite (default) or PostgreSQL
 - **Lightweight embed** - ~10KB gzipped
@@ -104,12 +104,16 @@ php artisan test --coverage
 
 Tests run against both SQLite and PostgreSQL in CI.
 
-## Migrating from isso
+## Importing Comments
 
-1. Export your isso database file
-2. Go to Admin > Import
-3. Upload the isso SQLite file
-4. Comments will be imported with original timestamps
+Bulla supports importing from:
+- **isso** - Upload your isso SQLite database file
+- **Disqus** - Export your data from Disqus and upload the XML file
+- **WordPress** - Export comments via WXR (WordPress eXtended RSS) format
+
+To import: Go to Admin > Settings > Import, select your platform, and upload the file. Comments will be imported with original timestamps preserved.
+
+After importing, use the "Claim Admin Comments" feature in Settings to mark your past comments as admin by matching email or author name.
 
 ## Configuration
 
