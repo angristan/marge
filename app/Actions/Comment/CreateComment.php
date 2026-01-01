@@ -6,6 +6,7 @@ namespace App\Actions\Comment;
 
 use App\Actions\Email\SendNewCommentNotification;
 use App\Actions\Email\SendReplyNotification;
+use App\Actions\Telegram\SendTelegramNotification;
 use App\Actions\Thread\GetOrCreateThread;
 use App\Models\Comment;
 use App\Models\Setting;
@@ -84,26 +85,27 @@ class CreateComment
             ),
         ]);
 
-        // Send emails (only if email sending is configured)
-        $this->sendEmails($comment);
+        // Send notifications (email + telegram)
+        $this->sendNotifications($comment);
 
         return $comment;
     }
 
-    private function sendEmails(Comment $comment): void
+    private function sendNotifications(Comment $comment): void
     {
-        // Only send emails if mail is configured (not using log driver)
-        if (config('mail.default') === 'log') {
-            return;
+        // Email notifications (only if mail is configured)
+        if (config('mail.default') !== 'log') {
+            // Send new comment notification to admin (skips admin comments)
+            SendNewCommentNotification::run($comment);
+
+            // Send reply notification to parent comment author
+            if ($comment->parent_id) {
+                SendReplyNotification::run($comment);
+            }
         }
 
-        // Send new comment notification to admin (skips admin comments)
-        SendNewCommentNotification::run($comment);
-
-        // Send reply notification to parent comment author
-        if ($comment->parent_id) {
-            SendReplyNotification::run($comment);
-        }
+        // Telegram notification
+        SendTelegramNotification::run($comment);
     }
 
     /**

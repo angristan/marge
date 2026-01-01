@@ -37,6 +37,7 @@ class CommentFactory extends Factory
             'edit_token' => null,
             'edit_token_expires_at' => null,
             'moderation_token' => null,
+            'telegram_message_id' => null,
         ];
     }
 

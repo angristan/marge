@@ -67,10 +67,16 @@ class SettingsController extends Controller
             'custom_css' => ['nullable', 'string', 'max:50000'],
             'accent_color' => ['nullable', 'string', 'max:7', 'regex:/^#[0-9A-Fa-f]{6}$/'],
             'hide_branding' => ['nullable', 'boolean'],
+
+            // Telegram
+            'telegram_bot_token' => ['nullable', 'string', 'max:255'],
+            'telegram_chat_id' => ['nullable', 'string', 'max:64'],
+            'enable_telegram' => ['nullable', 'boolean'],
+            'telegram_notify_upvotes' => ['nullable', 'boolean'],
         ]);
 
         // Convert booleans to strings
-        foreach (['require_author', 'require_email', 'enable_upvotes', 'enable_downvotes', 'enable_github_login', 'hide_branding'] as $key) {
+        foreach (['require_author', 'require_email', 'enable_upvotes', 'enable_downvotes', 'enable_github_login', 'hide_branding', 'enable_telegram', 'telegram_notify_upvotes'] as $key) {
             if (isset($validated[$key])) {
                 $validated[$key] = $validated[$key] ? 'true' : 'false';
             }
@@ -165,5 +171,47 @@ class SettingsController extends Controller
         $count = $query->update(['is_admin' => true]);
 
         return back()->with('success', "Marked {$count} comments as admin.");
+    }
+
+    /**
+     * Setup Telegram webhook.
+     */
+    public function setupTelegramWebhook(): RedirectResponse
+    {
+        $result = \App\Actions\Telegram\SetupTelegramWebhook::run();
+
+        if ($result['success']) {
+            return back()->with('success', $result['message']);
+        }
+
+        return back()->with('error', $result['message']);
+    }
+
+    /**
+     * Remove Telegram webhook.
+     */
+    public function removeTelegramWebhook(): RedirectResponse
+    {
+        $result = \App\Actions\Telegram\SetupTelegramWebhook::make()->remove();
+
+        if ($result['success']) {
+            return back()->with('success', $result['message']);
+        }
+
+        return back()->with('error', $result['message']);
+    }
+
+    /**
+     * Send a test Telegram message.
+     */
+    public function testTelegram(): RedirectResponse
+    {
+        $result = \App\Actions\Telegram\SendTelegramNotification::make()->sendTest();
+
+        if ($result['success']) {
+            return back()->with('success', $result['message']);
+        }
+
+        return back()->with('error', $result['message']);
     }
 }

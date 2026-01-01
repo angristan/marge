@@ -40,10 +40,16 @@ class UpdateSettings
             'enable_github_login',
             'github_client_id',
             'hide_branding',
+            // Telegram
+            'telegram_chat_id',
+            'enable_telegram',
+            'telegram_notify_upvotes',
         ];
 
         $encryptedSettings = [
             'github_client_secret',
+            'telegram_bot_token',
+            'telegram_webhook_secret',
         ];
 
         // Settings that should have trailing slashes removed
@@ -64,7 +70,7 @@ class UpdateSettings
                 Setting::setValue($key, $sanitized);
             }
 
-            if (in_array($key, $encryptedSettings, true) && $value !== null && $value !== '') {
+            if (in_array($key, $encryptedSettings, true) && $value !== null && $value !== '' && $value !== '••••••••') {
                 Setting::setValue($key, (string) $value, true);
             }
         }
@@ -115,6 +121,13 @@ class UpdateSettings
             'enable_github_login' => Setting::getValue('enable_github_login', 'false') === 'true',
             'github_client_id' => Setting::getValue('github_client_id'),
             'github_configured' => Setting::getValue('github_client_id') !== null && Setting::getValue('github_client_secret') !== null,
+
+            // Telegram
+            'enable_telegram' => Setting::getValue('enable_telegram', 'false') === 'true',
+            'telegram_chat_id' => Setting::getValue('telegram_chat_id'),
+            'telegram_bot_token' => Setting::getValue('telegram_bot_token'),
+            'telegram_notify_upvotes' => Setting::getValue('telegram_notify_upvotes', 'false') === 'true',
+            'telegram_webhook' => \App\Actions\Telegram\SetupTelegramWebhook::make()->getInfo(),
         ];
     }
 }

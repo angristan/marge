@@ -1,4 +1,4 @@
-import { router, useForm } from '@inertiajs/react';
+import { router, useForm, usePage } from '@inertiajs/react';
 import {
     Alert,
     Button,
@@ -22,15 +22,23 @@ import { notifications } from '@mantine/notifications';
 import {
     IconAlertTriangle,
     IconBrandGithub,
+    IconBrandTelegram,
     IconCheck,
     IconPalette,
     IconSettings,
     IconShield,
     IconTrash,
 } from '@tabler/icons-react';
-import { type FormEvent, useState } from 'react';
+import { type FormEvent, useEffect, useState } from 'react';
 import { useUrlState } from '@/hooks/useUrlState';
 import AdminLayout from '@/Layouts/AdminLayout';
+
+type PageProps = {
+    flash: {
+        success?: string;
+        error?: string;
+    };
+};
 
 interface SettingsIndexProps {
     settings: {
@@ -56,10 +64,24 @@ interface SettingsIndexProps {
         enable_github_login: boolean;
         github_client_id: string | null;
         github_configured: boolean;
+        enable_telegram: boolean;
+        telegram_chat_id: string | null;
+        telegram_bot_token: string | null;
+        telegram_notify_upvotes: boolean;
+        telegram_webhook: {
+            configured: boolean;
+            url: string | null;
+            error: string | null;
+        };
     };
 }
 
-type SettingsTab = 'general' | 'moderation' | 'auth' | 'appearance';
+type SettingsTab =
+    | 'general'
+    | 'moderation'
+    | 'auth'
+    | 'telegram'
+    | 'appearance';
 
 export default function SettingsIndex({ settings }: SettingsIndexProps) {
     const [activeTab, setActiveTab] = useUrlState<SettingsTab>(
@@ -70,6 +92,22 @@ export default function SettingsIndex({ settings }: SettingsIndexProps) {
         useDisclosure(false);
     const [wipeConfirmation, setWipeConfirmation] = useState('');
     const [isWiping, setIsWiping] = useState(false);
+    const [isTelegramAction, setIsTelegramAction] = useState(false);
+    const [telegramResult, setTelegramResult] = useState<{
+        type: 'success' | 'error';
+        message: string;
+    } | null>(null);
+    const { flash } = usePage<PageProps>().props;
+
+    // Handle flash messages from Telegram actions
+    useEffect(() => {
+        if (flash?.success) {
+            setTelegramResult({ type: 'success', message: flash.success });
+        }
+        if (flash?.error) {
+            setTelegramResult({ type: 'error', message: flash.error });
+        }
+    }, [flash?.success, flash?.error]);
 
     const { data, setData, post, processing } = useForm({
         site_name: settings.site_name,
@@ -94,6 +132,10 @@ export default function SettingsIndex({ settings }: SettingsIndexProps) {
         enable_github_login: settings.enable_github_login,
         github_client_id: settings.github_client_id || '',
         github_client_secret: '',
+        enable_telegram: settings.enable_telegram,
+        telegram_chat_id: settings.telegram_chat_id || '',
+        telegram_bot_token: settings.telegram_bot_token || '',
+        telegram_notify_upvotes: settings.telegram_notify_upvotes,
     });
 
     const handleSubmit = (e: FormEvent) => {
@@ -130,6 +172,42 @@ export default function SettingsIndex({ settings }: SettingsIndexProps) {
         });
     };
 
+    const handleTelegramSetupWebhook = () => {
+        setIsTelegramAction(true);
+        router.post(
+            '/admin/settings/telegram/setup-webhook',
+            {},
+            {
+                preserveScroll: true,
+                onFinish: () => setIsTelegramAction(false),
+            },
+        );
+    };
+
+    const handleTelegramRemoveWebhook = () => {
+        setIsTelegramAction(true);
+        router.post(
+            '/admin/settings/telegram/remove-webhook',
+            {},
+            {
+                preserveScroll: true,
+                onFinish: () => setIsTelegramAction(false),
+            },
+        );
+    };
+
+    const handleTelegramTest = () => {
+        setIsTelegramAction(true);
+        router.post(
+            '/admin/settings/telegram/test',
+            {},
+            {
+                preserveScroll: true,
+                onFinish: () => setIsTelegramAction(false),
+            },
+        );
+    };
+
     return (
         <AdminLayout>
             <Title order={2} mb="lg">
@@ -159,6 +237,12 @@ export default function SettingsIndex({ settings }: SettingsIndexProps) {
                             leftSection={<IconBrandGithub size={16} />}
                         >
                             Authentication
+                        </Tabs.Tab>
+                        <Tabs.Tab
+                            value="telegram"
+                            leftSection={<IconBrandTelegram size={16} />}
+                        >
+                            Telegram
                         </Tabs.Tab>
                         <Tabs.Tab
                             value="appearance"
@@ -440,6 +524,167 @@ export default function SettingsIndex({ settings }: SettingsIndexProps) {
                                         )
                                     }
                                 />
+                            </Stack>
+                        </Paper>
+                    </Tabs.Panel>
+
+                    <Tabs.Panel value="telegram">
+                        <Paper withBorder p="md" radius="md">
+                            <Stack>
+                                <Text size="sm" c="dimmed">
+                                    Receive notifications via Telegram when new
+                                    comments are posted. Create a bot at{' '}
+                                    <a
+                                        href="https://t.me/BotFather"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                    >
+                                        @BotFather
+                                    </a>{' '}
+                                    and get your chat ID by messaging{' '}
+                                    <a
+                                        href="https://t.me/userinfobot"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                    >
+                                        @userinfobot
+                                    </a>
+                                    .
+                                </Text>
+                                <PasswordInput
+                                    label="Bot Token"
+                                    description="Token from @BotFather"
+                                    value={data.telegram_bot_token}
+                                    onChange={(e) =>
+                                        setData(
+                                            'telegram_bot_token',
+                                            e.target.value,
+                                        )
+                                    }
+                                />
+                                <TextInput
+                                    label="Chat ID"
+                                    description="Your Telegram user or group chat ID"
+                                    value={data.telegram_chat_id}
+                                    onChange={(e) =>
+                                        setData(
+                                            'telegram_chat_id',
+                                            e.target.value,
+                                        )
+                                    }
+                                />
+                                <Switch
+                                    label="Enable Telegram notifications"
+                                    description={
+                                        settings.telegram_bot_token ||
+                                        data.telegram_bot_token
+                                            ? 'Send notifications to Telegram'
+                                            : 'Enter Bot Token above first'
+                                    }
+                                    checked={data.enable_telegram}
+                                    disabled={
+                                        !settings.telegram_bot_token &&
+                                        !data.telegram_bot_token
+                                    }
+                                    onChange={(e) =>
+                                        setData(
+                                            'enable_telegram',
+                                            e.target.checked,
+                                        )
+                                    }
+                                />
+                                <Switch
+                                    label="Notify on upvotes"
+                                    description="Also send notifications when comments receive upvotes"
+                                    checked={data.telegram_notify_upvotes}
+                                    disabled={!data.enable_telegram}
+                                    onChange={(e) =>
+                                        setData(
+                                            'telegram_notify_upvotes',
+                                            e.target.checked,
+                                        )
+                                    }
+                                />
+                                {data.telegram_bot_token &&
+                                    !settings.telegram_bot_token && (
+                                        <Alert color="yellow">
+                                            Save settings first to use
+                                            Test/Webhook buttons.
+                                        </Alert>
+                                    )}
+                                <Group mt="md">
+                                    <Button
+                                        variant="light"
+                                        onClick={handleTelegramTest}
+                                        loading={isTelegramAction}
+                                        disabled={!settings.telegram_bot_token}
+                                    >
+                                        Test Connection
+                                    </Button>
+                                    {!settings.telegram_webhook.configured ? (
+                                        <Button
+                                            variant="light"
+                                            onClick={handleTelegramSetupWebhook}
+                                            loading={isTelegramAction}
+                                            disabled={
+                                                !settings.telegram_bot_token
+                                            }
+                                        >
+                                            Setup Webhook
+                                        </Button>
+                                    ) : (
+                                        <Button
+                                            variant="light"
+                                            color="red"
+                                            onClick={
+                                                handleTelegramRemoveWebhook
+                                            }
+                                            loading={isTelegramAction}
+                                        >
+                                            Remove Webhook
+                                        </Button>
+                                    )}
+                                </Group>
+                                {telegramResult && (
+                                    <Alert
+                                        color={
+                                            telegramResult.type === 'success'
+                                                ? 'green'
+                                                : 'red'
+                                        }
+                                        mt="sm"
+                                        withCloseButton
+                                        onClose={() => setTelegramResult(null)}
+                                    >
+                                        {telegramResult.message}
+                                    </Alert>
+                                )}
+                                {settings.telegram_webhook.configured && (
+                                    <Alert
+                                        color="blue"
+                                        mt="sm"
+                                        title="Webhook active"
+                                    >
+                                        <Text size="sm" mb="xs">
+                                            <code>
+                                                {settings.telegram_webhook.url}
+                                            </code>
+                                        </Text>
+                                        <Text size="sm" c="dimmed">
+                                            <b>Reply</b> to post as admin •{' '}
+                                            <b>React</b>: 👌 approve, 💩 delete,
+                                            👍 upvote
+                                            {settings.enable_downvotes &&
+                                                ', 👎 downvote'}
+                                        </Text>
+                                    </Alert>
+                                )}
+                                {settings.telegram_webhook.error && (
+                                    <Alert color="red" mt="sm">
+                                        Webhook error:{' '}
+                                        {settings.telegram_webhook.error}
+                                    </Alert>
+                                )}
                             </Stack>
                         </Paper>
                     </Tabs.Panel>

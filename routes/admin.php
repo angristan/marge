@@ -41,6 +41,11 @@ Route::middleware([RedirectIfSetupRequired::class, AdminAuthenticated::class])->
     Route::get('/settings/claim-admin/preview', [SettingsController::class, 'previewClaimAdmin'])->name('admin.settings.claim-admin.preview');
     Route::post('/settings/claim-admin', [SettingsController::class, 'claimAdmin'])->name('admin.settings.claim-admin');
 
+    // Telegram
+    Route::post('/settings/telegram/setup-webhook', [SettingsController::class, 'setupTelegramWebhook'])->name('admin.settings.telegram.setup-webhook');
+    Route::post('/settings/telegram/remove-webhook', [SettingsController::class, 'removeTelegramWebhook'])->name('admin.settings.telegram.remove-webhook');
+    Route::post('/settings/telegram/test', [SettingsController::class, 'testTelegram'])->name('admin.settings.telegram.test');
+
     // Import/Export
     Route::get('/import', [ImportController::class, 'index'])->name('admin.import.index');
     Route::post('/import/isso', [ImportController::class, 'importIsso'])->name('admin.import.isso');

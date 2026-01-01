@@ -31,6 +31,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property string|null $user_agent
  * @property string|null $edit_token
  * @property \Carbon\Carbon|null $edit_token_expires_at
+ * @property int|null $telegram_message_id
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  * @property \Carbon\Carbon|null $deleted_at
@@ -71,6 +72,7 @@ class Comment extends Model
         'edit_token',
         'edit_token_expires_at',
         'moderation_token',
+        'telegram_message_id',
         'created_at',
         'updated_at',
     ];

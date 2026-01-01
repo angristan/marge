@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Actions\Comment;
 
+use App\Actions\Telegram\SendTelegramNotification;
 use App\Models\Comment;
 use App\Support\BloomFilter;
 use Illuminate\Support\Facades\DB;
@@ -24,7 +25,7 @@ class UpvoteComment
     {
         $voterId = BloomFilter::createVoterId($ip, $userAgent);
 
-        return DB::transaction(function () use ($comment, $voterId): ?int {
+        $newCount = DB::transaction(function () use ($comment, $voterId): ?int {
             // Lock the row to prevent concurrent modifications
             /** @var Comment $comment */
             $comment = Comment::lockForUpdate()->find($comment->id);
@@ -45,5 +46,12 @@ class UpvoteComment
 
             return $comment->upvotes;
         });
+
+        // Send Telegram notification if upvote was successful
+        if ($newCount !== null) {
+            SendTelegramNotification::make()->handleUpvote($comment, $newCount);
+        }
+
+        return $newCount;
     }
 }

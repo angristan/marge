@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Actions\Telegram\ProcessTelegramWebhook;
 use App\Http\Controllers\Api\CommentController;
 use App\Http\Controllers\Api\ConfigController;
 use App\Http\Controllers\Api\ThreadController;
@@ -28,3 +29,6 @@ Route::prefix('comments')->group(function (): void {
     Route::post('{comment}/upvote', [CommentController::class, 'upvote']);
     Route::post('{comment}/downvote', [CommentController::class, 'downvote']);
 });
+
+// Telegram webhook (no auth, validated by secret token in action)
+Route::post('telegram/webhook', ProcessTelegramWebhook::class);

@@ -15,6 +15,7 @@ A self-hosted comment system for static sites and blogs.
 - **Dark mode** - Light, dark, or auto (follows system preference)
 - **GitHub login** - Optional GitHub authentication for commenters
 - **Email notifications** - Notify authors when they receive replies
+- **Telegram notifications** - Get notified, reply, and moderate via Telegram
 - **Voting** - Optional upvotes and downvotes with duplicate prevention
 - **Deep linking** - Link directly to any comment with `#comment-{id}`
 - **Moderation** - Approve, spam, delete from admin panel or email

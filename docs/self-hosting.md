@@ -115,6 +115,21 @@ Allow commenters to authenticate with GitHub instead of entering name/email manu
    - Enable "GitHub Login"
    - Enter your Client ID and Client Secret
 
+## Telegram Notifications (Optional)
+
+Get notified of new comments via Telegram and moderate directly from the chat.
+
+1. Create a bot with [@BotFather](https://t.me/BotFather) and copy the bot token
+2. Get your chat ID by messaging [@userinfobot](https://t.me/userinfobot)
+3. In Bulla Admin > Settings > Telegram:
+   - Enter your Bot Token and Chat ID
+   - Enable "Telegram notifications"
+   - Click "Setup Webhook"
+
+**Features:**
+- **Reply** to a notification to post an admin comment
+- **React** to moderate: 👌 approve, 💩 delete, 👍 upvote, 👎 downvote
+
 ## Reverse Proxy Setup
 
 ### Caddy
