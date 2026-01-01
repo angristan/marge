@@ -25,7 +25,7 @@ class AuthenticateAdmin
             return false;
         }
 
-        if ($username !== $storedUsername) {
+        if (! hash_equals($storedUsername, $username)) {
             return false;
         }
 
