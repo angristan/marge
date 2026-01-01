@@ -67,6 +67,7 @@ class SettingsController extends Controller
             // Appearance
             'custom_css' => ['nullable', 'string', 'max:50000'],
             'accent_color' => ['nullable', 'string', 'max:7', 'regex:/^#[0-9A-Fa-f]{6}$/'],
+            'hide_branding' => ['nullable', 'boolean'],
 
             // Email
             'smtp_host' => ['nullable', 'string', 'max:255'],
@@ -78,7 +79,7 @@ class SettingsController extends Controller
         ]);
 
         // Convert booleans to strings
-        foreach (['require_author', 'require_email', 'enable_upvotes', 'enable_downvotes', 'enable_github_login'] as $key) {
+        foreach (['require_author', 'require_email', 'enable_upvotes', 'enable_downvotes', 'enable_github_login', 'hide_branding'] as $key) {
             if (isset($validated[$key])) {
                 $validated[$key] = $validated[$key] ? 'true' : 'false';
             }

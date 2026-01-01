@@ -5,6 +5,7 @@ import App from './App';
 
 vi.mock('../api', () => {
     return {
+        // biome-ignore lint/complexity/useArrowFunction: must be a constructor
         default: vi.fn().mockImplementation(function () {
             return {
                 getConfig: vi.fn(),
@@ -28,6 +29,7 @@ const mockConfig: Config = {
     admin_badge_label: 'Admin',
     github_auth_enabled: false,
     commenter: null,
+    hide_branding: false,
 };
 
 const mockThread: ThreadResponse = {
@@ -48,6 +50,7 @@ describe('App', () => {
             getConfig: vi.fn().mockResolvedValue(mockConfig),
             getComments: vi.fn().mockResolvedValue(mockThread),
         };
+        // biome-ignore lint/complexity/useArrowFunction: must be a constructor
         vi.mocked(ApiModule.default).mockImplementation(function () {
             return mockApi as any;
         });
@@ -226,5 +229,22 @@ describe('App', () => {
                 'https://github.com/angristan/bulla',
             );
         });
+    });
+
+    it('hides footer when config.hide_branding is true', async () => {
+        mockApi.getConfig.mockResolvedValueOnce({
+            ...mockConfig,
+            hide_branding: true,
+        });
+
+        render(<App baseUrl="https://example.com" uri="/test" />);
+
+        await waitFor(() => {
+            expect(screen.getByText('0 Comments')).toBeInTheDocument();
+        });
+
+        expect(
+            screen.queryByRole('link', { name: 'Powered by Bulla' }),
+        ).not.toBeInTheDocument();
     });
 });

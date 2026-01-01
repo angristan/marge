@@ -48,6 +48,7 @@ export interface Config {
     accent_color: string;
     github_auth_enabled: boolean;
     commenter: Commenter | null;
+    hide_branding: boolean;
 }
 
 export interface CreateCommentResponse {

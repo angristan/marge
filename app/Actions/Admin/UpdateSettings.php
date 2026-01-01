@@ -40,6 +40,7 @@ class UpdateSettings
             'enable_downvotes',
             'enable_github_login',
             'github_client_id',
+            'hide_branding',
             'smtp_host',
             'smtp_port',
             'smtp_username',
@@ -99,6 +100,7 @@ class UpdateSettings
             // Appearance
             'custom_css' => Setting::getValue('custom_css', ''),
             'accent_color' => Setting::getValue('accent_color', '#3b82f6'),
+            'hide_branding' => Setting::getValue('hide_branding', 'false') === 'true',
 
             // Voting
             'enable_upvotes' => Setting::getValue('enable_upvotes', 'true') === 'true',

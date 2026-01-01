@@ -46,6 +46,7 @@ class ConfigController extends Controller
             'accent_color' => Setting::getValue('accent_color', '#3b82f6'),
             'github_auth_enabled' => $githubAuthEnabled,
             'commenter' => $commenter,
+            'hide_branding' => Setting::getValue('hide_branding', 'false') === 'true',
         ];
 
         return response()->json($config);

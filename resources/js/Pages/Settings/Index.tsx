@@ -52,6 +52,7 @@ interface SettingsIndexProps {
         allowed_origins: string;
         custom_css: string;
         accent_color: string;
+        hide_branding: boolean;
         enable_upvotes: boolean;
         enable_downvotes: boolean;
         enable_github_login: boolean;
@@ -96,6 +97,7 @@ export default function SettingsIndex({ settings }: SettingsIndexProps) {
         allowed_origins: settings.allowed_origins,
         custom_css: settings.custom_css,
         accent_color: settings.accent_color,
+        hide_branding: settings.hide_branding,
         enable_upvotes: settings.enable_upvotes,
         enable_downvotes: settings.enable_downvotes,
         enable_github_login: settings.enable_github_login,
@@ -556,6 +558,17 @@ export default function SettingsIndex({ settings }: SettingsIndexProps) {
                                         '#06b6d4',
                                         '#6366f1',
                                     ]}
+                                />
+                                <Switch
+                                    label="Hide branding"
+                                    description="Hide the 'Powered by Bulla' footer in the embed"
+                                    checked={data.hide_branding}
+                                    onChange={(e) =>
+                                        setData(
+                                            'hide_branding',
+                                            e.target.checked,
+                                        )
+                                    }
                                 />
                                 <Textarea
                                     label="Custom CSS"

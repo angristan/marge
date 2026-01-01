@@ -262,15 +262,17 @@ export default function App({
                 )}
             </div>
 
-            <div className="bulla-footer">
-                <a
-                    href="https://github.com/angristan/bulla"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                >
-                    Powered by Bulla
-                </a>
-            </div>
+            {!config.hide_branding && (
+                <div className="bulla-footer">
+                    <a
+                        href="https://github.com/angristan/bulla"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
+                        Powered by Bulla
+                    </a>
+                </div>
+            )}
         </div>
     );
 }
