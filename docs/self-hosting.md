@@ -74,6 +74,11 @@ docker compose up -d
 | `MAIL_USERNAME` | SMTP username | - |
 | `MAIL_PASSWORD` | SMTP password | - |
 | `MAIL_FROM_ADDRESS` | From email address | - |
+| `IMGPROXY_URL` | [imgproxy](https://imgproxy.net) base URL | - |
+| `IMGPROXY_KEY` | imgproxy signing key | - |
+| `IMGPROXY_SALT` | imgproxy signing salt | - |
+
+**Image Proxy (optional):** If all three `IMGPROXY_*` variables are set, avatars will be proxied through imgproxy for resizing and WebP conversion. If not configured, original avatar URLs are used.
 
 ## Initial Setup
 

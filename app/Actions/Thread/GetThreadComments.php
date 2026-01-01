@@ -7,6 +7,7 @@ namespace App\Actions\Thread;
 use App\Models\Comment;
 use App\Models\Thread;
 use App\Support\Gravatar;
+use App\Support\ImageProxy;
 use Illuminate\Support\Collection;
 use Lorisleiva\Actions\Concerns\AsAction;
 
@@ -93,6 +94,9 @@ class GetThreadComments
             : ($comment->display_email
                 ? Gravatar::url($comment->display_email)
                 : Gravatar::urlForIp($comment->remote_addr, (string) $comment->thread_id));
+
+        // Apply image proxy if configured (resize + webp conversion)
+        $avatarUrl = ImageProxy::url($avatarUrl);
 
         return [
             'id' => $comment->id,

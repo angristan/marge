@@ -45,4 +45,10 @@ return [
         'redirect' => null,
     ],
 
+    'imgproxy' => [
+        'url' => env('IMGPROXY_URL'),
+        'salt' => env('IMGPROXY_SALT'),
+        'key' => env('IMGPROXY_KEY'),
+    ],
+
 ];
