@@ -163,7 +163,10 @@ describe('Api', () => {
                 'https://example.com/api/threads/%2Ftest/comments',
                 {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Accept: 'application/json',
+                    },
                     body: JSON.stringify({
                         body: 'Test comment',
                         author: 'Test',
@@ -197,7 +200,7 @@ describe('Api', () => {
 
             expect(fetch).toHaveBeenCalledWith(
                 'https://example.com/api/comments/123/upvote',
-                { method: 'POST' },
+                { method: 'POST', headers: { Accept: 'application/json' } },
             );
             expect(result).toEqual({ upvotes: 5 });
         });
@@ -225,7 +228,7 @@ describe('Api', () => {
 
             expect(fetch).toHaveBeenCalledWith(
                 'https://example.com/api/comments/123/downvote',
-                { method: 'POST' },
+                { method: 'POST', headers: { Accept: 'application/json' } },
             );
             expect(result).toEqual({ downvotes: 2 });
         });
@@ -245,7 +248,10 @@ describe('Api', () => {
                 'https://example.com/api/comments/preview',
                 {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Accept: 'application/json',
+                    },
                     body: JSON.stringify({ body: '**bold**' }),
                 },
             );

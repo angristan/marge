@@ -120,14 +120,24 @@ class Api {
             `${this.baseUrl}/api/threads/${encoded}/comments`,
             {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: {
+                    'Content-Type': 'application/json',
+                    Accept: 'application/json',
+                },
                 body: JSON.stringify(data),
                 credentials: 'include',
             },
         );
         if (!response.ok) {
             const error = await response.json();
-            throw new Error(error.error || 'Failed to create comment');
+            // Handle Laravel validation errors
+            if (error.errors) {
+                const firstField = Object.keys(error.errors)[0];
+                throw new Error(error.errors[firstField][0]);
+            }
+            throw new Error(
+                error.error || error.message || 'Failed to create comment',
+            );
         }
         return response.json();
     }
@@ -137,6 +147,7 @@ class Api {
             `${this.baseUrl}/api/comments/${commentId}/upvote`,
             {
                 method: 'POST',
+                headers: { Accept: 'application/json' },
             },
         );
         if (!response.ok) {
@@ -151,6 +162,7 @@ class Api {
             `${this.baseUrl}/api/comments/${commentId}/downvote`,
             {
                 method: 'POST',
+                headers: { Accept: 'application/json' },
             },
         );
         if (!response.ok) {
@@ -163,7 +175,10 @@ class Api {
     async previewMarkdown(body: string): Promise<{ html: string }> {
         const response = await fetch(`${this.baseUrl}/api/comments/preview`, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: {
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
+            },
             body: JSON.stringify({ body }),
         });
         if (!response.ok) throw new Error('Failed to preview');
