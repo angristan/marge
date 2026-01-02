@@ -24,17 +24,28 @@ import {
     IconBrandGithub,
     IconBrandTelegram,
     IconCheck,
+    IconCopy,
+    IconKey,
     IconMail,
     IconPalette,
+    IconRefresh,
     IconSettings,
     IconShield,
+    IconShieldLock,
     IconTrash,
 } from '@tabler/icons-react';
 import { type FormEvent, useState } from 'react';
 import { useUrlState } from '@/hooks/useUrlState';
 import AdminLayout from '@/Layouts/AdminLayout';
 
+interface TwoFactorStatus {
+    enabled: boolean;
+    confirmed_at: string | null;
+    recovery_codes_remaining: number;
+}
+
 interface SettingsIndexProps {
+    twoFactor: TwoFactorStatus;
     settings: {
         site_name: string;
         site_url: string | null;
@@ -85,9 +96,13 @@ type SettingsTab =
     | 'telegram'
     | 'email'
     | 'appearance'
+    | 'security'
     | 'danger';
 
-export default function SettingsIndex({ settings }: SettingsIndexProps) {
+export default function SettingsIndex({
+    settings,
+    twoFactor,
+}: SettingsIndexProps) {
     const [activeTab, setActiveTab] = useUrlState<SettingsTab>(
         'tab',
         'general',
@@ -98,6 +113,18 @@ export default function SettingsIndex({ settings }: SettingsIndexProps) {
     const [isWiping, setIsWiping] = useState(false);
     const [isTelegramAction, setIsTelegramAction] = useState(false);
     const [isEmailAction, setIsEmailAction] = useState(false);
+
+    // 2FA state
+    const [twoFactorSetup, setTwoFactorSetup] = useState<{
+        secret: string;
+        qrCodeSvg: string;
+    } | null>(null);
+    const [twoFactorCode, setTwoFactorCode] = useState('');
+    const [disableCode, setDisableCode] = useState('');
+    const [regenerateCode, setRegenerateCode] = useState('');
+    const [recoveryCodes, setRecoveryCodes] = useState<string[] | null>(null);
+    const [is2faAction, setIs2faAction] = useState(false);
+    const [twoFactorError, setTwoFactorError] = useState<string | null>(null);
 
     const { data, setData, post, processing } = useForm({
         site_name: settings.site_name,
@@ -264,6 +291,169 @@ export default function SettingsIndex({ settings }: SettingsIndexProps) {
         );
     };
 
+    // 2FA handlers - get CSRF token from cookie (XSRF-TOKEN) or meta tag
+    const getCsrfToken = () => {
+        // Try to get from cookie first (Laravel's default)
+        const xsrfCookie = document.cookie
+            .split('; ')
+            .find((row) => row.startsWith('XSRF-TOKEN='));
+        if (xsrfCookie) {
+            return decodeURIComponent(xsrfCookie.split('=')[1]);
+        }
+        // Fall back to meta tag
+        return (
+            document
+                .querySelector('meta[name="csrf-token"]')
+                ?.getAttribute('content') || ''
+        );
+    };
+
+    const handleSetup2FA = async () => {
+        setIs2faAction(true);
+        setTwoFactorError(null);
+        try {
+            const response = await fetch('/admin/settings/2fa/setup', {
+                method: 'POST',
+                credentials: 'same-origin',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Accept: 'application/json',
+                    'X-XSRF-TOKEN': getCsrfToken(),
+                },
+            });
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}`);
+            }
+            const data = await response.json();
+            setTwoFactorSetup({
+                secret: data.secret,
+                qrCodeSvg: data.qr_code_svg,
+            });
+        } catch {
+            setTwoFactorError('Failed to generate 2FA secret');
+        } finally {
+            setIs2faAction(false);
+        }
+    };
+
+    const handleEnable2FA = async () => {
+        setIs2faAction(true);
+        setTwoFactorError(null);
+        try {
+            const response = await fetch('/admin/settings/2fa/enable', {
+                method: 'POST',
+                credentials: 'same-origin',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Accept: 'application/json',
+                    'X-XSRF-TOKEN': getCsrfToken(),
+                },
+                body: JSON.stringify({ code: twoFactorCode }),
+            });
+            const data = await response.json();
+            if (data.error) {
+                setTwoFactorError(data.error);
+            } else {
+                setRecoveryCodes(data.recovery_codes);
+                setTwoFactorSetup(null);
+                setTwoFactorCode('');
+                router.reload({ only: ['twoFactor'] });
+                notifications.show({
+                    title: '2FA Enabled',
+                    message:
+                        'Two-factor authentication is now enabled. Save your recovery codes!',
+                    color: 'green',
+                    icon: <IconCheck size={16} />,
+                });
+            }
+        } catch {
+            setTwoFactorError('Failed to enable 2FA');
+        } finally {
+            setIs2faAction(false);
+        }
+    };
+
+    const handleDisable2FA = async () => {
+        setIs2faAction(true);
+        setTwoFactorError(null);
+        try {
+            const response = await fetch('/admin/settings/2fa/disable', {
+                method: 'POST',
+                credentials: 'same-origin',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Accept: 'application/json',
+                    'X-XSRF-TOKEN': getCsrfToken(),
+                },
+                body: JSON.stringify({ code: disableCode }),
+            });
+            const data = await response.json();
+            if (data.error) {
+                setTwoFactorError(data.error);
+            } else {
+                setDisableCode('');
+                router.reload({ only: ['twoFactor'] });
+                notifications.show({
+                    title: '2FA Disabled',
+                    message: 'Two-factor authentication has been disabled.',
+                    color: 'green',
+                    icon: <IconCheck size={16} />,
+                });
+            }
+        } catch {
+            setTwoFactorError('Failed to disable 2FA');
+        } finally {
+            setIs2faAction(false);
+        }
+    };
+
+    const handleRegenerateRecoveryCodes = async () => {
+        setIs2faAction(true);
+        setTwoFactorError(null);
+        try {
+            const response = await fetch('/admin/settings/2fa/recovery-codes', {
+                method: 'POST',
+                credentials: 'same-origin',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Accept: 'application/json',
+                    'X-XSRF-TOKEN': getCsrfToken(),
+                },
+                body: JSON.stringify({ code: regenerateCode }),
+            });
+            const data = await response.json();
+            if (data.error) {
+                setTwoFactorError(data.error);
+            } else {
+                setRecoveryCodes(data.recovery_codes);
+                setRegenerateCode('');
+                router.reload({ only: ['twoFactor'] });
+                notifications.show({
+                    title: 'Recovery Codes Regenerated',
+                    message: 'Your old recovery codes are no longer valid.',
+                    color: 'green',
+                    icon: <IconCheck size={16} />,
+                });
+            }
+        } catch {
+            setTwoFactorError('Failed to regenerate recovery codes');
+        } finally {
+            setIs2faAction(false);
+        }
+    };
+
+    const copyRecoveryCodes = () => {
+        if (recoveryCodes) {
+            navigator.clipboard.writeText(recoveryCodes.join('\n'));
+            notifications.show({
+                title: 'Copied',
+                message: 'Recovery codes copied to clipboard',
+                color: 'green',
+                icon: <IconCopy size={16} />,
+            });
+        }
+    };
+
     return (
         <AdminLayout>
             <Title order={2} mb="lg">
@@ -311,6 +501,12 @@ export default function SettingsIndex({ settings }: SettingsIndexProps) {
                             leftSection={<IconBrandGithub size={16} />}
                         >
                             GitHub
+                        </Tabs.Tab>
+                        <Tabs.Tab
+                            value="security"
+                            leftSection={<IconShieldLock size={16} />}
+                        >
+                            Security
                         </Tabs.Tab>
                         <Tabs.Tab
                             value="danger"
@@ -929,6 +1125,283 @@ export default function SettingsIndex({ settings }: SettingsIndexProps) {
                         </Paper>
                     </Tabs.Panel>
 
+                    <Tabs.Panel value="security">
+                        <Paper withBorder p="md" radius="md">
+                            <Stack>
+                                <Text size="sm" c="dimmed">
+                                    Protect your admin account with two-factor
+                                    authentication using an authenticator app
+                                    like Google Authenticator or Authy.
+                                </Text>
+
+                                {twoFactorError && (
+                                    <Alert color="red">{twoFactorError}</Alert>
+                                )}
+
+                                {/* Recovery codes display */}
+                                {recoveryCodes && (
+                                    <Alert
+                                        color="blue"
+                                        icon={<IconKey size={16} />}
+                                        title="Save your recovery codes"
+                                    >
+                                        <Text size="sm" mb="sm">
+                                            Store these codes in a safe place.
+                                            Each code can only be used once.
+                                        </Text>
+                                        <Paper withBorder p="sm" radius="sm">
+                                            <Group gap="md">
+                                                {recoveryCodes.map((code) => (
+                                                    <Text
+                                                        key={code}
+                                                        ff="monospace"
+                                                        size="sm"
+                                                        fw={500}
+                                                    >
+                                                        {code}
+                                                    </Text>
+                                                ))}
+                                            </Group>
+                                        </Paper>
+                                        <Group mt="sm">
+                                            <Button
+                                                size="xs"
+                                                variant="light"
+                                                leftSection={
+                                                    <IconCopy size={14} />
+                                                }
+                                                onClick={copyRecoveryCodes}
+                                            >
+                                                Copy codes
+                                            </Button>
+                                            <Button
+                                                size="xs"
+                                                variant="subtle"
+                                                onClick={() =>
+                                                    setRecoveryCodes(null)
+                                                }
+                                            >
+                                                I&apos;ve saved them
+                                            </Button>
+                                        </Group>
+                                    </Alert>
+                                )}
+
+                                {!twoFactor.enabled ? (
+                                    /* Setup 2FA */
+                                    !twoFactorSetup ? (
+                                        <>
+                                            <Alert
+                                                color="gray"
+                                                icon={
+                                                    <IconShieldLock size={16} />
+                                                }
+                                            >
+                                                Two-factor authentication is not
+                                                enabled. Add an extra layer of
+                                                security to your account.
+                                            </Alert>
+                                            <Button
+                                                leftSection={
+                                                    <IconShieldLock size={16} />
+                                                }
+                                                onClick={handleSetup2FA}
+                                                loading={is2faAction}
+                                                style={{
+                                                    alignSelf: 'flex-start',
+                                                }}
+                                            >
+                                                Enable Two-Factor Authentication
+                                            </Button>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <Text fw={500}>
+                                                Scan this QR code with your
+                                                authenticator app
+                                            </Text>
+                                            <Group align="flex-start" gap="xl">
+                                                <div
+                                                    style={{
+                                                        background: 'white',
+                                                        padding: '16px',
+                                                        borderRadius: '8px',
+                                                        border: '1px solid var(--mantine-color-gray-3)',
+                                                    }}
+                                                    dangerouslySetInnerHTML={{
+                                                        __html: twoFactorSetup.qrCodeSvg,
+                                                    }}
+                                                />
+                                                <Stack
+                                                    gap="md"
+                                                    style={{ flex: 1 }}
+                                                >
+                                                    <Text size="sm" c="dimmed">
+                                                        Or enter this code
+                                                        manually:
+                                                    </Text>
+                                                    <Text
+                                                        ff="monospace"
+                                                        fw={500}
+                                                        size="lg"
+                                                        style={{
+                                                            background:
+                                                                'var(--mantine-color-gray-1)',
+                                                            padding: '8px 12px',
+                                                            borderRadius: '4px',
+                                                            width: 'fit-content',
+                                                        }}
+                                                    >
+                                                        {twoFactorSetup.secret}
+                                                    </Text>
+                                                    <TextInput
+                                                        label="Verification code"
+                                                        description="Enter the 6-digit code from your authenticator app"
+                                                        placeholder="000000"
+                                                        value={twoFactorCode}
+                                                        onChange={(e) =>
+                                                            setTwoFactorCode(
+                                                                e.target.value.replace(
+                                                                    /\D/g,
+                                                                    '',
+                                                                ),
+                                                            )
+                                                        }
+                                                        maxLength={6}
+                                                        styles={{
+                                                            input: {
+                                                                fontFamily:
+                                                                    'monospace',
+                                                                letterSpacing:
+                                                                    '0.2em',
+                                                            },
+                                                        }}
+                                                    />
+                                                    <Group>
+                                                        <Button
+                                                            onClick={
+                                                                handleEnable2FA
+                                                            }
+                                                            loading={
+                                                                is2faAction
+                                                            }
+                                                            disabled={
+                                                                twoFactorCode.length !==
+                                                                6
+                                                            }
+                                                        >
+                                                            Verify &amp; Enable
+                                                        </Button>
+                                                        <Button
+                                                            variant="subtle"
+                                                            onClick={() => {
+                                                                setTwoFactorSetup(
+                                                                    null,
+                                                                );
+                                                                setTwoFactorCode(
+                                                                    '',
+                                                                );
+                                                            }}
+                                                        >
+                                                            Cancel
+                                                        </Button>
+                                                    </Group>
+                                                </Stack>
+                                            </Group>
+                                        </>
+                                    )
+                                ) : (
+                                    /* 2FA Enabled */
+                                    <>
+                                        <Alert
+                                            color="green"
+                                            icon={<IconShieldLock size={16} />}
+                                        >
+                                            Two-factor authentication is
+                                            enabled.
+                                            {twoFactor.recovery_codes_remaining <
+                                                3 && (
+                                                <Text size="sm" mt="xs">
+                                                    Warning: Only{' '}
+                                                    {
+                                                        twoFactor.recovery_codes_remaining
+                                                    }{' '}
+                                                    recovery codes remaining.
+                                                </Text>
+                                            )}
+                                        </Alert>
+
+                                        <TextInput
+                                            label="Regenerate recovery codes"
+                                            description={`You have ${twoFactor.recovery_codes_remaining} recovery codes remaining. Enter your 2FA code to generate new ones.`}
+                                            placeholder="000000"
+                                            value={regenerateCode}
+                                            onChange={(e) =>
+                                                setRegenerateCode(
+                                                    e.target.value.replace(
+                                                        /\D/g,
+                                                        '',
+                                                    ),
+                                                )
+                                            }
+                                            maxLength={6}
+                                            styles={{
+                                                input: {
+                                                    fontFamily: 'monospace',
+                                                },
+                                            }}
+                                        />
+                                        <Group>
+                                            <Button
+                                                variant="light"
+                                                leftSection={
+                                                    <IconRefresh size={16} />
+                                                }
+                                                onClick={
+                                                    handleRegenerateRecoveryCodes
+                                                }
+                                                loading={is2faAction}
+                                                disabled={
+                                                    regenerateCode.length !== 6
+                                                }
+                                            >
+                                                Regenerate Recovery Codes
+                                            </Button>
+                                        </Group>
+
+                                        <TextInput
+                                            label="Disable two-factor authentication"
+                                            description="Enter your 2FA code or a recovery code to disable"
+                                            placeholder="000000 or XXXX-XXXX"
+                                            value={disableCode}
+                                            onChange={(e) =>
+                                                setDisableCode(e.target.value)
+                                            }
+                                            styles={{
+                                                input: {
+                                                    fontFamily: 'monospace',
+                                                },
+                                            }}
+                                        />
+                                        <Group>
+                                            <Button
+                                                color="red"
+                                                variant="light"
+                                                onClick={handleDisable2FA}
+                                                loading={is2faAction}
+                                                disabled={
+                                                    disableCode.length < 6
+                                                }
+                                            >
+                                                Disable 2FA
+                                            </Button>
+                                        </Group>
+                                    </>
+                                )}
+                            </Stack>
+                        </Paper>
+                    </Tabs.Panel>
+
                     <Tabs.Panel value="danger">
                         <Paper
                             withBorder
@@ -959,7 +1432,7 @@ export default function SettingsIndex({ settings }: SettingsIndexProps) {
                     </Tabs.Panel>
                 </Tabs>
 
-                {activeTab !== 'danger' && (
+                {activeTab !== 'danger' && activeTab !== 'security' && (
                     <Group justify="flex-end" mt="lg">
                         <Button type="submit" loading={processing}>
                             Save Settings

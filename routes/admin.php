@@ -19,6 +19,8 @@ Route::middleware([RedirectIfSetupRequired::class])->group(function (): void {
     Route::post('/setup', [SetupController::class, 'store'])->name('admin.setup.store');
     Route::get('/login', [AuthController::class, 'showLogin'])->name('admin.login');
     Route::post('/login', [AuthController::class, 'login'])->name('admin.login.store');
+    Route::get('/login/2fa', [AuthController::class, 'showTwoFactorChallenge'])->name('admin.login.2fa');
+    Route::post('/login/2fa', [AuthController::class, 'verifyTwoFactor'])->name('admin.login.2fa.verify');
 });
 
 Route::post('/logout', [AuthController::class, 'logout'])->name('admin.logout');
@@ -48,6 +50,12 @@ Route::middleware([RedirectIfSetupRequired::class, AdminAuthenticated::class])->
 
     // Email
     Route::post('/settings/email/test', [SettingsController::class, 'testEmail'])->name('admin.settings.email.test');
+
+    // Two-Factor Authentication
+    Route::post('/settings/2fa/setup', [SettingsController::class, 'setupTwoFactor'])->name('admin.settings.2fa.setup');
+    Route::post('/settings/2fa/enable', [SettingsController::class, 'enableTwoFactor'])->name('admin.settings.2fa.enable');
+    Route::post('/settings/2fa/disable', [SettingsController::class, 'disableTwoFactor'])->name('admin.settings.2fa.disable');
+    Route::post('/settings/2fa/recovery-codes', [SettingsController::class, 'regenerateRecoveryCodes'])->name('admin.settings.2fa.recovery-codes');
 
     // Import/Export
     Route::get('/import', [ImportController::class, 'index'])->name('admin.import.index');

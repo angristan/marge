@@ -23,6 +23,7 @@ A self-hosted comment system for static sites and blogs.
   - Anonymous commenting with optional name/email/website
   - Optional GitHub login for commenters
   - Admin comments with badge, claim past comments by email/name
+  - Two-factor authentication (TOTP) for admin login
 - **Notifications**
   - Email notifications for moderation and for replies with unsubscribe support
   - Telegram bot for notifications, replies, and moderation

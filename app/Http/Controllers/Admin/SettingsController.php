@@ -4,10 +4,20 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Admin;
 
+use App\Actions\Admin\TwoFactor\DisableTwoFactor;
+use App\Actions\Admin\TwoFactor\EnableTwoFactor;
+use App\Actions\Admin\TwoFactor\GenerateRecoveryCodes;
+use App\Actions\Admin\TwoFactor\GenerateTwoFactorSecret;
+use App\Actions\Admin\TwoFactor\GetTwoFactorStatus;
+use App\Actions\Admin\TwoFactor\VerifyTwoFactorCode;
 use App\Actions\Admin\UpdateSettings;
 use App\Actions\Admin\WipeAllData;
 use App\Http\Controllers\Controller;
 use App\Models\Comment;
+use BaconQrCode\Renderer\Image\SvgImageBackEnd;
+use BaconQrCode\Renderer\ImageRenderer;
+use BaconQrCode\Renderer\RendererStyle\RendererStyle;
+use BaconQrCode\Writer;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -22,9 +32,11 @@ class SettingsController extends Controller
     public function index(): Response
     {
         $settings = UpdateSettings::getAll();
+        $twoFactor = GetTwoFactorStatus::run();
 
         return Inertia::render('Settings/Index', [
             'settings' => $settings,
+            'twoFactor' => $twoFactor,
         ]);
     }
 
@@ -244,5 +256,116 @@ class SettingsController extends Controller
         }
 
         return back()->with('error', $result['message']);
+    }
+
+    /**
+     * Generate 2FA secret and return QR code.
+     */
+    public function setupTwoFactor(): JsonResponse
+    {
+        $result = GenerateTwoFactorSecret::run();
+
+        // Generate QR code SVG
+        $renderer = new ImageRenderer(
+            new RendererStyle(200),
+            new SvgImageBackEnd
+        );
+        $writer = new Writer($renderer);
+        $qrCodeSvg = $writer->writeString($result['qr_code_url']);
+
+        return response()->json([
+            'secret' => $result['secret'],
+            'qr_code_svg' => $qrCodeSvg,
+        ]);
+    }
+
+    /**
+     * Enable 2FA after verifying code.
+     */
+    public function enableTwoFactor(Request $request): RedirectResponse|JsonResponse
+    {
+        $validated = $request->validate([
+            'code' => ['required', 'string', 'size:6'],
+        ]);
+
+        $result = EnableTwoFactor::run($validated['code']);
+
+        if (! $result['success']) {
+            if ($request->wantsJson()) {
+                return response()->json(['error' => $result['message']], 422);
+            }
+
+            return back()->with('error', $result['message']);
+        }
+
+        if ($request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'recovery_codes' => $result['recovery_codes'],
+            ]);
+        }
+
+        return back()->with([
+            'success' => 'Two-factor authentication enabled.',
+            'recovery_codes' => $result['recovery_codes'],
+        ]);
+    }
+
+    /**
+     * Disable 2FA after verifying code.
+     */
+    public function disableTwoFactor(Request $request): RedirectResponse|JsonResponse
+    {
+        $validated = $request->validate([
+            'code' => ['required', 'string'],
+        ]);
+
+        $result = DisableTwoFactor::run($validated['code']);
+
+        if (! $result['success']) {
+            if ($request->wantsJson()) {
+                return response()->json(['error' => $result['message']], 422);
+            }
+
+            return back()->with('error', $result['message']);
+        }
+
+        if ($request->wantsJson()) {
+            return response()->json(['success' => true]);
+        }
+
+        return back()->with('success', 'Two-factor authentication disabled.');
+    }
+
+    /**
+     * Regenerate recovery codes.
+     */
+    public function regenerateRecoveryCodes(Request $request): RedirectResponse|JsonResponse
+    {
+        $validated = $request->validate([
+            'code' => ['required', 'string', 'size:6'],
+        ]);
+
+        if (! VerifyTwoFactorCode::run($validated['code'])) {
+            if ($request->wantsJson()) {
+                return response()->json(['error' => 'Invalid 2FA code.'], 422);
+            }
+
+            return back()->with('error', 'Invalid 2FA code.');
+        }
+
+        $codes = GenerateRecoveryCodes::run();
+
+        if ($request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'recovery_codes' => $codes,
+            ]);
+        }
+
+        return back()->with([
+            'success' => 'Recovery codes regenerated.',
+            'recovery_codes' => $codes,
+        ]);
     }
 }

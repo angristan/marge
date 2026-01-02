@@ -10,6 +10,7 @@
     "license": "MIT",
     "require": {
         "php": "^8.2",
+        "bacon/bacon-qr-code": "^3.0",
         "inertiajs/inertia-laravel": "^2.0",
         "laravel/boost": "^1.8",
         "laravel/framework": "^12.0",
@@ -18,7 +19,8 @@
         "laravel/tinker": "^2.10.1",
         "league/commonmark": "^2.8",
         "lorisleiva/laravel-actions": "^2.9",
-        "onliner/imgproxy-php": "^0.2.4"
+        "onliner/imgproxy-php": "^0.2.4",
+        "pragmarx/google2fa": "^9.0"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",

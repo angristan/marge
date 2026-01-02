@@ -131,6 +131,17 @@ volumes:
 - **Reply** to a notification to post an admin comment
 - **React** to moderate: 👌 approve, 💩 delete, 👍 upvote, 👎 downvote
 
+## Two-Factor Authentication (Optional)
+
+Secure your admin account with TOTP-based two-factor authentication:
+
+1. In Bulla Admin > Settings > Security, click "Enable Two-Factor Authentication"
+2. Scan the QR code with an authenticator app (Google Authenticator, Authy, 1Password, etc.)
+3. Enter the 6-digit code to confirm
+4. Save your recovery codes in a secure location
+
+After enabling, you'll need to enter a 6-digit code from your authenticator app after your password when logging in.
+
 ## Reverse Proxy
 
 ### Caddy
