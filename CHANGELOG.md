@@ -1,3 +1,10 @@
+# [1.2.0](https://github.com/angristan/bulla/compare/v1.1.0...v1.2.0) (2026-01-02)
+
+
+### Features
+
+* add logo to login page ([0ed1aaa](https://github.com/angristan/bulla/commit/0ed1aaa94a718be6a1e588e8ceadb836912c57f6))
+
 # [1.1.0](https://github.com/angristan/bulla/compare/v1.0.0...v1.1.0) (2026-01-02)
 
 
