@@ -1,3 +1,10 @@
+## [1.2.1](https://github.com/angristan/bulla/compare/v1.2.0...v1.2.1) (2026-01-02)
+
+
+### Performance Improvements
+
+* load all settings in single query to avoid N+1 ([15755ab](https://github.com/angristan/bulla/commit/15755abe6df5b6e3b0aafbab4da7f81570501bb2))
+
 # [1.2.0](https://github.com/angristan/bulla/compare/v1.1.0...v1.2.0) (2026-01-02)
 
 
