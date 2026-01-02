@@ -15,11 +15,16 @@ use Illuminate\Support\Facades\Crypt;
 class Setting extends Model
 {
     /**
-     * Request-scoped cache for settings values.
+     * Request-scoped cache for all settings values.
      *
      * @var array<string, string|null>
      */
     protected static array $cache = [];
+
+    /**
+     * Whether all settings have been loaded into cache.
+     */
+    protected static bool $cacheLoaded = false;
 
     public $incrementing = false;
 
@@ -68,23 +73,27 @@ class Setting extends Model
     }
 
     /**
+     * Load all settings into cache with a single query.
+     */
+    protected static function loadCache(): void
+    {
+        if (static::$cacheLoaded) {
+            return;
+        }
+
+        static::$cache = [];
+        foreach (static::all() as $setting) {
+            static::$cache[$setting->key] = $setting->getDecryptedValue();
+        }
+        static::$cacheLoaded = true;
+    }
+
+    /**
      * Get a setting value by key (cached per request).
      */
     public static function getValue(string $key, ?string $default = null): ?string
     {
-        if (array_key_exists($key, static::$cache)) {
-            return static::$cache[$key] ?? $default;
-        }
-
-        $setting = static::find($key);
-
-        if ($setting === null) {
-            static::$cache[$key] = null;
-
-            return $default;
-        }
-
-        static::$cache[$key] = $setting->getDecryptedValue();
+        static::loadCache();
 
         return static::$cache[$key] ?? $default;
     }
@@ -115,5 +124,6 @@ class Setting extends Model
     public static function flushCache(): void
     {
         static::$cache = [];
+        static::$cacheLoaded = false;
     }
 }
