@@ -26,6 +26,8 @@ A self-hosted comment system for static sites and blogs.
 - **Dual database support** - SQLite (default) or PostgreSQL
 - **Lightweight embed** - ~10KB gzipped
 
+![](./docs/assets/embed.png)
+
 ## Quick Start
 
 Bulla is designed to be easily self-hosted. Just a single Docker container with SQLite. PostgreSQL and imgproxy are optional.
@@ -107,6 +109,7 @@ composer run dev
 ```
 
 This runs concurrently:
+
 - Laravel server (`php artisan serve`)
 - Queue worker (`php artisan queue:listen`)
 - Log viewer (`php artisan pail`)
@@ -128,16 +131,29 @@ php artisan test --coverage
 
 Tests run against both SQLite and PostgreSQL in CI.
 
-## Importing Comments
+## Features
+
+### Importing Comments
 
 Bulla supports importing from:
+
 - **isso** - Upload your isso SQLite database file
 - **Disqus** - Export your data from Disqus and upload the XML file
 - **WordPress** - Export comments via WXR (WordPress eXtended RSS) format
 
 To import: Go to Admin > Settings > Import, select your platform, and upload the file. Comments will be imported with original timestamps preserved.
 
+![](./docs/assets/import.png)
+
 After importing, use the "Claim Admin Comments" feature in Settings to mark your past comments as admin by matching email or author name.
+
+![](./docs/assets/claim.png)
+
+### Telegram bot
+
+One of my favorite features is the Telegram bot integration. It allows you to receive notifications for new comments and replies directly in Telegram. You can also moderate comments (approve, delete, mark as spam) and reply to comments right from the chat. It's very conveniant for staying on top of discussions on the go!
+
+![](./docs/assets/telegram.png)
 
 ## Configuration
 
