@@ -3,11 +3,11 @@ import {
     Button,
     Center,
     Container,
+    Image,
     Paper,
     PasswordInput,
     Stack,
     TextInput,
-    Title,
 } from '@mantine/core';
 import type { FormEvent } from 'react';
 
@@ -25,7 +25,7 @@ export default function Login() {
     return (
         <Container size={420} my={100}>
             <Center mb="xl">
-                <Title order={1}>Bulla</Title>
+                <Image src="/bulla.png" alt="Bulla" w={64} h={64} />
             </Center>
 
             <Paper withBorder shadow="md" p={30} radius="md">
