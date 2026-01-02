@@ -11,6 +11,7 @@ use App\Actions\Comment\MarkAsSpam;
 use App\Http\Controllers\Controller;
 use App\Models\Comment;
 use App\Support\Gravatar;
+use App\Support\ImageProxy;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -54,9 +55,11 @@ class CommentsController extends Controller
                 'author' => $comment->display_author,
                 'email' => $comment->email,
                 'website' => $comment->website,
-                'avatar' => $comment->display_email
-                    ? Gravatar::url($comment->display_email)
-                    : Gravatar::urlForIp($comment->remote_addr, (string) $comment->thread_id),
+                'avatar' => ImageProxy::url(
+                    $comment->display_email
+                        ? Gravatar::url($comment->display_email)
+                        : Gravatar::urlForIp($comment->remote_addr, (string) $comment->thread_id)
+                ),
                 'body_markdown' => $comment->body_markdown,
                 'body_html' => $comment->body_html,
                 'status' => $comment->status,

@@ -16,6 +16,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Comment;
 use App\Models\Setting;
 use App\Support\Gravatar;
+use App\Support\ImageProxy;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -103,11 +104,13 @@ class CommentController extends Controller
         }
 
         // Use GitHub avatar if available, otherwise Gravatar
-        $avatarUrl = $comment->github_username
-            ? "https://github.com/{$comment->github_username}.png"
-            : ($comment->display_email
-                ? Gravatar::url($comment->display_email)
-                : Gravatar::urlForIp($comment->remote_addr, (string) $comment->thread_id));
+        $avatarUrl = ImageProxy::url(
+            $comment->github_username
+                ? "https://github.com/{$comment->github_username}.png"
+                : ($comment->display_email
+                    ? Gravatar::url($comment->display_email)
+                    : Gravatar::urlForIp($comment->remote_addr, (string) $comment->thread_id))
+        );
 
         return response()->json([
             'id' => $comment->id,
@@ -132,11 +135,13 @@ class CommentController extends Controller
      */
     public function show(Comment $comment): JsonResponse
     {
-        $avatarUrl = $comment->github_username
-            ? "https://github.com/{$comment->github_username}.png"
-            : ($comment->display_email
-                ? Gravatar::url($comment->display_email)
-                : Gravatar::urlForIp($comment->remote_addr, (string) $comment->thread_id));
+        $avatarUrl = ImageProxy::url(
+            $comment->github_username
+                ? "https://github.com/{$comment->github_username}.png"
+                : ($comment->display_email
+                    ? Gravatar::url($comment->display_email)
+                    : Gravatar::urlForIp($comment->remote_addr, (string) $comment->thread_id))
+        );
 
         return response()->json([
             'id' => $comment->id,

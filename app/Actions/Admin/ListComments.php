@@ -6,6 +6,7 @@ namespace App\Actions\Admin;
 
 use App\Models\Comment;
 use App\Support\Gravatar;
+use App\Support\ImageProxy;
 use App\Support\Markdown;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Lorisleiva\Actions\Concerns\AsAction;
@@ -69,9 +70,13 @@ class ListComments
                 'id' => $comment->id,
                 'author' => $comment->display_author,
                 'email' => $comment->email,
-                'avatar' => $comment->display_email
-                    ? Gravatar::url($comment->display_email, 40)
-                    : Gravatar::urlForIp($comment->remote_addr, (string) $comment->thread_id, 40),
+                'avatar' => ImageProxy::url(
+                    $comment->display_email
+                        ? Gravatar::url($comment->display_email, 40)
+                        : Gravatar::urlForIp($comment->remote_addr, (string) $comment->thread_id, 40),
+                    40,
+                    40
+                ),
                 'body_excerpt' => Markdown::toPlainText($comment->body_markdown, 150),
                 'body_html' => $comment->body_html,
                 'status' => $comment->status,
