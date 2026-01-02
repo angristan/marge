@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Support\Gravatar;
+use App\Support\ImageProxy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -172,5 +174,19 @@ class Comment extends Model
         }
 
         return $this->email;
+    }
+
+    /**
+     * Get the avatar URL (GitHub, Gravatar, or IP-based), proxied through imgproxy.
+     */
+    public function avatarUrl(int $size = 80): string
+    {
+        $url = $this->github_username
+            ? "https://github.com/{$this->github_username}.png"
+            : ($this->display_email
+                ? Gravatar::url($this->display_email, $size)
+                : Gravatar::urlForIp($this->remote_addr, (string) $this->thread_id, $size));
+
+        return ImageProxy::url($url, $size, $size);
     }
 }

@@ -6,8 +6,6 @@ namespace App\Actions\Thread;
 
 use App\Models\Comment;
 use App\Models\Thread;
-use App\Support\Gravatar;
-use App\Support\ImageProxy;
 use Illuminate\Support\Collection;
 use Lorisleiva\Actions\Concerns\AsAction;
 
@@ -88,16 +86,6 @@ class GetThreadComments
         // Sort replies - always chronological for replies (oldest first for conversation flow)
         $sortedReplies = $replies->sortBy('created_at')->values();
 
-        // Use GitHub avatar if available, otherwise Gravatar
-        $avatarUrl = $comment->github_username
-            ? "https://github.com/{$comment->github_username}.png"
-            : ($comment->display_email
-                ? Gravatar::url($comment->display_email)
-                : Gravatar::urlForIp($comment->remote_addr, (string) $comment->thread_id));
-
-        // Apply image proxy if configured (resize + webp conversion)
-        $avatarUrl = ImageProxy::url($avatarUrl);
-
         return [
             'id' => $comment->id,
             'parent_id' => $comment->parent_id,
@@ -107,7 +95,7 @@ class GetThreadComments
             'is_admin' => $comment->is_admin,
             'is_github_user' => $comment->github_id !== null,
             'github_username' => $comment->github_username,
-            'avatar' => $avatarUrl,
+            'avatar' => $comment->avatarUrl(),
             'website' => $comment->website,
             'body_html' => $comment->body_html,
             'upvotes' => $comment->upvotes,
