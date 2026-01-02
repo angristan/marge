@@ -101,7 +101,7 @@ class NewCommentNotificationTest extends TestCase
         Setting::setValue('admin_email', 'admin@example.com');
         Setting::setValue('site_name', 'My Blog');
 
-        $thread = Thread::factory()->create();
+        $thread = Thread::factory()->create(['title' => 'Test Page']);
         $comment = Comment::factory()->create([
             'thread_id' => $thread->id,
             'status' => 'pending',
@@ -111,7 +111,7 @@ class NewCommentNotificationTest extends TestCase
         SendNewCommentNotification::run($comment);
 
         Mail::assertQueued(NewCommentNotificationMail::class, function ($mail) {
-            return $mail->envelope()->subject === 'New comment (pending) - My Blog';
+            return $mail->envelope()->subject === 'New comment (pending) on Test Page - My Blog';
         });
     }
 
@@ -122,7 +122,7 @@ class NewCommentNotificationTest extends TestCase
         Setting::setValue('admin_email', 'admin@example.com');
         Setting::setValue('site_name', 'My Blog');
 
-        $thread = Thread::factory()->create();
+        $thread = Thread::factory()->create(['title' => 'Test Page']);
         $comment = Comment::factory()->create([
             'thread_id' => $thread->id,
             'status' => 'approved',
@@ -132,7 +132,7 @@ class NewCommentNotificationTest extends TestCase
         SendNewCommentNotification::run($comment);
 
         Mail::assertQueued(NewCommentNotificationMail::class, function ($mail) {
-            return $mail->envelope()->subject === 'New comment - My Blog';
+            return $mail->envelope()->subject === 'New comment on Test Page - My Blog';
         });
     }
 }

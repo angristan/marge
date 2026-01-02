@@ -1,7 +1,7 @@
 <x-mail::message>
 # New Reply to Your Comment
 
-Someone replied to your comment on {{ $siteName }}.
+Someone replied to your comment on **{{ $pageTitle }}**.
 
 **{{ $reply->author ?? 'Anonymous' }}** wrote:
 

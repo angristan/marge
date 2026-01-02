@@ -27,10 +27,11 @@ class ReplyNotificationMail extends Mailable
         $siteName = \App\Models\Setting::getValue('site_name', 'Comments');
         $fromAddress = \App\Models\Setting::getValue('smtp_from_address', config('mail.from.address'));
         $fromName = \App\Models\Setting::getValue('smtp_from_name') ?: $siteName;
+        $pageTitle = $this->reply->thread->title ?? $this->reply->thread->uri;
 
         return new Envelope(
             from: new \Illuminate\Mail\Mailables\Address($fromAddress, $fromName),
-            subject: "New reply to your comment - {$siteName}",
+            subject: "New reply on {$pageTitle} - {$siteName}",
         );
     }
 
@@ -51,6 +52,7 @@ class ReplyNotificationMail extends Mailable
                 'unsubscribeAllUrl' => $unsubscribeAllUrl,
                 'threadUrl' => $threadUrl,
                 'siteName' => \App\Models\Setting::getValue('site_name', 'Comments'),
+                'pageTitle' => $this->reply->thread->title ?? $this->reply->thread->uri,
             ],
         );
     }
