@@ -103,6 +103,7 @@ class ProcessTelegramWebhook
             'uri' => $parentComment->thread->uri,
             'parent_id' => $parentComment->id,
             'body' => $replyText,
+            'author' => Setting::getValue('admin_display_name', 'Admin'),
             'is_admin' => true,
         ]);
 
