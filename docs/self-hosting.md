@@ -1,136 +1,137 @@
-# Self-Hosting Bulla
+# Self-Hosting
 
-This guide covers deploying Bulla on your own server.
+## Quick Start
 
-## Requirements
-
-- Docker and Docker Compose (recommended)
-- OR: PHP 8.2+, Composer, Node.js 22+
-
-## Quick Start with Docker
-
-### SQLite (Simplest)
-
-```bash
-docker run -d \
-  -p 8000:8000 \
-  -v bulla_data:/app/database \
-  -v bulla_storage:/app/storage \
-  -e APP_URL=https://comments.example.com \
-  ghcr.io/angristan/bulla:latest
-```
-
-### With PostgreSQL
+Minimal setup with SQLite, database sessions, and synchronous queue:
 
 ```yaml
-# docker-compose.yml
 services:
-  bulla:
-    image: ghcr.io/angristan/bulla:latest
-    ports:
-      - "8000:8000"
-    environment:
-      APP_URL: https://comments.example.com
-      DB_CONNECTION: pgsql
-      DB_HOST: postgres
-      DB_DATABASE: bulla
-      DB_USERNAME: bulla
-      DB_PASSWORD: secret
-    volumes:
-      - bulla_data:/app/database
-      - bulla_storage:/app/storage
-    depends_on:
-      postgres:
-        condition: service_healthy
-    restart: unless-stopped
-
-  postgres:
-    image: postgres:16-alpine
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-    environment:
-      POSTGRES_DB: bulla
-      POSTGRES_USER: bulla
-      POSTGRES_PASSWORD: secret
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U bulla"]
-      interval: 5s
-      timeout: 5s
-      retries: 5
-    restart: unless-stopped
+    web:
+        image: ghcr.io/angristan/bulla:latest
+        ports:
+            - "8000:8080"
+        environment:
+            APP_URL: http://localhost:8000
+            SESSION_DRIVER: database
+            QUEUE_CONNECTION: sync
+        volumes:
+            - bulla_data:/app/database
+        command: ["sh", "-c", "php artisan key:generate --force && php artisan optimize && php artisan migrate --force && php artisan octane:start --server=frankenphp --host=0.0.0.0 --port=8080 --log-level=info --caddyfile=./deploy/Caddyfile.octane --max-requests=100"]
 
 volumes:
-  bulla_data:
-  bulla_storage:
-  postgres_data:
+    bulla_data:
 ```
 
-Run with:
 ```bash
 docker compose up -d
 ```
 
-## Environment Variables
+Access at <http://localhost:8000> and visit `/admin/setup` to create your admin account.
 
-| Variable | Description | Default |
-|----------|-------------|---------|
-| `APP_URL` | Public URL of your Bulla instance | `http://localhost` |
-| `APP_KEY` | Application encryption key (auto-generated if missing) | - |
-| `DB_CONNECTION` | Database driver: `sqlite` or `pgsql` | `sqlite` |
-| `DB_HOST` | PostgreSQL host | `localhost` |
-| `DB_PORT` | PostgreSQL port | `5432` |
-| `DB_DATABASE` | Database name | `bulla` |
-| `DB_USERNAME` | Database username | - |
-| `DB_PASSWORD` | Database password | - |
-| `MAIL_MAILER` | Mail driver: `smtp`, `log` | `log` |
-| `MAIL_HOST` | SMTP host | - |
-| `MAIL_PORT` | SMTP port | `587` |
-| `MAIL_USERNAME` | SMTP username | - |
-| `MAIL_PASSWORD` | SMTP password | - |
-| `MAIL_FROM_ADDRESS` | From email address | - |
-| `IMGPROXY_URL` | [imgproxy](https://imgproxy.net) base URL | - |
-| `IMGPROXY_KEY` | imgproxy signing key | - |
-| `IMGPROXY_SALT` | imgproxy signing salt | - |
+## Full Setup
 
-**Image Proxy (optional):** If all three `IMGPROXY_*` variables are set, avatars will be proxied through imgproxy for resizing and WebP conversion. If not configured, original avatar URLs are used.
+For production with Redis (queue, cache) and PostgreSQL, use the full setup in `deploy/`:
 
-## Initial Setup
+```bash
+cd deploy
+cp .env.compose .env.compose.local
+# Edit APP_URL to your domain
+docker compose up -d
+```
 
-1. Visit `https://your-domain.com/admin/setup`
-2. Set your site name
-3. Create admin credentials
+This includes:
+
+- **Web server** (FrankenPHP/Octane)
+- **Queue worker** (background jobs)
+- **Scheduler** (scheduled tasks)
+- **Redis** (queue, cache)
+- **PostgreSQL** (optional, via `--profile postgres`)
+- **imgproxy** (optional, via `--profile imgproxy`)
+
+## Configuration
+
+| Variable             | Description                                                   |
+| -------------------- | ------------------------------------------------------------- |
+| `APP_URL`            | Your domain (e.g., `https://comments.example.com`)            |
+| `DB_CONNECTION`      | `sqlite` (default) or `pgsql`                                 |
+| `SESSION_DRIVER`     | `database` (default) or `redis`                               |
+| `QUEUE_CONNECTION`   | `sync`, `database`, or `redis`                                |
+
+## Performance Tuning
+
+By default, the web server runs with **Laravel Octane**, which keeps your application in memory between requests.
+
+For **low-memory environments** (small VPS, Raspberry Pi), use classic FrankenPHP mode:
+
+```yaml
+command: ["sh", "-c", "php artisan key:generate --force && php artisan optimize && php artisan migrate --force && frankenphp run --config ./deploy/Caddyfile.classic"]
+```
+
+| Mode             | Memory | Performance | Use Case               |
+| ---------------- | ------ | ----------- | ---------------------- |
+| Octane (default) | Higher | Fast        | Production, most users |
+| Classic          | Lower  | Standard    | Low-memory VPS, RPi    |
+
+## Using PostgreSQL
+
+```yaml
+services:
+    web:
+        image: ghcr.io/angristan/bulla:latest
+        ports:
+            - "8000:8080"
+        environment:
+            APP_URL: http://localhost:8000
+            SESSION_DRIVER: database
+            QUEUE_CONNECTION: sync
+            DB_CONNECTION: pgsql
+            DB_HOST: postgres
+            DB_DATABASE: bulla
+            DB_USERNAME: bulla
+            DB_PASSWORD: secret
+        command: ["sh", "-c", "php artisan key:generate --force && php artisan optimize && php artisan migrate --force && php artisan octane:start --server=frankenphp --host=0.0.0.0 --port=8080 --log-level=info --caddyfile=./deploy/Caddyfile.octane --max-requests=100"]
+        depends_on:
+            postgres:
+                condition: service_healthy
+
+    postgres:
+        image: postgres:17-alpine
+        environment:
+            POSTGRES_DB: bulla
+            POSTGRES_USER: bulla
+            POSTGRES_PASSWORD: secret
+        volumes:
+            - postgres_data:/var/lib/postgresql/data
+        healthcheck:
+            test: ["CMD", "pg_isready", "-U", "bulla"]
+
+volumes:
+    postgres_data:
+```
 
 ## GitHub Login (Optional)
-
-Allow commenters to authenticate with GitHub instead of entering name/email manually.
 
 1. Go to [GitHub Developer Settings](https://github.com/settings/developers)
 2. Click "New OAuth App"
 3. Fill in:
-   - **Application name:** Your site name (e.g., "My Blog Comments")
+   - **Application name:** Your site name
    - **Homepage URL:** Your site URL
    - **Authorization callback URL:** `https://your-bulla-url/auth/github/callback`
 4. Copy the Client ID and generate a Client Secret
-5. In Bulla Admin > Settings > Authentication:
-   - Enable "GitHub Login"
-   - Enter your Client ID and Client Secret
+5. In Bulla Admin > Settings > Authentication, enter the credentials
 
 ## Telegram Notifications (Optional)
 
-Get notified of new comments via Telegram and moderate directly from the chat.
-
 1. Create a bot with [@BotFather](https://t.me/BotFather) and copy the bot token
 2. Get your chat ID by messaging [@userinfobot](https://t.me/userinfobot)
-3. In Bulla Admin > Settings > Telegram:
-   - Enter your Bot Token and Chat ID
-   - Enable "Telegram notifications"
-   - Click "Setup Webhook"
+3. In Bulla Admin > Settings > Telegram, enter the credentials and click "Setup Webhook"
 
 **Features:**
+
 - **Reply** to a notification to post an admin comment
 - **React** to moderate: 👌 approve, 💩 delete, 👍 upvote, 👎 downvote
 
-## Reverse Proxy Setup
+## Reverse Proxy
 
 ### Caddy
 
@@ -160,14 +161,25 @@ server {
 }
 ```
 
+## Useful Commands
+
+```bash
+# View logs
+docker compose logs -f web
+
+# Stop everything
+docker compose down
+
+# Update to latest version
+docker compose pull && docker compose up -d
+```
+
 ## Backups
 
 ### SQLite
 
-The database is stored at `database/database.sqlite`. Back up this file regularly:
-
 ```bash
-docker cp bulla:/app/database/database.sqlite ./backup-$(date +%F).sqlite
+docker compose exec web cat /app/database/database.sqlite > backup-$(date +%F).sqlite
 ```
 
 ### PostgreSQL
@@ -176,41 +188,19 @@ docker cp bulla:/app/database/database.sqlite ./backup-$(date +%F).sqlite
 docker compose exec postgres pg_dump -U bulla bulla > backup-$(date +%F).sql
 ```
 
-## Updating
-
-```bash
-docker compose pull
-docker compose up -d
-```
-
 ## Manual Installation
 
-If not using Docker:
-
 ```bash
-# Clone repository
 git clone https://github.com/angristan/bulla
 cd bulla
 
-# Install PHP dependencies
 composer install --no-dev --optimize-autoloader
-
-# Install Node dependencies and build assets
-npm install
-npm run build
-
-# Build embed widget
+npm install && npm run build
 cd embed && npm install && npm run build && cd ..
 
-# Set up environment
 cp .env.example .env
 php artisan key:generate
-
-# Run migrations
 php artisan migrate
 
-# Serve with PHP's built-in server (development only)
 php artisan serve
-
-# Or use a proper web server like nginx + php-fpm
 ```

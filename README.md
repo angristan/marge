@@ -32,9 +32,8 @@ Bulla is designed to be easily self-hosted. Just a single Docker container with 
 
 ```bash
 docker run -d \
-  -p 8000:8000 \
+  -p 8000:8080 \
   -v bulla_data:/app/database \
-  -v bulla_storage:/app/storage \
   -e APP_URL=https://comments.example.com \
   ghcr.io/angristan/bulla:latest
 ```

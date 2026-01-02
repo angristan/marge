@@ -1,81 +1,120 @@
-# Build stage for frontend assets
 ARG PHP_VERSION=8.5
 ARG FRANKENPHP_VERSION=1.11
+ARG COMPOSER_VERSION=2.9
 ARG NODE_VERSION=24
 
-FROM node:${NODE_VERSION}-alpine AS frontend
+FROM composer:${COMPOSER_VERSION} AS composer
 
-WORKDIR /app
+FROM dunglas/frankenphp:${FRANKENPHP_VERSION}-php${PHP_VERSION} AS base
 
-# Copy package files
-COPY package*.json ./
-COPY embed/package*.json ./embed/
+ARG WWWUSER=1000
+ARG WWWGROUP=1000
+ARG TZ=UTC
+ARG APP_DIR=/app
 
-# Install dependencies
-RUN npm ci
-RUN cd embed && npm ci
+ENV DEBIAN_FRONTEND=noninteractive \
+    TERM=xterm-color \
+    OCTANE_SERVER=frankenphp \
+    APP_ENV=production \
+    TZ=${TZ} \
+    USER=octane \
+    ROOT=${APP_DIR} \
+    COMPOSER_FUND=0 \
+    COMPOSER_MAX_PARALLEL_HTTP=24 \
+    XDG_CONFIG_HOME=${APP_DIR}/.config \
+    XDG_DATA_HOME=${APP_DIR}/.data
 
-# Copy source files
-COPY . .
+WORKDIR ${ROOT}
 
-# Build assets
+SHELL ["/bin/bash", "-eou", "pipefail", "-c"]
+
+RUN ln -snf /usr/share/zoneinfo/${TZ} /etc/localtime \
+    && echo ${TZ} > /etc/timezone
+
+RUN apt-get update; \
+    apt-get upgrade -yqq; \
+    apt-get install -yqq --no-install-recommends --show-progress \
+    apt-utils \
+    curl \
+    git \
+    ca-certificates \
+    # Install PHP extensions (included with dunglas/frankenphp)
+    && install-php-extensions \
+    pgsql \
+    pdo_pgsql \
+    pdo_sqlite \
+    opcache \
+    redis \
+    pcntl \
+    zip \
+    gd \
+    && apt-get -y autoremove \
+    && apt-get clean \
+    && docker-php-source delete \
+    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
+    && rm /var/log/lastlog
+
+RUN userdel --remove --force www-data \
+    && groupadd --force -g ${WWWGROUP} ${USER} \
+    && useradd -ms /bin/bash --no-log-init --no-user-group -g ${WWWGROUP} -u ${WWWUSER} ${USER}
+
+RUN chown -R ${USER}:${USER} ${ROOT} /var/{log,run} \
+    && chmod -R a+rw ${ROOT} /var/{log,run}
+
+RUN cp ${PHP_INI_DIR}/php.ini-production ${PHP_INI_DIR}/php.ini
+
+USER ${USER}
+
+COPY --link --chown=${WWWUSER}:${WWWUSER} --from=composer /usr/bin/composer /usr/bin/composer
+
+COPY --link --chown=${WWWUSER}:${WWWUSER} deploy/php.ini ${PHP_INI_DIR}/conf.d/99-octane.ini
+
+COPY --link --chown=${WWWUSER}:${WWWUSER} composer.json composer.lock ./
+
+RUN composer install \
+    --no-dev \
+    --no-interaction \
+    --no-autoloader \
+    --no-ansi \
+    --no-scripts \
+    --audit
+
+FROM node:${NODE_VERSION}-slim AS npm_build
+
+ENV ROOT=/app
+
+WORKDIR ${ROOT}
+
+COPY --link package.json package-lock.json ./
+COPY --link embed/package.json embed/package-lock.json ./embed/
+
+RUN npm ci --frozen-lockfile
+RUN cd embed && npm ci --frozen-lockfile
+
+COPY --link . .
+
 RUN npm run build
 RUN cd embed && npm run build
 
-# Production image with FrankenPHP
-FROM dunglas/frankenphp:${FRANKENPHP_VERSION}-php${PHP_VERSION} AS base
+FROM base AS app
 
-# Install PHP extensions
-RUN install-php-extensions \
-    pdo_sqlite \
-    pdo_pgsql \
-    opcache \
-    intl \
-    bcmath \
-    zip
+USER ${USER}
 
-# Set working directory
-WORKDIR /app
+COPY --link --chown=${WWWUSER}:${WWWUSER} . .
+COPY --link --chown=${WWWUSER}:${WWWUSER} --from=npm_build ${ROOT}/public/build public/build
+COPY --link --chown=${WWWUSER}:${WWWUSER} --from=npm_build ${ROOT}/public/embed public/embed
 
-# Copy composer files first for caching
-COPY composer.json composer.lock ./
+RUN mkdir -p \
+    storage/framework/{sessions,views,cache,testing} \
+    storage/logs \
+    bootstrap/cache \
+    database && chmod -R a+rw storage bootstrap/cache database
 
-# Install PHP dependencies
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
-RUN composer install --no-dev --no-scripts --no-autoloader --prefer-dist
+RUN composer install \
+    --classmap-authoritative \
+    --no-interaction \
+    --no-ansi \
+    --no-dev \
+    && composer clear-cache
 
-# Copy application
-COPY . .
-COPY --from=frontend /app/public/build ./public/build
-COPY --from=frontend /app/public/embed ./public/embed
-
-# Generate optimized autoload
-RUN composer dump-autoload --optimize
-
-# Create storage directories
-RUN mkdir -p storage/framework/{sessions,views,cache}
-RUN mkdir -p storage/logs
-RUN mkdir -p database
-
-# Set permissions
-RUN chown -R www-data:www-data storage bootstrap/cache database
-
-# Copy FrankenPHP configuration
-COPY deploy/Caddyfile /etc/caddy/Caddyfile
-
-# Configure PHP
-COPY deploy/php.ini /usr/local/etc/php/conf.d/99-app.ini
-
-# Expose port
-EXPOSE 8000
-
-# Health check
-HEALTHCHECK --interval=30s --timeout=5s --start-period=5s --retries=3 \
-    CMD curl -f http://localhost:8000/api/config || exit 1
-
-# Entry point
-COPY deploy/entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
-
-ENTRYPOINT ["/entrypoint.sh"]
-CMD ["frankenphp", "run", "--config", "/etc/caddy/Caddyfile"]
+CMD ["sh", "-c", "php artisan key:generate --force && php artisan optimize && php artisan migrate --force && php artisan octane:start --server=frankenphp --host=0.0.0.0 --port=8080 --log-level=info --caddyfile=./deploy/Caddyfile.octane --max-requests=100"]
