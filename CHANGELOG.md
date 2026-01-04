@@ -1,3 +1,10 @@
+## [1.2.2](https://github.com/angristan/bulla/compare/v1.2.1...v1.2.2) (2026-01-04)
+
+
+### Bug Fixes
+
+* show full comment body in Telegram notifications ([fd8d2ef](https://github.com/angristan/bulla/commit/fd8d2ef0b62dabcbd852b29eb8afc1531a0e216f))
+
 ## [1.2.1](https://github.com/angristan/bulla/compare/v1.2.0...v1.2.1) (2026-01-02)
 
 
