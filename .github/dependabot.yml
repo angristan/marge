@@ -45,6 +45,9 @@ updates:
       pest:
         patterns:
           - "pestphp/*"
+      symfony:
+        patterns:
+          - "symfony/*"
 
   - package-ecosystem: github-actions
     directory: /
