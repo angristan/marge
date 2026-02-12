@@ -19,7 +19,7 @@
         "@mantine/modals": "^8.3.14",
         "@mantine/notifications": "^8.3.14",
         "@mantine/spotlight": "^8.3.14",
-        "@tabler/icons-react": "^3.36.0",
+        "@tabler/icons-react": "^3.36.1",
         "react": "^19.0.0",
         "react-dom": "^19.0.0",
         "recharts": "^3.6.0"
