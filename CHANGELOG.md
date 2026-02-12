@@ -1,3 +1,10 @@
+## [1.2.3](https://github.com/angristan/bulla/compare/v1.2.2...v1.2.3) (2026-02-12)
+
+
+### Bug Fixes
+
+* update dependencies to resolve security vulnerabilities ([6b9bbf2](https://github.com/angristan/bulla/commit/6b9bbf2cb26cc7c6125b55eab094f3fa8e2159d7))
+
 ## [1.2.2](https://github.com/angristan/bulla/compare/v1.2.1...v1.2.2) (2026-01-04)
 
 
