@@ -1,3 +1,10 @@
+## [1.2.5](https://github.com/angristan/bulla/compare/v1.2.4...v1.2.5) (2026-02-28)
+
+
+### Bug Fixes
+
+* upgrade firebase/php-jwt to v7.0 (CVE weak encryption) ([af115c8](https://github.com/angristan/bulla/commit/af115c888e1f736178db88f89c656c347fe9440a))
+
 ## [1.2.4](https://github.com/angristan/bulla/compare/v1.2.3...v1.2.4) (2026-02-28)
 
 
