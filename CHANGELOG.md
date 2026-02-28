@@ -1,3 +1,10 @@
+## [1.2.4](https://github.com/angristan/bulla/compare/v1.2.3...v1.2.4) (2026-02-28)
+
+
+### Bug Fixes
+
+* strip setcap from frankenphp for PSS restricted compatibility ([8ab89ff](https://github.com/angristan/bulla/commit/8ab89ffb62061047ee4755d900a030c25591bc60))
+
 ## [1.2.3](https://github.com/angristan/bulla/compare/v1.2.2...v1.2.3) (2026-02-12)
 
 
