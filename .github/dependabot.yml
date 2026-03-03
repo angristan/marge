@@ -22,7 +22,7 @@ updates:
         patterns:
           - "tailwindcss"
           - "@tailwindcss/*"
-      everything-else:
+      minor-dependencies:
         patterns:
           - "*"
         exclude-patterns:
@@ -45,7 +45,7 @@ updates:
         patterns:
           - "preact"
           - "@preact/*"
-      everything-else:
+      minor-dependencies:
         patterns:
           - "*"
         exclude-patterns:
@@ -62,7 +62,7 @@ updates:
         patterns:
           - "laravel/*"
           - "inertiajs/*"
-      everything-else:
+      minor-dependencies:
         patterns:
           - "*"
         exclude-patterns:
