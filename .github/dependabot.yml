@@ -9,15 +9,31 @@ updates:
       mantine:
         patterns:
           - "@mantine/*"
-      vite:
-        patterns:
-          - "*vite*"
       react:
         patterns:
           - "react"
           - "react-dom"
           - "@types/react"
           - "@types/react-dom"
+      inertia:
+        patterns:
+          - "@inertiajs/*"
+      tailwind:
+        patterns:
+          - "tailwindcss"
+          - "@tailwindcss/*"
+      everything-else:
+        patterns:
+          - "*"
+        exclude-patterns:
+          - "@mantine/*"
+          - "react"
+          - "react-dom"
+          - "@types/react"
+          - "@types/react-dom"
+          - "@inertiajs/*"
+          - "tailwindcss"
+          - "@tailwindcss/*"
 
   - package-ecosystem: npm
     directory: /embed
@@ -25,13 +41,16 @@ updates:
     schedule:
       interval: weekly
     groups:
-      vite:
+      preact:
         patterns:
-          - "*vite*"
-      testing:
+          - "preact"
+          - "@preact/*"
+      everything-else:
         patterns:
-          - "@testing-library/*"
-          - "vitest"
+          - "*"
+        exclude-patterns:
+          - "preact"
+          - "@preact/*"
 
   - package-ecosystem: composer
     directory: /
@@ -42,17 +61,22 @@ updates:
       laravel:
         patterns:
           - "laravel/*"
-      pest:
+          - "inertiajs/*"
+      everything-else:
         patterns:
-          - "pestphp/*"
-      symfony:
-        patterns:
-          - "symfony/*"
+          - "*"
+        exclude-patterns:
+          - "laravel/*"
+          - "inertiajs/*"
 
   - package-ecosystem: github-actions
     directory: /
     schedule:
       interval: weekly
+    groups:
+      actions:
+        patterns:
+          - "*"
 
   - package-ecosystem: docker
     directory: /deploy
