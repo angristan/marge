@@ -25,16 +25,19 @@ class CommentController extends Controller
      */
     public function store(Request $request, string $uri): JsonResponse
     {
+        // Check if user is authenticated as admin via session (needed before validation)
+        $isAdmin = (bool) $request->session()->get('admin_authenticated', false);
+
         $requireAuthor = Setting::getValue('require_author', 'false') === 'true';
         $requireEmail = Setting::getValue('require_email', 'false') === 'true';
 
         $authorRules = ['nullable', 'string', 'max:255'];
-        if ($requireAuthor) {
+        if ($requireAuthor && ! $isAdmin) {
             $authorRules = ['required', 'string', 'max:255'];
         }
 
         $emailRules = ['nullable', 'email', 'max:255', 'required_if:notify_replies,true'];
-        if ($requireEmail) {
+        if ($requireEmail && ! $isAdmin) {
             $emailRules = ['required', 'email', 'max:255'];
         }
 
@@ -70,9 +73,6 @@ class CommentController extends Controller
         if ($spamError !== null) {
             return response()->json(['error' => $spamError], 422);
         }
-
-        // Check if user is authenticated as admin via session
-        $isAdmin = (bool) $request->session()->get('admin_authenticated', false);
 
         // Get commenter session data (GitHub authenticated)
         $commenter = $request->session()->get('commenter');
