@@ -1,3 +1,10 @@
+## [1.2.6](https://github.com/angristan/bulla/compare/v1.2.5...v1.2.6) (2026-03-14)
+
+
+### Bug Fixes
+
+* skip author/email required validation for admin comments ([d0d521d](https://github.com/angristan/bulla/commit/d0d521d8b9c5d9784a8c70157842bc568168e87c))
+
 ## [1.2.5](https://github.com/angristan/bulla/compare/v1.2.4...v1.2.5) (2026-02-28)
 
 
